@@ -19,10 +19,10 @@ const authHandler = NextAuth({
           if (!user) throw new Error("No user found with this email");
           const isValidPassword = await bcrypt.compare(password, user.password);
           if (!isValidPassword) throw new Error("Incorrect password");
-          if (user&&!user.isActivated) throw new Error("Please activate your account");
+          if (user && !user.isActivated) throw new Error("Please activate your account");
           console.log(isValidPassword, user);
           return user;
-        } catch (error:any) {
+        } catch (error: any) {
           throw new Error(error.message);
         }
       },
@@ -40,20 +40,21 @@ const authHandler = NextAuth({
   },
   callbacks: {
     async jwt({ token, user }: { token: any; user: any }) {
-      console.log(token, user);
+      console.log("User in JWT callback:", user);
       if (user) {
         token.user = {
-          id: user._id,
+          id: user._id.toString(),
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
           role: user.role,
-          photo: user.photo,
+          photo: user.photo || user.image,
         };
       }
       return token;
     },
     async session({ session, token }: { session: any; token: any }) {
+      console.log("Token in session callback:", token);
       if (token.user) {
         session.user = token.user;
       }
@@ -63,6 +64,7 @@ const authHandler = NextAuth({
     async signIn({ user, account, profile }: { user: any; account: any; profile: any }) {
       await connect();
       const existingUser = await User.findOne({ email: user.email });
+      console.log(account.provider === "google");
       if (!existingUser) {
         const newUser = await User.create({
           email: user.email,
@@ -70,20 +72,18 @@ const authHandler = NextAuth({
           lastName: profile.family_name,
           photo: profile.picture,
           role: "user",
-          password: null,
+          phoneNumber: profile.phone_number || null,
           isthirdParty: account.provider === "google",
-          isActivated: account.provider === "google" ? true : false, 
+          isActivated: account.provider === "google" ? true : false,
         });
-        // console.log(newUser.toObject(),"newuser");
-        // if(account.provider==='google') return true
-        // sendConfirmationEmail(newUser.toObject().email);
+        user._id = newUser._id; // Use the MongoDB ID
+      } else {
+        user._id = existingUser._id; // Use the MongoDB ID
       }
       return true;
     },
   },
-  events: {
-    
-  },
+  events: {},
 });
 
 export { authHandler as GET, authHandler as POST };

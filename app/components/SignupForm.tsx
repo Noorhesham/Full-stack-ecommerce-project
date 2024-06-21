@@ -76,6 +76,7 @@ const SignupForm = () => {
                   <FormInput control={control} name="lastName" label=" Last Name" type="text" />
                   <FormInput control={control} name="firstName" label="First Name" type="text" />
                 </div>
+                <FormInput phone name="phone" control={control} label=""/>
                 <FormInput
                   password
                   className={"w-full"}

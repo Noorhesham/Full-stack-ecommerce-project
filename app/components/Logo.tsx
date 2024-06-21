@@ -1,11 +1,12 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const Logo = () => {
   return (
-    <div className=" w-20 h-20  relative">
+    <Link href={"/"} className=" w-16 h-16 sm:w-20 sm:h-20  relative">
       <Image src="/logo.png" className=" absolute object-cover" alt="logo" fill />
-    </div>
+    </Link>
   );
 };
 

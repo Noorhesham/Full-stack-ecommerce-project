@@ -8,6 +8,7 @@ export const signupSchema = z
     email: z.string().email({ message: "😢 Please enter a valid email" }),
     password: z.string().min(6, { message: "Password must be at least 6 characters" }),
     confirmPassword: z.string().min(6, { message: "Please confirm your password" }),
+    phone: z.string().regex(phoneRegex, { message: "Please enter a valid phone number" }),
     // phone: z.string().regex(phoneRegex, { message: "Please enter a valid phone number" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -21,4 +22,16 @@ export const loginSchema = z.object({
 });
 export const confirmSchema = z.object({
   token: z.string().min(1, { message: "token must be at least 4 characters" }),
+});
+
+
+export const productStep1Schema = z.object({
+  name: z.string().min(1, "Product name is required"),
+  description: z.string().min(1, "Product description is required"),
+  category: z.string().min(1, "Product category is required"),
+  price: z.string().min(1, "Product price is required"),
+  stock: z.string().min(1, "Product stock is required"),
+});
+export const addImagesSchema = z.object({
+  images: z.array(z.string().url()).min(4, "Four images are required"),
 });

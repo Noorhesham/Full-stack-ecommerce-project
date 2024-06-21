@@ -13,6 +13,7 @@ import { signIn } from "next-auth/react";
 import FormInput from "./InputField";
 import { Form } from "@/components/ui/form";
 import { toast } from "react-toastify";
+import Social from "./Socials";
 
 const LoginForm = () => {
   const searchParams = useSearchParams();
@@ -114,6 +115,7 @@ const LoginForm = () => {
               </Button>
             )}
           </div>
+          <Social/>
         </div>
         {error && <p className=" font-semibold text-red-500">{error}</p>}
       </div>

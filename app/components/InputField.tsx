@@ -5,6 +5,7 @@ import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { CategoriesField } from "./CategoriesField";
 const FormInput = ({
   control,
   name,
@@ -13,6 +14,8 @@ const FormInput = ({
   icon,
   phone,
   className,
+  description,
+  select,
   password = false, // Added password prop with default value false
 }: {
   control: any;
@@ -20,7 +23,9 @@ const FormInput = ({
   label: string;
   type?: string;
   phone?: boolean;
+  description?: boolean;
   icon?: ReactNode;
+  select?: boolean;
   className?: string;
   password?: boolean; // Define password prop
 }) => {
@@ -38,32 +43,38 @@ const FormInput = ({
         control={control}
         name={name}
         render={({ field }) => (
-          <FormItem className="flex  flex-col items-end text-right relative">
+          <FormItem className="flex  flex-col text-left items-start  relative">
             <FormLabel
               className={`absolute z-20 transition-transform duration-300 ease-in-out ${
                 isFocused || field.value
-                  ? "top-0  text-seven-light transform right-0 -translate-y-6"
-                  : "right-5 top-[24%]"
-              }  ml-auto text-right text-sm flex items-center gap-2`}
+                  ? "top-0  text-seven-light transform left-0 -translate-y-6"
+                  : "left-5 top-[24%]"
+              }  ml-auto  text-sm flex items-center gap-2`}
             >
               {label} {icon}
+              <span className="  font-normal text-red-600">*</span>
             </FormLabel>
             <div className={`relative  inline-flex items-center justify-center ${className}`}>
-              <FormControl
-                className={` body-2 ${password ? " pr-8" : "pr-5"} text-right pl-8 py-1 duration-200 `}
-              >
+              <FormControl className={` body-2 ${password ? " pr-8" : "pr-5"}  pl-8 py-1 duration-200 `}>
                 {phone ? (
                   <PhoneInput
                     {...field}
-                    className="  w-full flex-row-reverse py-1 px-4 rounded-2xl gap-2"
+                    className="  w-full flex-row-reverse py-2 px-4 rounded-2xl gap-2"
                     international
                     defaultCountry="EG"
                     placeholder="Enter phone number"
                   />
+                ) : description ? (
+                  <textarea
+                    {...field}
+                    className=" border-2 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 border-gray-200 w-full flex-row-reverse py-2 px-4 rounded-2xl gap-2"
+                  />
+                ) : select ? (
+                  <CategoriesField name="category" control={control} />
                 ) : (
                   <Input
-                    {...field}
-                    type={password && !showPassword ? "password" : "text"} // Toggle input type based on password prop and showPassword state
+                    {...field} 
+                    type={password && !showPassword ? "password" : type} // Toggle input type based on password prop and showPassword state
                     className={` w-full`}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => {
@@ -76,7 +87,7 @@ const FormInput = ({
               </FormControl>
               {password && field.value && (
                 <span
-                  className=" absolute right-2  cursor-pointer hover:text-gray-900 text-gray-800"
+                  className=" absolute left-2  cursor-pointer hover:text-gray-900 text-gray-800"
                   onClick={togglePasswordVisibility}
                 >
                   {showPassword ? <EyeIcon className="w-4 h-4" /> : <EyeOffIcon className="w-4 h-4" />}
