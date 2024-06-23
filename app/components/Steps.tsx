@@ -2,44 +2,48 @@
 
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { useGetProduct } from "../queries/queries";
+import Link from "next/link";
 
-const STEPS = [
-  {
-    name: "Step 1: Add starter info",
-    description: "Add your product info , name , description and more",
-    url: "/create-product",
-  },
-  {
-    name: "Step 2: Add image",
-    description: "Choose an image for your Product",
-    url: "/images",
-  },
-  {
-    name: "Step 3: Summary",
-    description: "Review your final design",
-    url: "/last",
-  },
-];
-
-const Steps = () => {
+const Steps = ({ id }: { id?: string }) => {
   const pathname = usePathname();
 
+  const STEPS = [
+    {
+      name: "Step 1: Add starter info",
+      description: "Add your product info , name , description and more",
+      url: `/seller/create-product/${id}`,
+    },
+    {
+      name: "Step 2: Add image",
+      description: "Choose an image for your Product",
+      url: id ? `/seller/create-product/${id}/images` : "",
+    },
+    {
+      name: "Step 3: Summary",
+      description: "Add variations and more",
+      url: id ? `/seller/create-product/${id}/last` : "",
+    },
+  ];
   return (
     <ol className="rounded-md bg-white lg:flex lg:rounded-none lg:border-l lg:border-r lg:border-gray-200">
       {STEPS.map((step, i) => {
         const isCurrent = pathname.endsWith(step.url);
         // i am chincking step 2 if  the current then 1 is completed , so in in step 3 if current then 2 is completed too
         const isCompleted = STEPS.slice(i + 1).some((step) => pathname.endsWith(step.url));
-        const imgPath = `/snake-${i + 1}.png`;
+        const imgPath = `/add${i + 1}.png`;
 
         return (
           <li key={step.name} className="relative overflow-hidden lg:flex-1">
-            <div>
+            <Link href={step.url}>
               <span
-                className={cn("absolute left-0 duration-150 top-0 h-full w-1 bg-zinc-400 lg:bottom-0 lg:top-auto lg:h-1 lg:w-full", {
-                  "bg-zinc-700": isCurrent,
-                  " bg-red-500": isCompleted,
-                })}
+                className={cn(
+                  "absolute left-0 duration-150 top-0 h-full w-1 bg-zinc-400 lg:bottom-0 lg:top-auto lg:h-1 lg:w-full",
+                  {
+                    "bg-zinc-700": isCurrent,
+                    " bg-red-500": isCompleted,
+                  }
+                )}
                 aria-hidden="true"
               />
 
@@ -80,7 +84,7 @@ const Steps = () => {
                   </svg>
                 </div>
               ) : null}
-            </div>
+            </Link>
           </li>
         );
       })}

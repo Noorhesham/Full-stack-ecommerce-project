@@ -17,6 +17,10 @@ export interface ProductProps extends Document {
   creator: mongoose.Types.ObjectId;
   rating: number;
   published: boolean;
+  variations: {
+    name: string;
+    options: [{ image: { imgUrl: string; public_id: string }; title: string }];
+  };
   numReviews: number;
   step: number;
 }
@@ -27,7 +31,7 @@ const ProductSchema = new Schema<ProductProps>(
     price: { type: Number, required: true },
     stock: { type: Number, required: true, default: 0 },
     description: { type: String, required: true },
-    images: {type: [{ imgUrl: String, publicId: String }], default: [] },
+    images: { type: [{ imgUrl: String, publicId: String }], default: [] },
     brand: { type: String, default: "" },
     category: { type: String, default: "" },
     subCategory: { type: String, default: "" },
@@ -40,5 +44,17 @@ const ProductSchema = new Schema<ProductProps>(
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
+
+ProductSchema.virtual("variations", {
+  ref: "Variation",
+  localField: "_id",
+  foreignField: "product",
+});
+
+ProductSchema.pre(/^find/, function (this: any, next) {
+  this.populate("variations");
+  next();
+});
+
 const Product = mongoose.models.Product || mongoose.model("Product", ProductSchema);
 export default Product;

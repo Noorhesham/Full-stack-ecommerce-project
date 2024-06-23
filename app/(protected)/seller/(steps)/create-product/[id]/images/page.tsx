@@ -4,9 +4,7 @@ import React from "react";
 
 const page = async ({ params }: { params: { id: string } }) => {
   return (
-    <div className="   bg-gray-100  overflow-hidden">
       <AddImagesForm  productId={params.id} />
-    </div>
   );
 };
 

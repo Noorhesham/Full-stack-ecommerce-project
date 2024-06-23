@@ -23,6 +23,7 @@ export interface UserProps extends Document {
   phoneNumber?: number;
   createdAt: Date;
   activatedAt?: Date;
+  isAdmin: boolean;
   isActivated: boolean;
 }
 
@@ -67,6 +68,7 @@ const UserSchema = new Schema<UserProps>(
     activatedAt: Date,
     phoneNumber: { type: Number, },
     confirmationToken: { type: Schema.Types.ObjectId, ref: "Activation" },
+    isAdmin: { type: Boolean, default: false },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );

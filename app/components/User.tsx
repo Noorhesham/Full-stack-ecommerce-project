@@ -6,6 +6,7 @@ import { UserProps } from "@/lib/database/models/UserModel";
 import { signOut } from "next-auth/react";
 import { Calendar, LayoutDashboard, LogOutIcon, Settings } from "lucide-react";
 import Link from "next/link";
+import { formattedDate } from "@/lib/utils";
 
 const User = ({ user,className,open }: { user: UserProps | any ,className?:string,open?:boolean}) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,7 +38,7 @@ const User = ({ user,className,open }: { user: UserProps | any ,className?:strin
             <p className="text-sm">{user.email}</p>
             <div className="flex items-center pt-2">
               <Calendar className="mr-2 h-4 w-4 opacity-70" />{" "}
-              <span className="text-xs text-muted-foreground">Joined December 2021</span>
+              <span className="text-xs text-muted-foreground">Joined{formattedDate(new Date(user.createdAt))}</span>
             </div>
           </div>
         </div>

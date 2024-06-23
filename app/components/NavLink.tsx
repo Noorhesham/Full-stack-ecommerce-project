@@ -6,15 +6,15 @@ const NavLink = ({ title, icon, href }: { title: string; icon: any; href: string
   const pathName = usePathname();
   console.log(pathName, `/${href}`);
   return (
-    <div className="flex p-2  text-sm md:text-[1.2rem] w-full text-left  flex-col  gap-2">
+    <div className="flex p-2  text-sm md:text-base w-full text-left  flex-col  gap-2">
       <Link
         className={`flex w-full  hover:bg-rose-100 duration-150 py-2 px-4 rounded-xl  md:px-2 items-center  text-left  gap-2 ${
-          pathName === `/${href}` ? "bg-rose-200 text-rose-700" : ""
+          pathName === `/${href}` ? "bg-rose-100 text-rose-700" : ""
         }`}
         href={`/${href}`}
       >
         {icon}
-        <span className={`${pathName === `/${href}` ? "text-rose-500" : ""}  text-gray-700`}>{title}</span>
+        <span className={`${pathName === `/${href}` ? "text-rose-900" : ""}  text-gray-700`}>{title}</span>
       </Link>
     </div>
   );

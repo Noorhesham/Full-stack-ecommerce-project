@@ -1,16 +1,17 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface VariationOptionProps extends Document {
-  name: string;
-  value: string;
+  title: string;
   image?: string;
+  variation: any;
 }
 
 const VariationOptionSchema = new Schema<VariationOptionProps>({
-  name: { type: String, required: true },
-  value: { type: String, required: true },
-  image: { type: String },
+  title: { type: String, required: true },
+  image: { imgUrl: String, publicId: String },
+  variation: { type: Schema.Types.ObjectId, ref: "Variation", required: true },
 });
 
-const VariationOption = mongoose.model<VariationOptionProps>('VariationOption', VariationOptionSchema);
+const VariationOption =
+  mongoose.models.VariationOption || mongoose.model<VariationOptionProps>("VariationOption", VariationOptionSchema);
 export default VariationOption;

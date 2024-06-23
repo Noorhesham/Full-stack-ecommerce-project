@@ -62,3 +62,21 @@
     background-color: rgb(248, 248, 248);
     border-radius:2rem;
   }
+  .CircularProgressbar-text{
+    fill: rgb(228, 83, 83) !important;
+    color: rgb(228, 83, 83) !important;
+  }
+  .arrow1 {
+    animation: slide1 1s ease-in-out infinite;
+    margin-left: 9px;
+  }
+  @keyframes slide1 {
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+  
+    50% {
+      transform: translate(10px, 0);
+    }
+  }

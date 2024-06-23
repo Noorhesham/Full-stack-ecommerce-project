@@ -6,6 +6,8 @@ import "react-phone-number-input/style.css";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { CategoriesField } from "./CategoriesField";
+import { formatPrice } from "@/lib/utils";
+
 const FormInput = ({
   control,
   name,
@@ -15,17 +17,19 @@ const FormInput = ({
   phone,
   className,
   description,
-  select,
+  price,
+  select,register,
   password = false, // Added password prop with default value false
 }: {
   control: any;
   name: string;
-  label: string;
+  label: string;register?:any
   type?: string;
   phone?: boolean;
   description?: boolean;
   icon?: ReactNode;
   select?: boolean;
+  price?: boolean;
   className?: string;
   password?: boolean; // Define password prop
 }) => {
@@ -36,7 +40,11 @@ const FormInput = ({
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
+  const handlePriceChange = (value: string) => {
+    const numberValue = parseFloat(value.replace(/[^0-9.-]+/g, ""));
+    if (isNaN(numberValue)) return "";
+    return formatPrice(numberValue.toFixed(3));
+  };
   return (
     <>
       <FormField
@@ -73,14 +81,19 @@ const FormInput = ({
                   <CategoriesField name="category" control={control} />
                 ) : (
                   <Input
-                    {...field} 
+                    {...field}
                     type={password && !showPassword ? "password" : type} // Toggle input type based on password prop and showPassword state
                     className={` w-full`}
-                    onFocus={() => setIsFocused(true)}
+                    onFocus={() => setIsFocused(s=>s=true)}
+                    value={field.value}
                     onBlur={() => {
                       if (!field.value) {
                         setIsFocused(false);
                       }
+                    }}
+                    onChange={(e) => {
+                      field.onChange(price ? handlePriceChange(e.target.value) : e.target.value);
+                      setIsFocused(s=>s=true)
                     }}
                   />
                 )}

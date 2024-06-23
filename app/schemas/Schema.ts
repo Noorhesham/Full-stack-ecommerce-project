@@ -35,3 +35,14 @@ export const productStep1Schema = z.object({
 export const addImagesSchema = z.object({
   images: z.array(z.string().url()).min(4, "Four images are required"),
 });
+export const variationSchema = z.object({
+  name: z.string().min(1, "Variation name is required"),
+  options: z
+    .array(
+      z.object({
+        image: z.any().optional(),
+        title: z.string().min(1, "Option title is required"),
+      })
+    )
+    .max(3, "Maximum 3 options allowed"),
+});

@@ -5,6 +5,9 @@ import { getServerSession } from "next-auth";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NavBar from "../components/NavBar";
+import { authOptions } from "@/lib/auth";
+import User from "@/lib/database/models/UserModel";
+import { redirect } from "next/navigation";
 const inter = Inter({ subsets: ["latin"] });
 
 //todos
@@ -103,11 +106,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   const user = session?.user;
+  const userInfo =await User.findOne({ email: user?.email });
+  if (userInfo.isAdmin) redirect("/admin");
   return (
     <main className="relative  flex flex-col min-h-screen">
-      <NavBar user={user || null} />
+      <NavBar user={userInfo || null} />
       <div className="flex-grow flex-1">{children}</div>
     </main>
   );
