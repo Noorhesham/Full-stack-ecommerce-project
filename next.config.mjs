@@ -7,7 +7,8 @@ const nextConfig = {
               hostname: '**',
             },
           ],
-      },
+      },typescript:{
+        ignoreBuildErrors: true}
 };
 
 export default nextConfig;

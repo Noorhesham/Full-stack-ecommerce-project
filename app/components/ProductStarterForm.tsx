@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -11,41 +11,54 @@ import saveProductStep1 from "../actions/products";
 import { productStep1Schema } from "../schemas/Schema";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { CategoriesField } from "./CategoriesField";
+import {  CommandBox } from "./CommandBox";
 import { motion } from "framer-motion";
 import NextStep from "./NextStep";
 import { toast } from "react-toastify";
 import { useGetCategories } from "../queries/queries";
-import { Island_Moments } from "next/font/google";
 import Loader from "./Loader";
+import { FancyMultiSelect } from "./MultiSelect";
 const ProductStep1Form = ({ defaultValues }: { defaultValues?: any }) => {
-  const { product } = defaultValues || {};
-  const { categories, isLoading:isGetting } = useGetCategories();
-  const user: any = useSession().data?.user;
+  const { product } = defaultValues || {}; //if there is a default values then this will be an edit form
+  const { categories, isLoading: isGetting } = useGetCategories(); // getting all categoreis data
+  const user: any = useSession().data?.user; // to pass it to the product creator
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof productStep1Schema>>({
     resolver: zodResolver(productStep1Schema),
     defaultValues: {
-      name: (product&&product?.name) || "",
-      description: product&&product?.description || "",
-      category: product&&product?.category || "",
-      price: product&&product?.price + "" || "$10.00",
-      stock: product&&product?.stock + "" || "1",
+      name: (product && product?.name) || "",
+      description: (product && product?.description) || "",
+      category: (product && product?.category?._id) || "",
+      price: (product && product?.price + "") || "$10.00",
+      stock: (product && product?.stock + "") || "1",
+      subCategories: product?.subCategories || [],
     },
   });
-  const { handleSubmit, control } = form;
+  const { handleSubmit, control, getValues, formState, setValue } = form;
+
+  useEffect(() => {
+    if (product?.category?._id) {
+      const category = categories?.find((cat: any) => cat._id === product.category._id);
+      if (category) {
+        setValue("category", category._id);
+        setValue(
+          "subCategories",
+          product.category.subCategories.filter((sub: any) => product.subCategories.includes(sub._id))
+        );
+      }
+    }
+  }, [categories, product, setValue]);
   const onSubmit = async (data: z.infer<typeof productStep1Schema>) => {
+    console.log(data);
     const updatedData = { ...data, price: data.price.replace("$", "") };
     try {
       setIsLoading(true);
       const res: any = await saveProductStep1(updatedData, user?.id, product ? product._id : "");
-      console.log(res);
-      const productId = res?.productObject?._id;
-      product && router.refresh() 
+      product && router.refresh();
       if (res.success) {
         toast.success(`Product ${product ? "Updated" : "Created"} successfully`);
-        if(!product)router.push(`create-product/${res.data.productObject._id}/images`);
+        if (!product) router.push(`create-product/${res.data.productObject._id}/images`);
       }
     } catch (error: any) {
       console.error(error);
@@ -53,7 +66,7 @@ const ProductStep1Form = ({ defaultValues }: { defaultValues?: any }) => {
       setIsLoading(false);
     }
   };
-
+  const SubCategoriesIndex = categories?.findIndex((cat: any, i: number) => cat._id === getValues("category"));
   return (
     <motion.div
       initial={{ x: 1000 }}
@@ -65,7 +78,7 @@ const ProductStep1Form = ({ defaultValues }: { defaultValues?: any }) => {
         <div className="mx-auto w-full  bg-white space-y-6">
           <h1 className="text-2xl font-semibold text-center">Create Product</h1>
           <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex w-full flex-col gap-8 px-5 py-4">
+            <form onSubmit={handleSubmit(onSubmit)} className=" min-h-[450px]  flex w-full flex-col gap-8 px-5 py-4">
               <FormInput control={control} className=" w-full" name="name" label="Product Name" type="text" />
               <FormInput
                 description
@@ -75,11 +88,21 @@ const ProductStep1Form = ({ defaultValues }: { defaultValues?: any }) => {
                 label="Description"
                 type="text"
               />
-              {isGetting ? (
-                <Loader />
-              ) : (
-                <CategoriesField options={categories} defaultValue={product?.category} name={"category"} control={control} />
-              )}{" "}
+              <div className="flex items-center gap-4">
+                {isGetting ? (
+                  <Loader className=" w-24 h-24" />
+                ) : (
+                  <CommandBox options={categories} name={"category"} control={control} />
+                )}
+                {getValues("category") && (
+                  <FancyMultiSelect
+                    control={control}
+                    label="Sub Categories"
+                    options={categories?.[SubCategoriesIndex]?.subCategories}
+                    name={`subCategories`}
+                  />
+                )}
+              </div>
               <div className="flex items-center gap-2">
                 <FormInput price control={control} className="w-full" name="price" label="Price" type="text" />
                 <FormInput control={control} className="w-full" name="stock" label="Stock" type="number" />
@@ -89,7 +112,7 @@ const ProductStep1Form = ({ defaultValues }: { defaultValues?: any }) => {
                   {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 </NextStep>
               ) : (
-                <Button disabled={isLoading} className=" w-[65%] relative ">
+                <Button type="submit" disabled={isLoading} className=" w-[65%] relative ">
                   Next{" "}
                 </Button>
               )}

@@ -9,18 +9,22 @@ export interface ProductProps extends Document {
   stock: number;
   description: string;
   images: ProductImage[];
-  category: string;
+  category: mongoose.Types.ObjectId;
   createdAt: Date;
   brand: string;
-  subCategory: string;
+  subCategories: [mongoose.Types.ObjectId];
   reviews: mongoose.Types.ObjectId;
   creator: mongoose.Types.ObjectId;
   rating: number;
   published: boolean;
   variations: {
-    name: string;
-    options: [{ image: { imgUrl: string; public_id: string }; title: string }];
-  };
+    variation: mongoose.Types.ObjectId;
+    options: {
+      variationOption: mongoose.Types.ObjectId;
+      price: number;
+      images: ProductImage[];
+    }[];
+  }[];
   numReviews: number;
   step: number;
 }
@@ -33,26 +37,32 @@ const ProductSchema = new Schema<ProductProps>(
     description: { type: String, required: true },
     images: { type: [{ imgUrl: String, publicId: String }], default: [] },
     brand: { type: String, default: "" },
-    category: { type: String, default: "" },
-    subCategory: { type: String, default: "" },
+    category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
+    subCategories: { type: [Schema.Types.ObjectId], ref: "SubCategory" },
     createdAt: { type: Date, default: Date.now },
     reviews: { type: Schema.Types.ObjectId, ref: "Review" },
     creator: { type: Schema.Types.ObjectId, ref: "User", required: true },
     rating: { type: Number, default: 0 },
     published: { type: Boolean, default: false },
     numReviews: { type: Number, default: 0, required: true },
+    variations: [
+      {
+        variation: { type: Schema.Types.ObjectId, ref: "Variation" },
+        options: [
+          {
+            variationOption: { type: Schema.Types.ObjectId, ref: "VariationOption" },
+            price: { type: Number, required: true },
+            images: { type: [{ imgUrl: String, publicId: String }], default: [] },
+          },
+        ],
+      },
+    ],
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
-ProductSchema.virtual("variations", {
-  ref: "Variation",
-  localField: "_id",
-  foreignField: "product",
-});
-
 ProductSchema.pre(/^find/, function (this: any, next) {
-  this.populate("variations");
+  this.populate("category");
   next();
 });
 

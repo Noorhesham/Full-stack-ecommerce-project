@@ -3,12 +3,13 @@ import {
   deleteImage as deleteImageApi,
   getCategories,
   getProduct,
+  getSubCategories,
   getVariants,
   updateImage,
 } from "../actions/products";
 import { toast } from "react-toastify";
 import Product from "@/lib/database/models/ProductsModel";
-import { updateCategory } from "../actions/categoryActions";
+import { deleteCategoryOrSub, updateCategoryOrSub } from "../actions/categoryActions";
 
 const useDeleteImage = () => {
   const querClient = useQueryClient();
@@ -86,27 +87,60 @@ const useGetCategories = () => {
   });
   return { categories, isLoading, isError };
 };
-const useUpdateCategories = () => {
-  const querClient = useQueryClient();
+
+const useGetSubCategories = (id: string) => {
+  console.log(id);
+  const {
+    data: Subcategories,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: [`Subcategories${id}`],
+    queryFn: async () => id && (await getSubCategories(id)),
+  });
+  return { Subcategories, isLoading, isError };
+};
+const useUpdateCategories = (sub = false, parent?: string) => {
+  const queryClient = useQueryClient();
   const {
     mutate: update,
     isPending,
-    isError,
+    isSuccess,data:newData
   } = useMutation({
-    mutationFn: async ({ data, id }: { data: any; id?: string }) => {
-      await updateCategory(data, id);
-      //@ts-ignore
-      querClient.invalidateQueries(["categories"]);
+    mutationFn: async ({ data, id, remove = false }: { data: any; id?: string; remove?: boolean }) => {
+      if (remove) {
+        return await deleteCategoryOrSub(data, id, sub);
+      } else {
+        return await updateCategoryOrSub(data, id, sub);
+      }
     },
-    onSuccess: () => {
-      toast.success(`Category added successfully`);
+    onSuccess: (response: any) => {
+      console.log(response, sub);
+      if (response?.success) {
+        toast.success(response.success);
+        //@ts-ignore
+        queryClient.invalidateQueries("categories");
+        //@ts-ignore
+        if (sub) queryClient.invalidateQueries(`Subcategories${parent}`);
+      } else {
+        toast.error(response?.error || "An error occurred");
+      }
     },
     onError: (err: any) => {
-      toast.error(err);
-      console.log(err);
+      toast.error(err.message || "An error occurred");
+      console.log("onError:", err);
     },
   });
 
-  return { update, isPending, isError };
+  return { update, isPending, isSuccess ,newData};
 };
-export { useDeleteImage, useUpdateImage, useGetProduct, useGetVariants, useGetCategories, useUpdateCategories };
+
+export {
+  useDeleteImage,
+  useUpdateImage,
+  useGetProduct,
+  useGetVariants,
+  useGetCategories,
+  useUpdateCategories,
+  useGetSubCategories,
+};

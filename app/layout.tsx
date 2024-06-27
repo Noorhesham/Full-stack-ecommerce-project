@@ -2,12 +2,11 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import NavBar from "./components/NavBar";
 import AuthProvider from "./utils/SessionProvider";
-import { getServerSession } from "next-auth";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import QueryProvider from "./utils/QueryProvider";
+import connect from "@/lib/database/connect";
 const inter = Inter({ subsets: ["latin"] });
 
 //todos
@@ -35,25 +34,25 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
+  await connect();
   return (
     <html className="h-full" lang="en">
       <AuthProvider>
         <QueryProvider>
-        <body className={cn("relative h-full font-sans antialiased", inter.className)}>
-        <ToastContainer
-          position='top-center'
-          autoClose={3500}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          pauseOnFocusLoss
-          pauseOnHover={false}
-          theme='light' 
-        />
-         {children}
-        </body>
-      </QueryProvider>
+          <body className={cn("relative h-full font-sans antialiased", inter.className)}>
+            <ToastContainer
+              position="top-center"
+              autoClose={3500}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              pauseOnFocusLoss
+              pauseOnHover={false}
+              theme="light"
+            />
+            {children}
+          </body>
+        </QueryProvider>
       </AuthProvider>
     </html>
   );

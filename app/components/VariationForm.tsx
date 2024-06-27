@@ -3,20 +3,14 @@ import React from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form, FormLabel,  } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import OptionFields from "./OptionInput";
 import { variationSchema } from "../schemas/Schema";
-import { ImBin2 } from "react-icons/im";
-import { createVariation } from "../actions/products";
 import { useParams, useRouter } from "next/navigation";
 import { uploadToCloudinary } from "@/lib/utils";
 import { toast } from "react-toastify";
-import { CategoriesField } from "./CategoriesField";
-import { useGetVariants } from "../queries/queries";
-import Loader from "./Loader";
 import OptionSelect from "./OptionSelect";
+import { CommandBox } from "./CommandBox";
 
 const VariationForm = ({
   variationIndex,
@@ -78,7 +72,7 @@ const VariationForm = ({
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col shadow-md bg-white rounded-2xl   gap-8 px-8 py-4"
       >
-        <CategoriesField options={variants} control={control} name="name" />
+        <CommandBox options={variants} control={control} name="name" />
 
         <div className="ml-4 w-full flex flex-col items-end gap-2">
           <FormLabel className="text-left mr-auto">Options</FormLabel>

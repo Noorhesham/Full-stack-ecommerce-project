@@ -8,6 +8,8 @@ import NavBar from "../components/NavBar";
 import { authOptions } from "@/lib/auth";
 import User from "@/lib/database/models/UserModel";
 import { redirect } from "next/navigation";
+import connect from "@/lib/database/connect";
+import React from "react";
 const inter = Inter({ subsets: ["latin"] });
 
 //todos
@@ -108,12 +110,13 @@ export default async function RootLayout({
 }>) {
   const session = await getServerSession(authOptions);
   const user = session?.user;
-  const userInfo =await User.findOne({ email: user?.email });
-  if (userInfo.isAdmin) redirect("/admin");
+  await connect();
+  const userInfo = await User.findOne({ email: user?.email });
+  if (userInfo?.isAdmin) redirect("/admin");
   return (
     <main className="relative  flex flex-col min-h-screen">
       <NavBar user={userInfo || null} />
-      <div className="flex-grow flex-1">{children}</div>
+      <div className="flex-grow flex-1"> {React.cloneElement(children as React.ReactElement, { userInfo })}</div>
     </main>
   );
 }

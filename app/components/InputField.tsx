@@ -5,8 +5,8 @@ import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { CategoriesField } from "./CategoriesField";
 import { formatPrice } from "@/lib/utils";
+import { CommandBox } from "./CommandBox";
 
 const FormInput = ({
   control,
@@ -18,12 +18,14 @@ const FormInput = ({
   className,
   description,
   price,
-  select,register,
+  select,
+  register,
   password = false, // Added password prop with default value false
 }: {
   control: any;
   name: string;
-  label: string;register?:any
+  label: string;
+  register?: any;
   type?: string;
   phone?: boolean;
   description?: boolean;
@@ -51,12 +53,12 @@ const FormInput = ({
         control={control}
         name={name}
         render={({ field }) => (
-          <FormItem className="flex  flex-col text-left items-start  relative">
+          <FormItem className="flex w-full flex-col text-left items-start  relative">
             <FormLabel
               className={`absolute z-20 transition-transform duration-300 ease-in-out ${
                 isFocused || field.value
-                  ? "top-0  text-seven-light transform left-0 -translate-y-6"
-                  : "left-5 top-[24%]"
+                  ? "top-0  text-seven-light transform left-0 -translate-y-5"
+                  : "left-5 top-[25%]"
               }  ml-auto  text-sm flex items-center gap-2`}
             >
               {label} {icon}
@@ -78,13 +80,13 @@ const FormInput = ({
                     className=" border-2 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 border-gray-200 w-full flex-row-reverse py-2 px-4 rounded-2xl gap-2"
                   />
                 ) : select ? (
-                  <CategoriesField name="category" control={control} />
+                  <CommandBox name="category" control={control} />
                 ) : (
                   <Input
                     {...field}
                     type={password && !showPassword ? "password" : type} // Toggle input type based on password prop and showPassword state
                     className={` w-full`}
-                    onFocus={() => setIsFocused(s=>s=true)}
+                    onFocus={() => setIsFocused((s) => (s = true))}
                     value={field.value}
                     onBlur={() => {
                       if (!field.value) {
@@ -93,7 +95,7 @@ const FormInput = ({
                     }}
                     onChange={(e) => {
                       field.onChange(price ? handlePriceChange(e.target.value) : e.target.value);
-                      setIsFocused(s=>s=true)
+                      setIsFocused((s) => (s = true));
                     }}
                   />
                 )}

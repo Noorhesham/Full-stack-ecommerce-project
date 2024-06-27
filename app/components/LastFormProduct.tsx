@@ -5,23 +5,16 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import VariationForm from "./VariationForm";
-import { useGetVariants } from "../queries/queries";
 import Loader from "./Loader";
 
-const LastFormProduct = ({variations}:{variations?:any}) => {
-  const { variants, isLoading } = useGetVariants();
+const LastFormProduct = ({ variations }: { variations?: any }) => {
   const form = useForm({
     defaultValues: {
-      variations: !variations?[{ name: "", options: [{ title: "", image: "" }] }]:variations,
+      variations: !variations ? [{ name: "", options: [{ title: "", image: "" }] }] : variations,
     },
   });
 
-  const {
-    control,
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = form;
+  const { control } = form;
 
   // control: Required for useFieldArray to manage the form state.
   //register: Function to register inputs.
@@ -56,18 +49,17 @@ const LastFormProduct = ({variations}:{variations?:any}) => {
               </Button>
             )}
           </div>
-          {isLoading ? <Loader className="w-60 h-60" />:
-
-         <div className="grid grid-cols-3 gap-4">
-         {variationFields.map((variation, variationIndex) => (
-            <VariationForm variants={variants}
-              key={variation.id}
-              defaultVariation={variations?.[variationIndex]}
-              variationIndex={variationIndex}
-              removeVariation={removeVariation}
-            />
-          ))}
-         </div>}
+          <div className="grid grid-cols-3 gap-4">
+            {variationFields.map((variation, variationIndex) => (
+              <VariationForm
+                variants={variations}
+                key={variation.id}
+                defaultVariation={variations?.[variationIndex]}
+                variationIndex={variationIndex}
+                removeVariation={removeVariation}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </motion.div>

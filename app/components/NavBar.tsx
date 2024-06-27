@@ -8,8 +8,7 @@ import Cart from "./Cart";
 import User from "./User";
 import { UserProps } from "@/lib/database/models/UserModel";
 
-const NavBar =({ user }: { user: UserProps | any }) => {
-
+const NavBar = ({ user }: { user: UserProps | any }) => {
   return (
     <nav className=" bg-white sticky z-50  top-0  inset-0 h-16">
       <header className=" relative bg-white">

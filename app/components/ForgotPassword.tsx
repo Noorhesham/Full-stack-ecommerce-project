@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from "react";
 import Logo from "./Logo";
 import { ArrowRight, Link, Loader2 } from "lucide-react";

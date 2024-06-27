@@ -1,11 +1,13 @@
-import { getProduct } from "@/app/actions/products";
 import ProductStep1Form from "@/app/components/ProductStarterForm";
-import connect from "@/lib/database/connect";
-import React from "react";
+import Steps from "@/app/components/Steps";
 
 const page = async () => {
-
-  return <ProductStep1Form />;
+  return (
+    <div className=" h-full">
+      <Steps />
+      <ProductStep1Form />
+    </div>
+  );
 };
 
 export default page;

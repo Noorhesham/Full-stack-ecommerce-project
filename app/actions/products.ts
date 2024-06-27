@@ -8,6 +8,7 @@ import Variation from "@/lib/database/models/VariationModel";
 import VariationOption from "@/lib/database/models/VariationOptionModel";
 import User from "@/lib/database/models/UserModel";
 import Category from "@/lib/database/models/CategoryModel";
+import { SubCategory } from "@/lib/database/models/SubCategory";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -18,7 +19,7 @@ cloudinary.config({
 export default async function saveProductStep1(data: z.infer<typeof productStep1Schema>, id: any, update?: string) {
   const validateFields = productStep1Schema.safeParse(data);
   if (!validateFields.success) return { error: "Invalid fields!" };
-  const { name, description, category, price, stock } = validateFields.data;
+  const { name, description, category, price, stock, subCategories } = validateFields.data;
   await connect();
 
   try {
@@ -29,6 +30,7 @@ export default async function saveProductStep1(data: z.infer<typeof productStep1
         category,
         price: +price,
         stock,
+        subCategories,
       });
       const productObject = JSON.parse(JSON.stringify(existingProduct));
       return { success: "Product created successfully!", status: 200, data: { productObject } };
@@ -41,6 +43,7 @@ export default async function saveProductStep1(data: z.infer<typeof productStep1
       price: +price,
       stock,
       step: 2,
+      subCategories,
     });
     const productObject = JSON.parse(JSON.stringify(product));
     return { success: "Product created successfully!", status: 200, data: { productObject } };
@@ -112,47 +115,19 @@ export async function getProduct(id: string) {
   try {
     await connect();
     const product = await Product.findById(id);
-    return { product: product.toObject() };
+    return { product: JSON.parse(JSON.stringify(product)) };
   } catch (error) {
     console.log(error);
   }
 }
 
-export async function createVariation(data: z.infer<typeof variationSchema>, id: string) {
-  const validateFields = variationSchema.safeParse(data);
-  if (!validateFields.success) return { error: "Invalid fields!" };
-  const { name, options } = validateFields.data;
-  try {
-    await connect();
-    const variation = await Variation.create({
-      product: id,
-      name: name,
-    });
-    if (!variation) throw new Error("An error occurred while processing the request. Please try again!");
-    const variationId = variation._id;
-    options.map(async ({ title, image }, i) => {
-      console.log(image);
-      const variationOption = await VariationOption.create({
-        variation: variationId,
-        title,
-        image: {
-          imgUrl: image.secure_url,
-          publicId: image.public_id,
-        },
-      });
-    });
-    console.log(options, variation);
-    return { success: "Variation created successfully!", status: 200, data: { variation } };
-  } catch (error: any) {
-    console.log(error);
-    return { error: error.message };
-  }
-}
+
 export async function getVariants() {
   try {
     await connect();
     const variants = await Variation.find();
     const variantsObj = JSON.parse(JSON.stringify(variants));
+    console.log(variantsObj);
     return variantsObj;
   } catch (error) {
     console.log(error);
@@ -162,6 +137,18 @@ export async function getCategories() {
   try {
     await connect();
     const categories = await Category.find();
+    const categoriesObj = JSON.parse(JSON.stringify(categories));
+    return categoriesObj;
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function getSubCategories(parentId: string) {
+  try {
+    await connect();
+    const categories = await SubCategory.find({
+      parentCategory: parentId,
+    });
     const categoriesObj = JSON.parse(JSON.stringify(categories));
     return categoriesObj;
   } catch (error) {

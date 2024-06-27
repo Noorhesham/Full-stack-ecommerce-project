@@ -29,6 +29,7 @@ export const productStep1Schema = z.object({
   name: z.string().min(1, "Product name is required"),
   description: z.string().min(1, "Product description is required"),
   category: z.string().min(1, "Product category is required"),
+  subCategories: z.array(z.object({ _id: z.string() })).optional(),
   price: z.string().min(1, "Product price is required"),
   stock: z.string().min(1, "Product stock is required"),
 });

@@ -3,36 +3,29 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 
 import EditForm from "./EditForm";
+import { useState } from "react";
 
-export function Edit({
-  value,
-  className,
-  text,
-}: {
-  value:any;
-  className?: string;
-  text: string;
-}) {
+export function Edit({ value, className, text,setValue,create }: { value: any; className?: string; text: string, setValue:any,create?:boolean }) {
+  const [open, setOpen] = useState(false);
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className={className} variant="outline">
+        <Button onClick={()=>create&&setValue(null)} className={className} variant="outline">
           {text}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
-          <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription>
+          <DialogDescription>Make changes to your profile here. Click save when you re done.</DialogDescription>
         </DialogHeader>
-        <EditForm value={value} />
+        <EditForm setValue={setValue} close={() => setOpen(false)} value={value} />
       </DialogContent>
     </Dialog>
   );
