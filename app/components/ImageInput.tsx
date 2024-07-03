@@ -36,7 +36,6 @@ const ImageInput = ({
     accept: { "image/*": [] },
     maxSize: 3024 * 1000,
   });
-  console.log(progress);
   return (
     <div className="flex flex-col relative w-52 h-40 gap-4 rounded-2xl">
       {isPreview || defaultImg ? (

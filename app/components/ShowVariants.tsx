@@ -117,7 +117,7 @@ const ShowVariants = () => {
                 name={`subVariants.${index}.title`}
                 label="Sub Variant Name"
                 fn={() => {
-                  handleDelete(getValues(`subVariants.${index}._id`)||"", true);
+                  handleDelete(getValues(`subVariants.${index}._id`) || "", true);
                   remove(index);
                 }}
                 value={field}

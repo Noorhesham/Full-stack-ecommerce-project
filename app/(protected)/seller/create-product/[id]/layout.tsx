@@ -1,5 +1,6 @@
 import { getProduct } from "@/app/actions/products";
 import Steps from "@/app/components/Steps";
+import { ProductProvider } from "@/app/context/ProductContext";
 import connect from "@/lib/database/connect";
 import User, { UserProps } from "@/lib/database/models/UserModel";
 import { getServerSession } from "next-auth";
@@ -16,16 +17,15 @@ export default async function RootLayout({
   userInfo: UserProps;
 }) {
   await connect();
-  const product = await getProduct(params.id);
+  const product: any = await getProduct(params.id);
   const session = await getServerSession();
-  const user = await User.findOne({ email: session?.user?.email });
-  if (product?.product.creator !== JSON.parse(JSON.stringify(user))._id) redirect("/");
+  if (product?.product.creator !== session?.user.id) redirect("/");
   return (
     <div className="h-full">
-      <Steps id={params.id || ""} />
-      <div className="bg-gray-100 overflow-hidden">
-        {React.cloneElement(children as React.ReactElement, { product })}
-      </div>
+      <Steps product={product && product.product} id={params.id || ""} />
+      <ProductProvider product={product && product.product}>
+        <div className="bg-gray-100 overflow-hidden">{children}</div>
+      </ProductProvider>
     </div>
   );
 }

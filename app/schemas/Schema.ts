@@ -24,7 +24,6 @@ export const confirmSchema = z.object({
   token: z.string().min(1, { message: "token must be at least 4 characters" }),
 });
 
-
 export const productStep1Schema = z.object({
   name: z.string().min(1, "Product name is required"),
   description: z.string().min(1, "Product description is required"),
@@ -32,18 +31,31 @@ export const productStep1Schema = z.object({
   subCategories: z.array(z.object({ _id: z.string() })).optional(),
   price: z.string().min(1, "Product price is required"),
   stock: z.string().min(1, "Product stock is required"),
+  ribbon: z.string().optional(),
+  additionalInfo: z
+    .array(
+      z.object({
+        title: z.string().min(1, "title is required"),
+        description: z.string().min(1, "description is required"),
+      })
+    )
+    .optional(),
+  isOnSale: z.boolean().optional(),
+  salePrice: z.string().optional(),
 });
 export const addImagesSchema = z.object({
   images: z.array(z.string().url()).min(4, "Four images are required"),
 });
 export const variationSchema = z.object({
-  name: z.string().min(1, "Variation name is required"),
-  options: z
+  variation: z.string().min(1, "Variation name is required"),
+  variationOptions: z
     .array(
       z.object({
+        price: z.any().optional(),
+        variationOption: z.string().min(1, "Option title is required"),
         image: z.any().optional(),
-        title: z.string().min(1, "Option title is required"),
+        images: z.array(z.any()).optional(),
       })
     )
-    .max(3, "Maximum 3 options allowed"),
+    .max(3, "Maximum 3 options allowed").min(1, "Minimum 1 option required"),
 });

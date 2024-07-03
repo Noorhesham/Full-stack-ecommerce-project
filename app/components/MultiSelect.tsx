@@ -9,23 +9,27 @@ import { Command as CommandPrimitive } from "cmdk";
 import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 
-type Option = { name: string; _id: string };
+type Option = { name?: string; _id: string; title?: string };
 
 interface FancyMultiSelectProps {
   options: Option[];
   name: string;
+  defaults?: any[];
   label?: string;
-  control:any
+  control: any;
   className?: string;
 }
 
-export function FancyMultiSelect({ options, name, label, className,control }: FancyMultiSelectProps) {
+export function FancyMultiSelect({ options, name, label, className, control, defaults }: FancyMultiSelectProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [open, setOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
+  const { setValue, getValues } = useFormContext();
 
   const handleUnselect = (framework: Option, selected: Option[], onChange: (value: Option[]) => void) => {
-    onChange(selected.filter((s) => s._id !== framework._id));
+    const newValue = selected.filter((s) => s._id !== framework._id);
+    setValue(name, newValue);
+    onChange(newValue);
   };
 
   const handleKeyDown = (
@@ -40,33 +44,32 @@ export function FancyMultiSelect({ options, name, label, className,control }: Fa
           onChange(selected.slice(0, -1));
         }
       }
-      // This is not a default behaviour of the <input /> field
       if (e.key === "Escape") {
         input.blur();
       }
     }
   };
-  console.log(options);
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => {
+        console.log(field);
         return (
-          <FormItem className={cn("mr-auto self-start mb-4", className)}>
+          <FormItem className={cn("mr-auto flex flex-col  items-start  self-start ", className)}>
             <FormControl>
               <Command
                 onKeyDown={(e) => handleKeyDown(e, field.value, field.onChange)}
-                className="overflow-visible bg-transparent"
+                className="overflow-visible z-20 bg-transparent"
               >
-                <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                <div className="group z-20   w-64  rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
                   <div className="flex flex-wrap gap-1">
-                    {field.value&&field?.value?.map((framework: Option) => {
-                      return (
-                        <Badge key={framework._id} variant="secondary">
-                          {framework.name}
+                    {field.value &&
+                      field?.value?.map((framework: Option) => (
+                        <Badge className="flex items-center" key={framework._id} variant="secondary">
+                          {framework.name || framework.title || options.find((o) => o._id === framework._id)?.name}
                           <button
-                            className="ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                            className="ml-1 rounded-full flex items-center outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
                             onKeyDown={(e) => {
                               if (e.key === "Enter") {
                                 handleUnselect(framework, field.value, field.onChange);
@@ -81,15 +84,14 @@ export function FancyMultiSelect({ options, name, label, className,control }: Fa
                             <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
                           </button>
                         </Badge>
-                      );
-                    })}
+                      ))}
                     <CommandPrimitive.Input
                       ref={inputRef}
                       value={inputValue}
                       onValueChange={setInputValue}
                       onBlur={() => setOpen(false)}
                       onFocus={() => setOpen(true)}
-                      placeholder="Select frameworks..."
+                      placeholder="Select ..."
                       className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
                     />
                   </div>
@@ -101,7 +103,7 @@ export function FancyMultiSelect({ options, name, label, className,control }: Fa
                         <CommandGroup className="h-full overflow-auto">
                           {options
                             ?.filter((option) => !field.value?.some((s: Option) => s._id === option._id))
-                            .map((framework) => (
+                            .map((framework, index) => (
                               <CommandItem
                                 key={framework._id}
                                 onMouseDown={(e) => {
@@ -110,11 +112,13 @@ export function FancyMultiSelect({ options, name, label, className,control }: Fa
                                 }}
                                 onSelect={() => {
                                   setInputValue("");
-                                  field.onChange([...field.value, framework]);
+                                  const currentValue = getValues(name) || [];
+                                  const newValue = [...currentValue, { ...framework, variationOption: framework._id }];
+                                  setValue(name, newValue);
                                 }}
                                 className="cursor-pointer"
                               >
-                                {framework.name}
+                                {framework.name || framework.title}
                               </CommandItem>
                             ))}
                         </CommandGroup>

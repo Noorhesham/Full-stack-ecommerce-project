@@ -5,28 +5,34 @@ import { usePathname } from "next/navigation";
 import { useGetProduct } from "../queries/queries";
 import Link from "next/link";
 import Image from "next/image";
+import { ProductProps } from "../types";
+import { useSession } from "next-auth/react";
 
-const Steps = ({ id }: { id?: string }) => {
+const Steps = ({ id, product }: { id?: string; product?: ProductProps }) => {
   const pathname = usePathname();
-
+  const user = useSession().data?.user;
   const STEPS = [
     {
       name: "Step 1: Add starter info",
       description: "Add your product info , name , description and more",
-      url: id ? `/seller/create-product/${id}` : `/seller/create-product`,
+      url: id
+        ? `/${user?.isAdmin ? "admin" : "seller"}/create-product/${id}`
+        : `/${user?.isAdmin ? "admin" : "seller"}/create-product`,
     },
     {
       name: "Step 2: Add image",
       description: "Choose an image for your Product",
-      url: id ? `/seller/create-product/${id}/images` : "",
+      url: id ? `/${user?.isAdmin ? "admin" : "seller"}/create-product/${id}/images` : "",
     },
     {
       name: "Step 3: Summary",
       description: "Add variations and more",
-      url: id ? `/seller/create-product/${id}/last` : "",
+      url:
+        id && product && product?.images.length > 1
+          ? `/${user?.isAdmin ? "admin" : "seller"}/create-product/${id}/last`
+          : "",
     },
   ];
-  console.log(STEPS);
   return (
     <ol className="rounded-md bg-white lg:flex lg:rounded-none lg:border-l lg:border-r lg:border-gray-200">
       {STEPS.map((step, i) => {

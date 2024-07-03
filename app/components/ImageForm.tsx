@@ -7,15 +7,13 @@ import ImageInput from "./ImageInput";
 import { toast } from "react-toastify";
 import { useDeleteImage, useGetProduct, useUpdateImage } from "../queries/queries";
 import { UploadImage } from "../actions/products";
-import Loader from "./Loader";
 import MiniSpinner from "./MiniSpinner";
 import axios from "axios";
-import { useQueryClient } from "@tanstack/react-query";
-import { usePathname } from "next/navigation";
 import NextStep from "./NextStep";
+import { ProductProps } from "../types";
+import { useRouter } from "next/navigation";
 
-const AddImagesForm = ({ productId }: { productId: string }) => {
-  const { data, isLoading: isProductLoading, gotProduct } = useGetProduct(productId);
+const AddImagesForm = ({ product }: { product: ProductProps | any }) => {
   const { DeleteImage, isPending, isDeleted } = useDeleteImage();
   const { updateUserImage, isPending: isPendingUpdate } = useUpdateImage();
   const [isLoading, setIsLoading] = useState<{ i: number; loading: boolean; progress?: number }[]>([]);
@@ -23,7 +21,6 @@ const AddImagesForm = ({ productId }: { productId: string }) => {
   const [rejected, setRejected] = useState<File[]>([]);
   const [preview, setPreview] = useState<string[]>([]);
   const [isUploaded, setIsUploaded] = useState(false);
-  const current_path = usePathname();
   const handleLoading = (index: number, loading: boolean, progress?: number) => {
     setIsLoading((prevState) => {
       const updatedState = [...prevState];
@@ -31,6 +28,7 @@ const AddImagesForm = ({ productId }: { productId: string }) => {
       return updatedState;
     });
   };
+  const router = useRouter();
   const onDrop = useCallback(
     (acceptedFiles: File[], rejectedFiles: File[]) => {
       console.log(acceptedFiles);
@@ -44,32 +42,31 @@ const AddImagesForm = ({ productId }: { productId: string }) => {
         ...acceptedFiles.map((_, index) => ({ i: index + prevLoading.length, loading: false, progress: 0 })),
       ]);
     },
-    [data]
+    [product]
   );
 
   const deleteImage = async (index: number) => {
-    if (data?.product.images?.[index]) {
+    if (product?.images?.[index]) {
       handleLoading(index, true);
       setIsUploaded(false);
       DeleteImage({
-        id: productId,
-        url: data.product.images[index].imgUrl,
-        publicId: data.product.images[index].publicId,
+        id: product?._id,
+        url: product?.images[index].imgUrl,
+        publicId: product?.images[index].publicId,
       });
     }
-    setPreview((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    console.log(preview);
+    setPreview((prevFiles) => [...prevFiles.filter((_, i) => i !== index)]);
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
-    console.log(preview, files);
+    console.log(files, preview, index);
+    router.refresh();
   };
-
   useEffect(() => {
     if (isDeleted) setIsLoading((prev) => [...prev].map((item) => ({ ...item, loading: false })));
-    if (gotProduct) setPreview(data?.product.images?.map((i: any) => i.imgUrl) || []);
-  }, [isDeleted, gotProduct, data]);
+  }, [isDeleted, product]);
 
   const form = useForm();
   const { handleSubmit } = form;
-  const querClient = useQueryClient();
   const num = preview.length - 1;
   const uploadImageWithProgress = async (file: File, index: number) => {
     return new Promise<void>((resolve, reject) => {
@@ -87,11 +84,9 @@ const AddImagesForm = ({ productId }: { productId: string }) => {
       axios
         .post(process.env.NEXT_PUBLIC_PUBLIC_CLOUDINARY_URL!, formData, config)
         .then(async (res) => {
-          await UploadImage(res.data, productId);
+          await UploadImage(res.data, product?._id);
           handleLoading(index, false);
           resolve();
-          //@ts-ignore
-          querClient.invalidateQueries([`product-${productId}`]);
         })
         .catch((error) => {
           console.error("Error uploading image:", error);
@@ -112,6 +107,7 @@ const AddImagesForm = ({ productId }: { productId: string }) => {
       console.error("Error uploading images:", error);
       toast.error("Failed to upload images");
     }
+    router.refresh();
   };
 
   return (
@@ -130,31 +126,32 @@ const AddImagesForm = ({ productId }: { productId: string }) => {
         </div>
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="flex min-h-[60vh] flex-col items-center">
-            {isProductLoading ? (
-              <Loader className="w-80 h-80" />
-            ) : (
-              <div className="px-3 py-1.5 mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                {Array.from({ length: 4 }, (_, i) => (
-                  <ImageInput
-                    key={i}
-                    id={productId}
-                    updateImage={() =>
-                      data?.product.images?.[i] &&
-                      updateUserImage({ formData: files[i], id: productId, url: data.product.images[i] })
-                    }
-                    progress={isLoading[i]?.progress}
-                    isLoading={isLoading[i]?.loading}
-                    deleteImage={() => deleteImage(i)}
-                    defaultImg={
-                      (isUploaded && data?.product.images?.[i]?.imgUrl) || data?.product.images?.[i]?.imgUrl || ""
-                    }
-                    isPreview={preview[i] ? preview[i] : null}
-                    onDrop={onDrop}
-                  />
-                ))}
-              </div>
-            )}
-            <NextStep disabled={isLoading.some((load) => load.loading)} text="Submit" url="/last">
+            <div className="px-3 py-1.5 mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+              {Array.from({ length: 4 }, (_, i) => (
+                <ImageInput
+                  key={i}
+                  id={product?._id}
+                  updateImage={() =>
+                    product.images?.[i] &&
+                    updateUserImage({ formData: files[i], id: product?._id, url: product.images[i].imgUrl })
+                  }
+                  progress={isLoading[i]?.progress}
+                  isLoading={isLoading[i]?.loading}
+                  deleteImage={() => deleteImage(i)}
+                  defaultImg={(isUploaded && product.images?.[i]?.imgUrl) || product.images?.[i]?.imgUrl || ""}
+                  isPreview={preview[i] ? preview[i] : null}
+                  onDrop={onDrop}
+                />
+              ))}
+            </div>
+
+            <NextStep
+              isReady={product.images?.length > 1}
+              error="Please upload at least 2 images"
+              disabled={isLoading.some((load) => load.loading)}
+              text="Submit"
+              url="/last"
+            >
               {isLoading.some((load) => load.loading) && <MiniSpinner />}
             </NextStep>
           </form>

@@ -8,11 +8,13 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RxCaretSort } from "react-icons/rx";
 import { CheckIcon } from "lucide-react";
-import { FormField, FormItem,  FormDescription, FormMessage } from "@/components/ui/form";
+import { FormField, FormItem, FormDescription, FormMessage } from "@/components/ui/form";
+import { useFormContext } from "react-hook-form";
 
 export function CommandBox({
   name,
   control,
+  setOptions,
   className,
   defaultValue,
   label,
@@ -22,12 +24,20 @@ export function CommandBox({
   control: any;
   className?: string;
   defaultValue?: string;
+  setOptions?: any;
   label?: string;
-  options: { name: string; _id: string }[];
+  options: any[];
 }) {
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  console.log(options);
+  const { getValues } = useFormContext();
+  React.useEffect(() => {
+    if (getValues(name)) {
+      const variant = options.find((option) => option._id === getValues(name));
+      console.log(variant);
+      variant.variationOptions?.length>0&&setOptions([...variant?.variationOptions]);
+    }
+  }, [getValues, name, options, setOptions]);
   return (
     <FormField
       control={control}
@@ -52,6 +62,7 @@ export function CommandBox({
                   placeholder="Search category..."
                   className="h-9"
                   value={searchTerm}
+                  //@ts-ignore
                   onChange={(e: any) => setSearchTerm(e.target.value)}
                 />
                 <CommandList>
@@ -59,16 +70,16 @@ export function CommandBox({
                   <CommandGroup>
                     {options
                       ?.filter((option) => option.name.toLowerCase().includes(searchTerm.toLowerCase()))
-                      .map((option) => (
+                      .map((option, index) => (
                         <CommandItem
-                          key={option._id}
+                          key={index}
                           value={option._id}
-                          onSelect={(currentValue) => {
+                          onSelect={(currentValue: any) => {
                             const newValue = currentValue === field.value ? "" : option._id;
-
-                            setSearchTerm(""); // Clear the search term after selection
-                            field.onChange(newValue); // Update the form field value
-                            setOpen(false); // Close the popover after selection
+                            setSearchTerm("");
+                            field.onChange(newValue);
+                            setOptions && setOptions(option.variationOptions);
+                            setOpen(false);
                           }}
                         >
                           {option.name}
@@ -82,7 +93,7 @@ export function CommandBox({
               </Command>
             </PopoverContent>
           </Popover>
-          <FormDescription className="text-sm">Select {label ? label : "category"} for the project.</FormDescription>
+          {/* <FormDescription className="text-sm">Select {label ? label : "category"} for the project.</FormDescription> */}
           <FormMessage />
         </FormItem>
       )}

@@ -1,4 +1,4 @@
-import {  getStats, getVariants } from "@/app/actions/products";
+import { getStats, getVariants } from "@/app/actions/products";
 import CardWrapper from "@/app/components/CardWrapper";
 import { ShowCategories } from "@/app/components/ShowCategories";
 import ShowVariants from "@/app/components/ShowVariants";
@@ -9,7 +9,6 @@ import { FcMoneyTransfer } from "react-icons/fc";
 
 const page = async () => {
   const stats: any = await getStats();
-
   return (
     <section>
       <div className=" grid grid-cols-4 px-10 py-4 gap-5 ">

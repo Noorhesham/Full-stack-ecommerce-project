@@ -3,9 +3,9 @@ import { UserProps } from "@/lib/database/models/UserModel";
 import Link from "next/link";
 import React from "react";
 
-const UserCard = ({ user }: { user: UserProps }) => {
+const UserCard = ({ user }: { user: UserProps | any }) => {
   return (
-    <Link href={`/profile/${user._id}`} className="flex gap-4">
+    <Link href={`/profile/${user.id}`} className="flex gap-4">
       <Avatar>
         <AvatarImage src={`${user.photo}` || "/avatar.jpg"} />
         <AvatarFallback>{user.firstName}</AvatarFallback>

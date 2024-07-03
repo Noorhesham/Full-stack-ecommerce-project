@@ -20,18 +20,21 @@ export function formatPrice(
   }).format(numericPrice);
 }
 
-export const uploadToCloudinary = async (formData: any, fn?: any) => {
+export const uploadToCloudinary = async (file: File, onProgress?: (progress: number) => void) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "v7t8mt9o");
   const config = {
     onUploadProgress: (progressEvent: any) => {
       const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-      console.log(progress);
-      fn && fn(progress);
+      if (onProgress) {
+        onProgress(progress);
+      }
     },
   };
 
   const res = await axios.post(process.env.NEXT_PUBLIC_PUBLIC_CLOUDINARY_URL!, formData, config);
-  const {public_id, secure_url}=res.data
-  return {public_id, secure_url}
+  const { public_id, secure_url } = res.data;
+  return { public_id, secure_url };
 };
-export const  formattedDate = (date:Date)=>date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
-
+export const formattedDate = (date: Date) => date.toLocaleString("en-US", { month: "long", year: "numeric" });

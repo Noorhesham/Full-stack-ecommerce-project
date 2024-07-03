@@ -5,10 +5,11 @@ import { z } from "zod";
 import { productStep1Schema, variationSchema } from "../schemas/Schema";
 import { v2 as cloudinary } from "cloudinary";
 import Variation from "@/lib/database/models/VariationModel";
-import VariationOption from "@/lib/database/models/VariationOptionModel";
 import User from "@/lib/database/models/UserModel";
 import Category from "@/lib/database/models/CategoryModel";
 import { SubCategory } from "@/lib/database/models/SubCategory";
+import { revalidatePath } from "next/cache";
+import { ProductProps } from "../types";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -19,7 +20,8 @@ cloudinary.config({
 export default async function saveProductStep1(data: z.infer<typeof productStep1Schema>, id: any, update?: string) {
   const validateFields = productStep1Schema.safeParse(data);
   if (!validateFields.success) return { error: "Invalid fields!" };
-  const { name, description, category, price, stock, subCategories } = validateFields.data;
+  const { name, description, category, price, stock, subCategories, additionalInfo, isOnSale, salePrice, ribbon } =
+    validateFields.data;
   await connect();
 
   try {
@@ -31,6 +33,10 @@ export default async function saveProductStep1(data: z.infer<typeof productStep1
         price: +price,
         stock,
         subCategories,
+        additionalInfo,
+        isOnSale,
+        salePrice,
+        ribbon,
       });
       const productObject = JSON.parse(JSON.stringify(existingProduct));
       return { success: "Product created successfully!", status: 200, data: { productObject } };
@@ -44,6 +50,10 @@ export default async function saveProductStep1(data: z.infer<typeof productStep1
       stock,
       step: 2,
       subCategories,
+      additionalInfo,
+      isOnSale,
+      salePrice,
+      ribbon,
     });
     const productObject = JSON.parse(JSON.stringify(product));
     return { success: "Product created successfully!", status: 200, data: { productObject } };
@@ -94,6 +104,7 @@ export async function updateImage(formData: any, id: string, url: string) {
     console.log(error);
   }
 }
+
 export async function deleteImage(id: string, url: string, publicId: string) {
   try {
     await connect();
@@ -106,6 +117,7 @@ export async function deleteImage(id: string, url: string, publicId: string) {
 
     await product.save();
     const productObject = JSON.parse(JSON.stringify(product));
+    revalidatePath(`/seller/create-product/${id}/images`);
     return { success: "Image deleted successfully!", status: 200, data: { product: productObject } };
   } catch (error) {
     console.log(error);
@@ -114,20 +126,27 @@ export async function deleteImage(id: string, url: string, publicId: string) {
 export async function getProduct(id: string) {
   try {
     await connect();
-    const product = await Product.findById(id);
+    const product = await Product.findById(id)
+      .populate({
+        path: "variations.variation",
+        model: "Variation",
+      })
+      .populate({
+        path: "variations.variationOptions.variationOption",
+        model: "VariationOption",
+      });
+    if (!product) throw new Error("Product not found");
     return { product: JSON.parse(JSON.stringify(product)) };
   } catch (error) {
     console.log(error);
   }
 }
 
-
 export async function getVariants() {
   try {
     await connect();
-    const variants = await Variation.find();
+    const variants = await Variation.find().lean();
     const variantsObj = JSON.parse(JSON.stringify(variants));
-    console.log(variantsObj);
     return variantsObj;
   } catch (error) {
     console.log(error);
@@ -156,7 +175,7 @@ export async function getSubCategories(parentId: string) {
   }
 }
 
-export async function getProducts(pageNum = 1, pageSize = 10, filters: any = {}) {
+export async function getProducts(pageNum = 1, pageSize = 20, filters: any = {}) {
   try {
     await connect();
     const skip = (pageNum - 1) * pageSize;
@@ -167,9 +186,22 @@ export async function getProducts(pageNum = 1, pageSize = 10, filters: any = {})
     if (filters.price) {
       query.price = { $gte: filters.price.min, $lte: filters.price.max };
     }
-    const products = await Product.find(query).skip(skip).limit(pageSize);
+    if (filters.search) {
+      query.search = { $regex: new RegExp(filters.search, "i") };
+    }
+    const products = await Product.find(query)
+      .skip(skip)
+      .limit(pageSize)
+      .populate({
+        path: "category",
+        model: "Category",
+      })
+      .populate({
+        path: "creator",
+        model: "User",
+      });
     const productsObj = JSON.parse(JSON.stringify(products));
-    const totalCount = await Product.countDocuments(query);
+    const totalCount = await Product.countDocuments(query).lean();
 
     return {
       products: productsObj,
@@ -199,5 +231,114 @@ export async function getStats() {
     return { usersCount, productCount, stats };
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function addVariants(data: any, id: string) {
+  try {
+    const { variation, variationOptions } = data;
+    const product = await Product.findById(id);
+    if (!product) throw new Error("Product not found");
+
+    const existingVariantIndex = product.variations.findIndex((v: any) => v.variation.toString() === variation);
+    console.log(variationOptions);
+    if (existingVariantIndex > -1) {
+      product.variations[existingVariantIndex].variationOptions = variationOptions;
+      await product.save();
+      const productObj = JSON.parse(JSON.stringify(product));
+      return { success: "Variants updated successfully!", status: 200, data: { productObj } };
+    } else {
+      product.variations.push({ variation, variationOptions });
+      await product.save();
+      const productObj = JSON.parse(JSON.stringify(product));
+      return { success: "Variants added successfully!", status: 200, data: { productObj } };
+    }
+  } catch (error: any) {
+    console.error(error);
+    return { error: error.message, status: 500 };
+  }
+}
+
+export async function deleteVariantOption(productId: string, variationId: string, variationOptionId: string) {
+  try {
+    const product = await Product.findById(productId);
+    if (!product) throw new Error("Product not found");
+
+    const variant = product.variations.find((v: any) => v.variation.toString() === variationId);
+    if (!variant) throw new Error("Variant not found");
+    console.log(variant.variationOptions);
+    variant.variationOptions.images?.forEach(async (image: any) => {
+      if (!image.publicId) return;
+      await cloudinary.uploader.destroy(image.publicId);
+    });
+    variant.variationOptions = variant.variationOptions.filter(
+      (option: any) => option.variationOption.toString() !== variationOptionId
+    );
+    console.log(variant.variationOptions, variationId, variationOptionId, "optionnns");
+    await product.save();
+    const productObj = JSON.parse(JSON.stringify(product));
+    return { success: "Variant option deleted successfully!", status: 200, data: { productObj } };
+  } catch (error: any) {
+    console.error(error);
+    return { error: error.message, status: 500 };
+  }
+}
+export async function deleteVariant(productId: string, variationId: string) {
+  try {
+    const product = await Product.findById(productId);
+    if (!product) throw new Error("Product not found");
+
+    product.variations = product.variations.filter((variant: any) => variant.variation.toString() !== variationId);
+
+    await product.save();
+    const productObj = JSON.parse(JSON.stringify(product));
+
+    return { success: "Variant deleted successfully!", status: 200, data: { productObj } };
+  } catch (error: any) {
+    console.error(error);
+    return { error: error.message, status: 500 };
+  }
+}
+export async function deleteVariantOptionImage(
+  productId: string,
+  variationId: string,
+  variationOptionId: string,
+  publicId: string
+) {
+  try {
+    console.log(variationId, variationOptionId, publicId);
+
+    const product = await Product.findById(productId);
+    if (!product) throw new Error("Product not found");
+    const variant = product.variations.find((v: any) => v.variation.toString() === variationId);
+    if (!variant) throw new Error("Variant not found");
+    console.log(variant.variationOptions);
+
+    const variantOption = variant.variationOptions.find(
+      (option: any) => option.variationOption.toString() === variationOptionId
+    );
+    if (!variantOption) throw new Error("Variant option not found");
+
+    variantOption.images = variantOption.images.filter((image: any) => image.publicId !== publicId);
+    await cloudinary.uploader.destroy(publicId);
+    await product.save();
+    console.log(variantOption.images);
+    const productObj = JSON.parse(JSON.stringify(product));
+    return { success: "Image deleted successfully!", status: 200, data: { productObj } };
+  } catch (error: any) {
+    console.error(error);
+    return { error: error.message, status: 500 };
+  }
+}
+export async function deleteProduct(id: string) {
+  try {
+    const product = await Product.findByIdAndDelete(id);
+    if (!product) throw new Error("Product not found");
+    revalidatePath("/admin/products");
+    revalidatePath("/seller/products");
+    return { success: "Product deleted successfully!", status: 200, data: null };
+  } catch (error: any) {
+    console.error(error);
+    return { error: error.message, status: 500 };
   }
 }

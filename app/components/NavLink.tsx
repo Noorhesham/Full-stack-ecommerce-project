@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 
 const NavLink = ({ title, icon, href }: { title: string; icon: any; href: string }) => {
   const pathName = usePathname();
-  console.log(pathName, `/${href}`);
   return (
     <div className="flex p-2  text-sm md:text-base w-full text-left  flex-col  gap-2">
       <Link

@@ -7,9 +7,15 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { formatPrice } from "@/lib/utils";
 import { CommandBox } from "./CommandBox";
+import RichText from "./RichText";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const FormInput = ({
   control,
+  onChange,
+  value,
+  optional = false,
   name,
   label,
   type = "text",
@@ -20,11 +26,16 @@ const FormInput = ({
   price,
   select,
   register,
+  switchToggle = false,
   password = false, // Added password prop with default value false
 }: {
   control: any;
+  onChange?: any;
+  value?: any;
   name: string;
+  switchToggle?: boolean;
   label: string;
+  optional?: boolean;
   register?: any;
   type?: string;
   phone?: boolean;
@@ -47,25 +58,30 @@ const FormInput = ({
     if (isNaN(numberValue)) return "";
     return formatPrice(numberValue.toFixed(3));
   };
+
   return (
     <>
       <FormField
         control={control}
         name={name}
         render={({ field }) => (
-          <FormItem className="flex w-full flex-col text-left items-start  relative">
-            <FormLabel
-              className={`absolute z-20 transition-transform duration-300 ease-in-out ${
-                isFocused || field.value
-                  ? "top-0  text-seven-light transform left-0 -translate-y-5"
-                  : "left-5 top-[25%]"
-              }  ml-auto  text-sm flex items-center gap-2`}
-            >
-              {label} {icon}
-              <span className="  font-normal text-red-600">*</span>
-            </FormLabel>
+          <FormItem className={`flex w-full flex-col text-left items-start  relative`}>
+            {!switchToggle && (
+              <FormLabel
+                className={`absolute z-10 transition-transform duration-300 ease-in-out ${
+                  isFocused || field.value
+                    ? "top-0  text-seven-light transform left-0 -translate-y-5"
+                    : "left-5 top-[25%]"
+                }  ml-auto  text-sm flex items-center gap-2`}
+              >
+                {label} {icon}
+                {!optional && <span className="  font-normal text-red-600">*</span>}
+              </FormLabel>
+            )}
             <div className={`relative  inline-flex items-center justify-center ${className}`}>
-              <FormControl className={` body-2 ${password ? " pr-8" : "pr-5"}  pl-8 py-1 duration-200 `}>
+              <FormControl
+                className={` body-2 ${password ? " pr-8" : "pr-5"} ${switchToggle ? "" : " pl-8 py-1 duration-200"} `}
+              >
                 {phone ? (
                   <PhoneInput
                     {...field}
@@ -74,11 +90,13 @@ const FormInput = ({
                     defaultCountry="EG"
                     placeholder="Enter phone number"
                   />
+                ) : switchToggle ? (
+                  <div className="flex gap-2 items-center ">
+                    <Switch id="sale" checked={field.value} onCheckedChange={field.onChange} />
+                    <Label htmlFor="sale">On Sale</Label>
+                  </div>
                 ) : description ? (
-                  <textarea
-                    {...field}
-                    className=" border-2 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 border-gray-200 w-full flex-row-reverse py-2 px-4 rounded-2xl gap-2"
-                  />
+                  <RichText description={value || field.value} onChange={onChange ? onChange : field.onChange} />
                 ) : select ? (
                   <CommandBox name="category" control={control} />
                 ) : (
@@ -87,13 +105,14 @@ const FormInput = ({
                     type={password && !showPassword ? "password" : type} // Toggle input type based on password prop and showPassword state
                     className={` w-full`}
                     onFocus={() => setIsFocused((s) => (s = true))}
-                    value={field.value}
+                    value={value || field.value}
                     onBlur={() => {
                       if (!field.value) {
                         setIsFocused(false);
                       }
                     }}
                     onChange={(e) => {
+                      if (onChange) return onChange(e);
                       field.onChange(price ? handlePriceChange(e.target.value) : e.target.value);
                       setIsFocused((s) => (s = true));
                     }}

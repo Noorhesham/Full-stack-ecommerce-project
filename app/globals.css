@@ -80,3 +80,25 @@
       transform: translate(10px, 0);
     }
   }
+  .sticky-top {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 10; /* Optional: to ensure it appears above other content */
+    padding: 1rem 0; /* Optional: for padding adjustment */
+  }
+  @keyframes float {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  
+  .floating-image {
+    animation: float 3s ease-in-out infinite;
+  }

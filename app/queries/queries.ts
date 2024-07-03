@@ -1,8 +1,10 @@
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   deleteImage as deleteImageApi,
   getCategories,
   getProduct,
+  getProducts,
   getSubCategories,
   getVariants,
   updateImage,
@@ -10,6 +12,7 @@ import {
 import { toast } from "react-toastify";
 import Product from "@/lib/database/models/ProductsModel";
 import { deleteCategoryOrSub, updateCategoryOrSub } from "../actions/categoryActions";
+import { useEffect } from "react";
 
 const useDeleteImage = () => {
   const querClient = useQueryClient();
@@ -64,6 +67,33 @@ const useGetProduct = (id: string) => {
   });
   return { data, isLoading, gotProduct };
 };
+const useGetProducts = (page = 1, filters: {}) => {
+  const queryClient = useQueryClient();
+  console.log(filters)
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["products", page, JSON.stringify(filters)],
+    queryFn: async () => await getProducts(page, 10, filters),
+  });
+
+  useEffect(() => {
+    // Prefetch the next two pages when the current page is loaded
+    if (data && data.totalPages > page) {
+      queryClient.prefetchQuery({
+        queryKey: ["products", page + 1, JSON.stringify(filters)],
+        queryFn: async () => await getProducts(page + 1, 10, filters),
+      });
+
+      if (data.totalPages > page + 1) {
+        queryClient.prefetchQuery({
+          queryKey: ["products", page + 2, JSON.stringify(filters)],
+          queryFn: async () => await getProducts(page + 2, 10, filters),
+        });
+      }
+    }
+  }, [data, page, filters, queryClient]);
+
+  return { data, isLoading, isError };
+};
 const useGetVariants = () => {
   const {
     data: variants,
@@ -105,7 +135,8 @@ const useUpdateCategories = (sub = false, parent?: string) => {
   const {
     mutate: update,
     isPending,
-    isSuccess,data:newData
+    isSuccess,
+    data: newData,
   } = useMutation({
     mutationFn: async ({ data, id, remove = false }: { data: any; id?: string; remove?: boolean }) => {
       if (remove) {
@@ -132,7 +163,7 @@ const useUpdateCategories = (sub = false, parent?: string) => {
     },
   });
 
-  return { update, isPending, isSuccess ,newData};
+  return { update, isPending, isSuccess, newData };
 };
 
 export {
@@ -143,4 +174,5 @@ export {
   useGetCategories,
   useUpdateCategories,
   useGetSubCategories,
+  useGetProducts,
 };

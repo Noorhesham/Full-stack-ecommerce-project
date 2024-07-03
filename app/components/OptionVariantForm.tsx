@@ -10,7 +10,7 @@ const OptionVariantForm = ({name,label,fn,value,isPending}:{name:string,label:st
   return (
     <div className="flex w-full justify-between gap-3 items-center ">
       <FormInput control={control} className="w-full flex-auto" name={name} label={label} type="text" />
-
+    
       <div className="flex items-center gap-2 flex-1">
         <Delete trigger={value ? true : false} value={value && value.name} onClick={fn} />
         <button className=" text-gray-700 hover:text-blue-400 duration-200 text-2xl" disabled={isPending} type="submit">

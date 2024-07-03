@@ -12,7 +12,8 @@ import {
 
 import { ImBin2 } from "react-icons/im";
 import React, { ReactNode } from "react";
-import MiniSpinner from "./MiniSpinner";
+import BabySpinner from "./BabySpinner";
+import { useRouter } from "next/navigation";
 
 export function Delete({
   value,
@@ -30,6 +31,7 @@ export function Delete({
   disabled?: boolean;
 }) {
   const [open, setOpen] = React.useState(false);
+  const router=useRouter()
   return (
     <Dialog open={open}  onOpenChange={setOpen} >
       {trigger ? (
@@ -44,10 +46,13 @@ export function Delete({
         </DialogTrigger>
       ) : (
         <span
-          onClick={onClick}
+          onClick={()=>{
+            onClick()
+            router.refresh()
+          }}
           className=" hover:text-red-500  my-auto  self-center cursor-pointer text-red-400 duration-200  "
         >
-          <ImBin2 />
+          {disabled?<BabySpinner />:<ImBin2 />}
         </span>
       )}
       <DialogContent className="sm:max-w-[425px]">
@@ -65,7 +70,7 @@ export function Delete({
             }}
             className="bg-red-500 hover:bg-red-400 duration-200 text-gray-50"
           >
-            {disabled ? <MiniSpinner /> : "Delete"}
+            {disabled ? 'Deleting....' : "Delete"}
           </Button>
           <DialogClose>
             <Button variant={"ghost"}>Close</Button>

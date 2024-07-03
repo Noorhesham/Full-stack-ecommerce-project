@@ -13,16 +13,16 @@ const ComboSelect = ({
   categories,
   placeholder,
   setFormDefaults,
-  reset,
+  reset,onChange
 }: {
   value: any;
-  setValue: any;
-  open: boolean;
-  setOpen: any;
+  setValue?: any;
+  open?: boolean;
+  setOpen?: any;
   categories: any;
   placeholder?: string;
   setFormDefaults?: any;
-  reset?: any;
+  reset?: any;onChange?:any
 }) => {
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -46,6 +46,7 @@ const ComboSelect = ({
                   className="w-full cursor-pointer  "
                   value={option._id}
                   onSelect={(currentValue) => {
+                    if (onChange) return onChange(currentValue);
                     console.log("currentValue", currentValue, value, option);
                     setValue(currentValue === value ? "" : currentValue);
                     setOpen(false);

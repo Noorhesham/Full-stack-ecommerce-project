@@ -1,11 +1,11 @@
-import NextAuth from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
 import User from "@/lib/database/models/UserModel";
 import bcrypt from "bcrypt";
 import connect from "@/lib/database/connect";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 
-const authHandler = NextAuth({
+export const authOptions: AuthOptions = {
   providers: [
     Credentials({
       name: "credentials",
@@ -76,6 +76,7 @@ const authHandler = NextAuth({
       }
       return session;
     },
+    //@ts-ignore
     async signIn({ user, account, profile }: { user: any; account: any; profile: any }) {
       await connect();
       const existingUser = await User.findOne({ email: user.email });
@@ -101,6 +102,6 @@ const authHandler = NextAuth({
     },
   },
   events: {},
-});
-
-export { authHandler as GET, authHandler as POST };
+};
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };

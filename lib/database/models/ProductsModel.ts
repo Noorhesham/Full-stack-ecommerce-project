@@ -19,7 +19,7 @@ export interface ProductProps extends Document {
   published: boolean;
   variations: {
     variation: mongoose.Types.ObjectId;
-    options: {
+    variationOptions: {
       variationOption: mongoose.Types.ObjectId;
       price: number;
       images: ProductImage[];
@@ -27,6 +27,10 @@ export interface ProductProps extends Document {
   }[];
   numReviews: number;
   step: number;
+  additionalInfo: { title: string; description: string }[];
+  isOnSale: boolean;
+  salePrice: string;
+  ribbon: string;
 }
 const ProductSchema = new Schema<ProductProps>(
   {
@@ -48,18 +52,34 @@ const ProductSchema = new Schema<ProductProps>(
     variations: [
       {
         variation: { type: Schema.Types.ObjectId, ref: "Variation" },
-        options: [
+        variationOptions: [
           {
             variationOption: { type: Schema.Types.ObjectId, ref: "VariationOption" },
-            price: { type: Number, required: true },
+            price: { type: String, default: '0' },
             images: { type: [{ imgUrl: String, publicId: String }], default: [] },
           },
         ],
       },
     ],
+    additionalInfo: [{ title: String, description: String }],
+    isOnSale: { type: Boolean },
+    salePrice: { type: String },
+    ribbon: { type: String },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
+ProductSchema.pre("save", function (next) {
+  const product = this as ProductProps;
+  product.variations.forEach((variation) => {
+    variation.variationOptions.forEach((option) => {
+      if (option.price === 0) {
+        option.price = product.price;
+      }
+    });
+  });
+
+  next();
+});
 
 ProductSchema.pre(/^find/, function (this: any, next) {
   this.populate("category");

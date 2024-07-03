@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import Link from "next/link";
@@ -6,9 +7,11 @@ import NavItems from "./NavItems";
 import { buttonVariants } from "@/components/ui/button";
 import Cart from "./Cart";
 import User from "./User";
-import { UserProps } from "@/lib/database/models/UserModel";
+import { useSession } from "next-auth/react";
 
-const NavBar = ({ user }: { user: UserProps | any }) => {
+const NavBar = () => {
+  const { data } = useSession();
+
   return (
     <nav className=" bg-white sticky z-50  top-0  inset-0 h-16">
       <header className=" relative bg-white">
@@ -24,8 +27,8 @@ const NavBar = ({ user }: { user: UserProps | any }) => {
               </div>
               <div className=" ml-auto flex items-center">
                 <div className=" flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  {user ? (
-                    <User user={user} />
+                  {data?.user ? (
+                    <User user={data.user} />
                   ) : (
                     <>
                       <Link
