@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
+import Category from "./CategoryModel";
 export interface ProductImage {
   imgUrl: string;
   publicId: string;
@@ -31,6 +32,7 @@ export interface ProductProps extends Document {
   isOnSale: boolean;
   salePrice: string;
   ribbon: string;
+  status: string;
 }
 const ProductSchema = new Schema<ProductProps>(
   {
@@ -65,6 +67,7 @@ const ProductSchema = new Schema<ProductProps>(
     isOnSale: { type: Boolean },
     salePrice: { type: String },
     ribbon: { type: String },
+    status: { type: String, default: "pending" },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
@@ -82,7 +85,7 @@ ProductSchema.pre("save", function (next) {
 });
 
 ProductSchema.pre(/^find/, function (this: any, next) {
-  this.populate("category");
+  this.populate({ path: "category", model: Category });
   next();
 });
 

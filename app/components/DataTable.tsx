@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DataTablePagination } from "./AdvancedPagination";
-import React from "react";
+import React, { useEffect } from "react";
 import ServerFilter from "./ServerFilter";
 import ServerSearch from "./ServerSearch";
 import {
@@ -25,14 +25,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import PopUp from "./PopUp";
+interface TableData {
+  _id: string;
+  name: string;
+}
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   page: number;
   totalPages: number;
+  handleDeleteAll: (ids: string[]) => void;
 }
 
-export function DataTable<TData, TValue>({ columns, data, page, totalPages }: DataTableProps<TData, TValue>) {
+export function DataTable<TData extends TableData, TValue>({
+  columns,
+  data,
+  page,
+  totalPages,
+  handleDeleteAll,
+}: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -58,10 +70,29 @@ export function DataTable<TData, TValue>({ columns, data, page, totalPages }: Da
       rowSelection,
     },
   });
-  const chosen = table.getSelectedRowModel().flatRows.map((row) => row.original._id);
-  console.log(chosen);
+  //@ts-ignore
+  const chosen = table.getSelectedRowModel().flatRows.map((row) => row.original?._id);
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      const id = hash.substring(1); // Remove the '#' from the hash
+      // Scroll to the element with the ID
+      const element = document.getElementById(id);
+      console.log(id, element);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+
+        // Select the row in the table
+        const rowIndex = table.getRowModel().rows.findIndex((row) => row.original?._id === id);
+        if (rowIndex !== -1) {
+          table.getRowModel().rows[rowIndex].toggleSelected(true);
+        }
+      }
+    }
+  }, [data, table]);
   return (
     <div className="">
+      {chosen.length > 1 && <PopUp count={chosen.length} handleDelete={() => handleDeleteAll(chosen)} />}
       <div className="flex justify-between items-center py-4">
         <div className="flex gap-2 items-center">
           <Input
@@ -118,9 +149,11 @@ export function DataTable<TData, TValue>({ columns, data, page, totalPages }: Da
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                <TableRow id={row.original?._id} key={row.id} data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                    <TableCell id={cell.id} className=" text-center" key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
                   ))}
                 </TableRow>
               ))

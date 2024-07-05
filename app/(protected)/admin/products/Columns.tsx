@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { CopyIcon, MoreHorizontal, PenIcon } from "lucide-react";
 import { Delete } from "@/app/components/Delete";
-import { deleteProduct } from "@/app/actions/products";
+import { deleteProduct, updateStatus } from "@/app/actions/products";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { ArrowUpDown } from "lucide-react";
@@ -23,6 +23,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 import { ImBin2 } from "react-icons/im";
 import { useQueryClient } from "@tanstack/react-query";
+import ModelCustom from "@/app/components/ModelCustom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 export const columns: ColumnDef<ProductProps>[] = [
   {
     id: "select",
@@ -48,7 +52,7 @@ export const columns: ColumnDef<ProductProps>[] = [
     header: "Images",
     cell({ row }) {
       //@ts-ignore
-      return <Image src={row.getValue("images")[0]} height={35} width={35} alt="product image" />;
+      return <Image src={row.getValue("images")[0].imgUrl} height={35} width={35} alt="product image" />;
     },
   },
   {
@@ -59,6 +63,24 @@ export const columns: ColumnDef<ProductProps>[] = [
           Product Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "status",
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+          Status
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell({ row }) {
+      return (
+        <div className=" p-1 text-xs text-center border border-gray-400 rounded-xl font-medium">
+          {row.getValue("status")}
+        </div>
       );
     },
   },
@@ -139,6 +161,46 @@ export const columns: ColumnDef<ProductProps>[] = [
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
+            <ModelCustom
+              btn={
+                <div className="flex text-sm px-3 py-1.5 hover:bg-gray-100 duration-150 justify-between cursor-pointer">
+                  Change Status
+                </div>
+              }
+              title="Change Product Status"
+              text="Change the status of this product"
+              value={product.name}
+              content={
+                <Card x-chunk="dashboard-07-chunk-3">
+                  <CardHeader>
+                    <CardTitle>Product Status</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-6">
+                      <div className="grid gap-3">
+                        <Label htmlFor="status">Status</Label>
+                        <Select
+                          onValueChange={async (value) => {
+                            await updateStatus(product._id, value);
+                            //@ts-ignore
+                            queryClient.invalidateQueries("products");
+                          }}
+                        >
+                          <SelectTrigger id="status" aria-label="Select status">
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="rejected">Rejected</SelectItem>
+                            <SelectItem value="published">Published</SelectItem>
+                            <SelectItem value="pending">pending</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              }
+            />
 
             <Delete
               btn={

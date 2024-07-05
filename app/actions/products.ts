@@ -10,7 +10,9 @@ import Category from "@/lib/database/models/CategoryModel";
 import { SubCategory } from "@/lib/database/models/SubCategory";
 import { revalidatePath } from "next/cache";
 import { ProductProps } from "../types";
-
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+const Notification = require("@/lib/database/models/NotificationModel");
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -331,12 +333,28 @@ export async function deleteVariantOptionImage(
   }
 }
 export async function deleteProduct(id: string) {
+  console.log("delete product", id);
   try {
-    const product = await Product.findByIdAndDelete(id);
+    const session = await getServerSession(authOptions);
+    const product = await Product.findById(id);
     if (!product) throw new Error("Product not found");
+    if (!session?.user.isAdmin || !session?.user.id === product.creator) return { error: "Unauthorized", status: 401 };
+    await Product.findByIdAndDelete(id);
+    await Notification.deleteMany({ productId: id });
     revalidatePath("/admin/products");
     revalidatePath("/seller/products");
     return { success: "Product deleted successfully!", status: 200, data: null };
+  } catch (error: any) {
+    console.error(error);
+    return { error: error.message, status: 500 };
+  }
+}
+export async function updateStatus(id: string, status: string) {
+  try {
+    const product = await Product.findByIdAndUpdate(id, { status }, { new: true });
+    if (!product) throw new Error("Product not found");
+    const productObj = JSON.parse(JSON.stringify(product));
+    return { success: "Status updated successfully!", status: 200, data: { productObj } };
   } catch (error: any) {
     console.error(error);
     return { error: error.message, status: 500 };

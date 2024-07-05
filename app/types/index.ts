@@ -29,6 +29,7 @@ export interface ProductProps {
         description: string;
       }[]
     | [];
+  creator: string;
   isOnSale: boolean;
   salePrice?: string;
 }

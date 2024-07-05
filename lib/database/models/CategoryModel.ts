@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { SubCategory } from "./SubCategory";
 
 const CategorySchema = new Schema(
   {
@@ -13,7 +14,7 @@ CategorySchema.virtual("subCategories", {
   foreignField: "parentCategory",
 });
 CategorySchema.pre(/^find/, function (this: any, next) {
-  this.populate("subCategories");
+  this.populate({ path: "subCategories", model: SubCategory });
   next();
 });
 const Category = mongoose.models.Category || mongoose.model("Category", CategorySchema);

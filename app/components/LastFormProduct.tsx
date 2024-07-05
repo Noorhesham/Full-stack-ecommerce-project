@@ -10,6 +10,7 @@ import { useProduct } from "../context/ProductContext";
 import { deleteVariant } from "../actions/products";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import NotificationSender from "./NotificationSender";
 import Link from "next/link";
 
 // i want to fetch all the variants with thier subs
@@ -17,7 +18,7 @@ import Link from "next/link";
 // we make an array of the defauls to that if there is defaults it appeas with the ability to add or remove items in the array
 //we will make an indvsual form for each variant and options
 // now we want to sync the sub variants so that when i choose a certain variant i get its subs in a multi select box
-const LastFormProduct = ({ variations }: { variations: VariationProps[] | any }) => {
+const LastFormProduct = ({ variations, isNotified }: { variations: VariationProps[] | any; isNotified: boolean }) => {
   const { product } = useProduct();
   const form = useForm({
     defaultValues: {
@@ -45,6 +46,7 @@ const LastFormProduct = ({ variations }: { variations: VariationProps[] | any })
       router.refresh();
     });
   };
+
   return (
     <motion.div
       initial={{ x: 1000 }}
@@ -67,13 +69,17 @@ const LastFormProduct = ({ variations }: { variations: VariationProps[] | any })
                   <PlusIcon /> Add Variation
                 </Button>
               )}
-              <Button
-                type="button"
-                variant="default"
-                className="hover:text-red-100 duration-200 flex items-center gap-2 w-fit self-end"
-              >
-                <Link href={`/congrats`}>Finish Product ! </Link>
-              </Button>
+              {isNotified ? (
+                <Button
+                  type="button"
+                  variant="default"
+                  className="hover:text-red-100 duration-200 flex items-center gap-2 w-fit self-end"
+                >
+                  <a href={`/products#${product?._id}`}>Finish Updating Product ! </a>
+                </Button>
+              ) : (
+                <NotificationSender userId={product?.creator || ""} productId={product?._id || ""} />
+              )}
             </div>
           </div>
           <div className="grid grid-cols-3 gap-4">

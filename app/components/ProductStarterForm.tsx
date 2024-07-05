@@ -124,7 +124,7 @@ const ProductStep1Form = ({ product }: { product?: ProductProps }) => {
               <div className="grid grid-cols-3 gap-5">
                 <div className="col-span-2 flex flex-col gap-8">
                   <FormCard title="Product Details" subTitle="Fill in the details of your product.">
-                    <div className="flex gap-4 items-center">
+                    <div className="flex gap-4 mt-3 items-center">
                       <FormInput control={control} className=" w-full" name="name" label="Product Name" type="text" />
                       <FormInput
                         control={control}
@@ -156,14 +156,19 @@ const ProductStep1Form = ({ product }: { product?: ProductProps }) => {
                           title="Add an Info section"
                           btn={
                             <div className="flex cursor-pointer hover:bg-rose-300 hover:text-gray-950 duration-150 w-full py-2 px-4  items-center gap-3">
-                              <div>{additionalInfo && additionalInfo?.[index].title}</div>
-                              <div>
+                              <div className=" flex-[30%] border-r-2 border-gray-400">
+                                {additionalInfo && additionalInfo?.[index].title}
+                              </div>
+                              <div className="flex-[70%]">
                                 {
                                   new DOMParser().parseFromString(
-                                    (additionalInfo && additionalInfo?.[index].description) || "",
+                                    (additionalInfo && additionalInfo?.[index].description.slice(0, 100)) || "",
                                     "text/html"
                                   ).documentElement.textContent
                                 }
+                                {additionalInfo && additionalInfo?.[index].description.length > 100 && <span className=" ml-1 text-rose-400 hover:text-rose-50 duration-150">
+                                  Read more
+                                </span>}
                               </div>
                             </div>
                           }
