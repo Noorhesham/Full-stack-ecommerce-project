@@ -115,15 +115,15 @@ const Notifications = ({
                 {data.userId.firstName} {data.userId.lastName} uploaded a new product {`(${data.productId.name})`}
                 <br />
                 <p className="text-xs">{data.message}</p>
-                <div className="flex items-center">
+                <div className="flex flex-col items-center">
                   <Link
-                    className="text-xs text-red-400 hover:text-red-500 duration-150 
+                    className="text-xs mr-auto text-red-400 hover:text-red-500 duration-150 
                  hover:underline"
                     href={`/products#${data.productId._id}`}
                   >
                     Approve it now
                   </Link>
-                  <div className="flex items-center flex-col">
+                  <div className="flex items-center ml-auto">
                     <Button
                       onClick={() => {
                         startTransition(async () => {
@@ -137,7 +137,14 @@ const Notifications = ({
                       Dismiss
                     </Button>
                     <span className="text-xs text-gray-400 font-medium">
-                      {new Date(data.createdAt).toLocaleDateString()}
+                      {new Date(data.createdAt).toLocaleString([], {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: false,
+                      })}
                     </span>
                   </div>
                   {isPending && <MiniSpinner />}
