@@ -51,9 +51,11 @@ const NavBar = async () => {
                   <div className=" ml-4 flow-root lg:ml-6">
                     <Cart />
                   </div>
-                  <div className=" ml-4 flow-root lg:ml-6">
-                    <ServerNotification user={data?.user}/>
-                  </div>
+                  {data?.user && (
+                    <div className=" ml-4 flow-root lg:ml-6">
+                      <ServerNotification user={data?.user} />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

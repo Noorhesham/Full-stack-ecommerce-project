@@ -5,9 +5,9 @@ const mongoose = require("mongoose");
 const Notification = require("./lib/database/models/NotificationModel.ts");
 
 const dev = process.env.NODE_ENV !== "production";
-const hostname = "localhost";
-const port = 3000;
-const app = next({ dev, hostname, port });
+const hostname = "https://shopify-khaki-nine.vercel.app/";
+
+const app = next({ dev, hostname,  });
 const handler = app.getRequestHandler();
 
 app.prepare().then(() => {
