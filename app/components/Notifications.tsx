@@ -64,7 +64,7 @@ const Notifications = ({
       router.refresh();
       setNotifications((prev) => [data, ...prev]);
       setPopNotification(data);
-      toast.success(data.message);
+      toast.success(`New Product Uploaded By ${data.userId.firstName} ${data.userId.lastName}`);
       console.log(data, existingNotifications, notifications, popNotification);
     });
 

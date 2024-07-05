@@ -27,6 +27,7 @@ export const authOptions: AuthOptions = {
             role: user.role,
             photo: user.photo || user.image,
             isAdmin: user.isAdmin || false,
+            createdAt: user.createdAt,
           };
         } catch (error: any) {
           throw new Error(error.message);

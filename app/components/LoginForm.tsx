@@ -4,7 +4,7 @@ import Logo from "./Logo";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ArrowRight, Loader2 } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -16,10 +16,8 @@ import { toast } from "react-toastify";
 import Social from "./Socials";
 
 const LoginForm = () => {
-  const searchParams = useSearchParams();
   const router = useRouter();
   const [error, setError] = useState<string | undefined>(undefined);
-  const isSeller = searchParams.get("as") === "seller";
   const [isLoading, setIsLoading] = useState(false);
   const continueAsSeller = () => {
     router.push("?as=seller");
@@ -39,7 +37,7 @@ const LoginForm = () => {
 
   const onSubmit = async ({ email, password }: z.infer<typeof loginSchema>) => {
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       const res = await signIn("credentials", { email, password, redirect: false });
       console.log(res);
       if (res?.error) {
@@ -47,12 +45,12 @@ const LoginForm = () => {
         return;
       }
       router.push("/");
-      toast.success('Login Successful') 
-    } catch (error:any) {
+      toast.success("Login Successful");
+    } catch (error: any) {
       setError(error.message);
       console.log(error);
-    }finally{
-      setIsLoading(false)
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -61,9 +59,7 @@ const LoginForm = () => {
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
           <div className="flex flex-col items-center space-y-2 text-center">
             <Logo />
-            <h1 className="text-2xl font-semibold tracking-tight">
-              Sign in to your {isSeller ? "seller" : ""} account
-            </h1>
+            <h1 className="text-2xl font-semibold tracking-tight">Sign in to your existing account</h1>
 
             <Link
               className={buttonVariants({
@@ -79,8 +75,11 @@ const LoginForm = () => {
 
           <div className="flex flex-col  gap-6">
             <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex max-w-[60rem] justify-center px-5 py-5 flex-col gap-6 ">
-            <FormInput control={control} className={"w-full"} name="email" label="Email" type="email" />
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="flex max-w-[60rem] justify-center px-5 py-5 flex-col gap-6 "
+              >
+                <FormInput control={control} className={"w-full"} name="email" label="Email" type="email" />
                 <FormInput
                   password
                   className={"w-full"}
@@ -115,7 +114,7 @@ const LoginForm = () => {
               </Button>
             )}
           </div>
-          <Social/>
+          <Social />
         </div>
         {error && <p className=" font-semibold text-red-500">{error}</p>}
       </div>

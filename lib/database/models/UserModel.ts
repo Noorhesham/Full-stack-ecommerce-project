@@ -10,6 +10,7 @@ export interface UserProps extends Document {
   passwordConfirm?: string; // Making it optional
   passwordChangeAt?: Date | number;
   photo: string;
+  image: string;
   active: boolean;
   _id: string;
   id:String
