@@ -12,13 +12,15 @@ export async function middleware(req: NextRequest) {
   if (isApiRoute) {
     return NextResponse.next();
   }
-  //@ts-ignore
-  if (isLoggedIn && session.user.isAdmin) {
+  if (isLoggedIn) {
     // If the path does not start with /admin, redirect to /admin
-    if (!url.pathname.startsWith("/admin")) {
+    //@ts-ignore
+    if (session.user.isAdmin && !url.pathname.startsWith("/admin")) {
       const adminUrl = new URL(`/admin${url.pathname}`, url);
       return NextResponse.redirect(adminUrl);
-    }
+      //@ts-ignore
+    } else if (url.pathname.startsWith("/admin") && !session.user.isAdmin)
+      return NextResponse.redirect(new URL("/", url));
   }
   if (isAuthRoute) {
     //@ts-ignore

@@ -3,7 +3,7 @@ import React, { Suspense, useState } from "react";
 import Logo from "./Logo";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { ArrowRight,  } from "lucide-react";
+import { ArrowRight, Loader2,  } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

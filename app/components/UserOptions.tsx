@@ -2,8 +2,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserProps } from "@/lib/database/models/UserModel";
 import { formattedDate } from "@/lib/utils";
-import { Calendar, LayoutDashboard, Link, LogOutIcon, Settings } from "lucide-react";
+import { Calendar, LayoutDashboard, LogOutIcon, Settings } from "lucide-react";
 import { signOut } from "next-auth/react";
+import Link from "next/link";
 import React from "react";
 
 const UserOptions = ({ user }: { user: UserProps }) => {
@@ -26,10 +27,14 @@ const UserOptions = ({ user }: { user: UserProps }) => {
         </div>
       </div>
       <div className="flex flex-col mt-5 text-right">
-        {!user.isAdmin &&<div className="flex items-center flex-row-reverse duration-200 hover:dark:bg-slate-800 hover:bg-gray-200 py-2 px-4 rounded-xl cursor-pointer gap-3 text-gray-400">
-          <LayoutDashboard />
-          { <Link className=" text-gray-800" href="/seller">Seller Dashboard</Link>}
-        </div>}
+        {!user.isAdmin && (
+          <div className="flex items-center flex-row-reverse duration-200 hover:dark:bg-slate-800 hover:bg-gray-200 py-2 px-4 rounded-xl cursor-pointer gap-3 text-gray-400">
+            <LayoutDashboard />
+            <Link className=" text-gray-800" href="/seller">
+              Seller Dashboard
+            </Link>
+          </div>
+        )}
         <div className="flex items-center flex-row-reverse duration-200 hover:dark:bg-slate-800 hover:bg-gray-200 py-2 px-4 rounded-xl cursor-pointer gap-3 text-gray-400">
           <Settings />
           <p className=" text-gray-800">Settings</p>
