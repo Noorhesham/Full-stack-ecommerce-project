@@ -1,10 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import Logo from "./Logo";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { ArrowRight, Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { ArrowRight,  } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -14,10 +14,12 @@ import FormInput from "./InputField";
 import { Form } from "@/components/ui/form";
 import { toast } from "react-toastify";
 import Social from "./Socials";
-
+import Loader from "./Loader";
 const LoginForm = () => {
+  const searchParams = useSearchParams();
   const router = useRouter();
   const [error, setError] = useState<string | undefined>(undefined);
+  const isSeller = searchParams.get("as") === "seller";
   const [isLoading, setIsLoading] = useState(false);
   const continueAsSeller = () => {
     router.push("?as=seller");
@@ -54,12 +56,14 @@ const LoginForm = () => {
     }
   };
   return (
-    <>
+    <Suspense fallback={<Loader className="w-40 h-40" />}>
       <div className="container relative flex pt-12 flex-col items-center justify-center lg:px-0">
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
           <div className="flex flex-col items-center space-y-2 text-center">
             <Logo />
-            <h1 className="text-2xl font-semibold tracking-tight">Sign in to your existing account</h1>
+            <h1 className="text-2xl font-semibold tracking-tight">
+              Sign in to your {isSeller ? "seller" : ""} account
+            </h1>
 
             <Link
               className={buttonVariants({
@@ -118,7 +122,7 @@ const LoginForm = () => {
         </div>
         {error && <p className=" font-semibold text-red-500">{error}</p>}
       </div>
-    </>
+    </Suspense>
   );
 };
 
