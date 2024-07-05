@@ -1,4 +1,5 @@
 import { getProduct } from "@/app/actions/products";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Steps from "@/app/components/Steps";
 import { ProductProvider } from "@/app/context/ProductContext";
 import connect from "@/lib/database/connect";
@@ -18,7 +19,7 @@ export default async function RootLayout({
 }) {
   await connect();
   const product: any = await getProduct(params.id);
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   if (product?.product.creator !== session?.user.id) redirect("/");
   return (
     <div className="h-full">

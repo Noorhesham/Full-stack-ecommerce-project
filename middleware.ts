@@ -13,14 +13,20 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
   if (isLoggedIn) {
-    // If the path does not start with /admin, redirect to /admin
+    // If the user is admin and the path does not start with /admin, redirect to /admin
     //@ts-ignore
-    if (session.user.isAdmin && !url.pathname.startsWith("/admin")) {
-      const adminUrl = new URL(`/admin${url.pathname}`, url);
-      return NextResponse.redirect(adminUrl);
-      //@ts-ignore
-    } else if (url.pathname.startsWith("/admin") && !session.user.isAdmin)
-      return NextResponse.redirect(new URL("/", url));
+    if (session.user.isAdmin) {
+      if (!url.pathname.startsWith("/admin")) {
+        const adminUrl = new URL(`/admin${url.pathname}`, url);
+        return NextResponse.redirect(adminUrl);
+      }
+    } else {
+      // If the user is not an admin and the path starts with /admin, redirect to home
+      if (url.pathname.startsWith("/admin")) {
+        return NextResponse.redirect(new URL("/", url));
+      }
+    }
+    return NextResponse.next();
   }
   if (isAuthRoute) {
     //@ts-ignore

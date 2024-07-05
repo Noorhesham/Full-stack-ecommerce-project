@@ -22,16 +22,40 @@ app.prepare().then(() => {
 
   io.on("connection", (socket) => {
     console.log("a user connected");
-    socket.on("sendNotification", async (value) => {
-      console.log("got", value, Notification);
+    socket.on("joinRoom", (userId) => {
+      socket.join(userId.toString());
+      console.log(`User ${userId} joined the room`);
+    });
 
+    //listening to notifications from user to admin
+    socket.on("sendNotification", async (value, userId) => {
       const notification = await Notification.create({
         userId: value.userId,
         message: value.message,
         productId: value.productId,
+        isAdmin: true,
       });
-      console.log(notification);
-      io.emit("sentNotification", notification);
+      const populatedNotification = await Notification.findById(notification._id)
+        .populate({ path: "productId", select: "name" })
+        .populate({ path: "userId", select: "firstName lastName" })
+        .lean();
+      console.log(notification, populatedNotification);
+      //sending notifications to admin
+      io.to(userId.toString()).emit("sentNotification", populatedNotification);
+    });
+
+    //listening to notifications from admin to specific user
+    socket.on("AcceptProduct", async (value, userId) => {
+      const notification = await Notification.create({
+        userId: value.userId,
+        message: value.message||"Your product has been accepted and is  public.",
+        productId: value.productId,
+      });
+      const populatedNotification = await Notification.findById(notification._id)
+        .populate({ path: "productId", select: "name" })
+        .populate({ path: "userId", select: "firstName lastName" })
+        .lean();
+      io.to(userId.toString()).emit("sentNotification", populatedNotification);
     });
   });
 

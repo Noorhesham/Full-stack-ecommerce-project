@@ -13,14 +13,15 @@ import { Button } from "@/components/ui/button";
 import { CopyIcon, MoreHorizontal, PenIcon } from "lucide-react";
 import Link from "next/link";
 import ModelCustom from "./ModelCustom";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { deleteProduct, updateStatus } from "../actions/products";
+import { deleteProduct } from "../actions/products";
 import { Delete } from "./Delete";
 import { ImBin2 } from "react-icons/im";
 import { toast } from "react-toastify";
-const TableActionsComponent = ({ product }: { product: any }) => {
+import { ProductProps } from "../types";
+import SelectFormStatus from "./SelectFormStatus";
+const TableActionsComponent = ({ product }: { product: ProductProps }) => {
   const queryClient = useQueryClient();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -49,46 +50,6 @@ const TableActionsComponent = ({ product }: { product: any }) => {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <ModelCustom
-          btn={
-            <div className="flex text-sm px-3 py-1.5 hover:bg-gray-100 duration-150 justify-between cursor-pointer">
-              Change Status
-            </div>
-          }
-          title="Change Product Status"
-          text="Change the status of this product"
-          value={product.name}
-          content={
-            <Card x-chunk="dashboard-07-chunk-3">
-              <CardHeader>
-                <CardTitle>Product Status</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-6">
-                  <div className="grid gap-3">
-                    <Label htmlFor="status">Status</Label>
-                    <Select
-                      onValueChange={async (value) => {
-                        await updateStatus(product._id, value);
-                        //@ts-ignore
-                        queryClient.invalidateQueries("products");
-                      }}
-                    >
-                      <SelectTrigger id="status" aria-label="Select status">
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="rejected">Rejected</SelectItem>
-                        <SelectItem value="published">Published</SelectItem>
-                        <SelectItem value="pending">pending</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          }
-        />
 
         <Delete
           btn={

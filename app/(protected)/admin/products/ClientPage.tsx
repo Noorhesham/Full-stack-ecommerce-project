@@ -38,6 +38,7 @@ const ClientPage = () => {
           columns={columns}
         />
       )}
+  
       {isPending && <MiniSpinner />}
     </>
   );

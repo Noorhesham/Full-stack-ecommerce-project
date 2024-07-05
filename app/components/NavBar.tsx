@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import Link from "next/link";
@@ -7,10 +6,12 @@ import NavItems from "./NavItems";
 import { buttonVariants } from "@/components/ui/button";
 import Cart from "./Cart";
 import User from "./User";
-import { useSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import ServerNotification from "./ServerNotification";
 
-const NavBar = () => {
-  const { data } = useSession();
+const NavBar = async () => {
+  const data = await getServerSession(authOptions);
 
   return (
     <nav className=" bg-white sticky z-50  top-0  inset-0 h-16">
@@ -49,6 +50,9 @@ const NavBar = () => {
                   )}
                   <div className=" ml-4 flow-root lg:ml-6">
                     <Cart />
+                  </div>
+                  <div className=" ml-4 flow-root lg:ml-6">
+                    <ServerNotification user={data?.user}/>
                   </div>
                 </div>
               </div>

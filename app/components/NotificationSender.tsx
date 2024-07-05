@@ -8,45 +8,51 @@ const NotificationSender = ({ userId, productId }: { userId: string; productId: 
   const [isConnected, setIsConnected] = useState(false);
   const [transport, setTransport] = useState("N/A");
   useEffect(() => {
+    // Ensure proper connection to the socket server
     if (socket.connected) {
       onConnect();
     }
 
     function onConnect() {
-      setIsConnected(true);
-      setTransport(socket.io.engine.transport.name);
+      socket.on("sentNotification", (data) => {
+        console.log(data);
+        toast.success(data.message);
+      });
 
-      socket.io.engine.on("upgrade", (transport) => {
-        setTransport(transport.name);
+      socket.on("connect", () => {
+        console.log("Socket connected");
+      });
+
+      socket.on("disconnect", () => {
+        console.log("Socket disconnected");
       });
     }
 
     function onDisconnect() {
-      setIsConnected(false);
-      setTransport("N/A");
+      socket.off("sentNotification");
+      socket.off("connect");
+      socket.off("disconnect");
     }
 
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("sentNotification", (data) => {
-      console.log(data);
-      toast.success(data.message);
-    });
     return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
+      onDisconnect();
     };
   }, []);
+
   return (
     <Button
       type="button"
       variant="default"
       onClick={() =>
-        socket.emit("sendNotification", {
-          userId,
-          productId,
-          message: "Product is waiting for confirmation from the admin",
-        })
+        socket.emit(
+          "sendNotification",
+          {
+            userId,
+            productId,
+            message: "Product is waiting for confirmation from the admin",
+          },
+          "admin"
+        )
       }
       className="hover:text-red-100 duration-200 flex items-center gap-2 w-fit self-end"
     >

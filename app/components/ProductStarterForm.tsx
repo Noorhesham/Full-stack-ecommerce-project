@@ -12,7 +12,6 @@ import { productStep1Schema } from "../schemas/Schema";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { CommandBox } from "./CommandBox";
-import { motion } from "framer-motion";
 import NextStep from "./NextStep";
 import { toast } from "react-toastify";
 import { useGetCategories } from "../queries/queries";

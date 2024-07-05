@@ -9,6 +9,8 @@ import { ArrowUpDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import TableActionsComponent from "@/app/components/TableActionsComponent";
+import ModelCustom from "@/app/components/ModelCustom";
+import SelectFormStatus from "@/app/components/SelectFormStatus";
 export const columns: ColumnDef<ProductProps>[] = [
   {
     id: "select",
@@ -34,7 +36,7 @@ export const columns: ColumnDef<ProductProps>[] = [
     header: "Images",
     cell({ row }) {
       //@ts-ignore
-      return <Image src={row.getValue("images")[0].imgUrl} height={35} width={35} alt="product image" />;
+      return <Image src={row.getValue("images")[0]?.imgUrl} height={35} width={35} alt="product image" />;
     },
   },
   {
@@ -114,7 +116,21 @@ export const columns: ColumnDef<ProductProps>[] = [
     cell: ({ row }) => {
       const product = row.original;
       {
-        return <TableActionsComponent product={product} />;
+        return (
+          <div className="flex flex-col items-start">
+            <TableActionsComponent product={product} />
+            <ModelCustom
+              btn={
+                <div className="flex text-sm px-3 py-1.5 hover:bg-gray-100 duration-150 justify-between cursor-pointer">
+                  Change Status
+                </div>
+              }
+              title="Change Product Status"
+              text="Change the status of this product"
+              content={<SelectFormStatus product={product} />}
+            />
+          </div>
+        );
       }
     },
   },

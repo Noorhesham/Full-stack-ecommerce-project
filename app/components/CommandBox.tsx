@@ -35,9 +35,10 @@ export function CommandBox({
     if (getValues(name)) {
       const variant = options.find((option) => option._id === getValues(name));
       console.log(variant);
-      variant.variationOptions?.length>0&&setOptions([...variant?.variationOptions]);
+      variant?.variationOptions?.length>0&&setOptions([...variant?.variationOptions]);
     }
   }, [getValues, name, options, setOptions]);
+  console.log(options);
   return (
     <FormField
       control={control}

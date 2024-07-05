@@ -1,4 +1,5 @@
 import { subCategoryProps } from "@/lib/database/models/SubCategory";
+import { UserProps } from "@/lib/database/models/UserModel";
 
 export interface CategoryProps {
   _id: string;
@@ -10,6 +11,8 @@ export interface ProductProps {
   _id: string;
   name: string;
   description: string;
+  status: string;
+
   price: number;
   image: string;
   category: CategoryProps;
@@ -29,7 +32,7 @@ export interface ProductProps {
         description: string;
       }[]
     | [];
-  creator: string;
+  creator:UserProps&string;
   isOnSale: boolean;
   salePrice?: string;
 }

@@ -11,6 +11,7 @@ export interface UserProps extends Document {
   passwordChangeAt?: Date | number;
   photo: string;
   image: string;
+  _id:string
   active: boolean;
   _id: string;
   id:String

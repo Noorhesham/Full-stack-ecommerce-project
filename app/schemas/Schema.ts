@@ -57,5 +57,10 @@ export const variationSchema = z.object({
         images: z.array(z.any()).optional(),
       })
     )
-    .max(3, "Maximum 3 options allowed").min(1, "Minimum 1 option required"),
+    .max(3, "Maximum 3 options allowed")
+    .min(1, "Minimum 1 option required"),
+});
+export const statusSchema = z.object({
+  status: z.string().nonempty("status is required"),
+  message: z.string().optional(),
 });
