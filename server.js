@@ -6,7 +6,7 @@ const Notification = require("./lib/database/models/NotificationModel.ts");
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "https://shopify-khaki-nine.vercel.app/";
-
+const port = 3000;
 const app = next({ dev, hostname,  });
 const handler = app.getRequestHandler();
 
@@ -48,7 +48,7 @@ app.prepare().then(() => {
     socket.on("AcceptProduct", async (value, userId) => {
       const notification = await Notification.create({
         userId: value.userId,
-        message: value.message||"Your product has been accepted and is  public.",
+        message: value.message="Your product has been accepted and is  public.",
         productId: value.productId,
       });
       const populatedNotification = await Notification.findById(notification._id)
