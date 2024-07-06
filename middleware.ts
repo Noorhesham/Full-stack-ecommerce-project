@@ -9,37 +9,42 @@ export async function middleware(req: NextRequest) {
   const isApiRoute = url.pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = publicRoutes.includes(url.pathname);
   const isAuthRoute = authRoutes.includes(url.pathname);
+
   if (isApiRoute) {
     return NextResponse.next();
   }
+
   if (isLoggedIn) {
-    // If the user is admin and the path does not start with /admin, redirect to /admin
+    // Redirect admins to /admin if not already on /admin
     //@ts-ignore
-    if (session.user.isAdmin) {
-      if (!url.pathname.startsWith("/admin")) {
-        const adminUrl = new URL(`/admin${url.pathname}`, url);
-        return NextResponse.redirect(adminUrl);
-      }
-    } else {
-      // If the user is not an admin and the path starts with /admin, redirect to home
-      if (url.pathname.startsWith("/admin")) {
-        return NextResponse.redirect(new URL("/", url));
-      }
+    if (session.user.isAdmin && !url.pathname.startsWith("/admin")) {
+      url.pathname = `/admin${url.pathname}`;
+      return NextResponse.redirect(url);
+    }
+    // Redirect non-admins away from /admin
+    if (!session.user.isAdmin && url.pathname.startsWith("/admin")) {
+      url.pathname = "/";
+      return NextResponse.redirect(url);
     }
     return NextResponse.next();
   }
+
   if (isAuthRoute) {
+    // Handle authenticated routes
     //@ts-ignore
     if (isLoggedIn && session.user.isAdmin && !url.pathname.startsWith("/admin")) {
-      return NextResponse.redirect(new URL("/admin", url));
+      url.pathname = "/admin";
+      return NextResponse.redirect(url);
     } else if (isLoggedIn) {
-      return NextResponse.redirect(new URL(defaultLoginRedirect, url));
+      url.pathname = defaultLoginRedirect;
+      return NextResponse.redirect(url);
     }
     return NextResponse.next();
   }
 
   if (!isLoggedIn && !isPublicRoute) {
-    return NextResponse.redirect(new URL("/signin", url));
+    url.pathname = "/signin";
+    return NextResponse.redirect(url);
   }
 
   return NextResponse.next();
