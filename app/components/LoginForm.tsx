@@ -33,6 +33,7 @@ const LoginForm = () => {
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
+      password: "",
     },
   });
   const { handleSubmit, control } = form;
@@ -48,6 +49,7 @@ const LoginForm = () => {
       }
       router.push("/");
       toast.success("Login Successful");
+      router.refresh()
     } catch (error: any) {
       setError(error.message);
       console.log(error);

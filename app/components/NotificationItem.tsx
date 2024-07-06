@@ -4,16 +4,15 @@ import React, { useTransition } from "react";
 import MiniSpinner from "./MiniSpinner";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { handleDeleteNotification } from "../actions/products";
 
 const NotificationItem = ({
   data,
   handleMouseEnter,
-  handleDelete,
   handleDeleteState,
 }: {
   data: any;
   handleMouseEnter: any;
-  handleDelete: any;
   handleDeleteState: any;
 }) => {
   const [isPending, startTransition] = useTransition();
@@ -43,7 +42,7 @@ const NotificationItem = ({
               onClick={() => {
                 handleDeleteState(data._id);
                 startTransition(async () => {
-                  await handleDelete(data._id);
+                  await handleDeleteNotification(data._id);
                 });
               }}
               variant={"ghost"}

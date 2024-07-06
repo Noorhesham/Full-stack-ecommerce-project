@@ -5,7 +5,7 @@ import { z } from "zod";
 import { productStep1Schema, variationSchema } from "../schemas/Schema";
 import { v2 as cloudinary } from "cloudinary";
 import Variation from "@/lib/database/models/VariationModel";
-import User from "@/lib/database/models/UserModel";
+import User, { UserProps } from "@/lib/database/models/UserModel";
 import Category from "@/lib/database/models/CategoryModel";
 import { SubCategory } from "@/lib/database/models/SubCategory";
 import { revalidatePath } from "next/cache";
@@ -360,3 +360,28 @@ export async function updateStatus(id: string, status: string) {
     return { error: error.message, status: 500 };
   }
 }
+export async function handleRead(id: string) {
+  await connect();
+  await Notification.findByIdAndUpdate(id, { isRead: true });
+}
+
+export async function handleDeleteNotification(id: string) {
+  await connect();
+  await Notification.findByIdAndDelete(id);
+}
+
+export const fetchNotifications = async (user: UserProps & any) => {
+  await connect();
+
+  let notificationsQuery;
+  notificationsQuery = user.isAdmin
+    ? Notification.find({ isAdmin: true })
+    : Notification.find({ userId: user?.id, isAdmin: false });
+
+  const notifications = await notificationsQuery
+    .populate({ path: "productId", model: Product, select: "name" })
+    .populate({ path: "userId", model: User, select: "firstName lastName" })
+    .lean();
+
+  return notifications;
+};

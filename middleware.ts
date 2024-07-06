@@ -18,10 +18,11 @@ export async function middleware(req: NextRequest) {
     // Redirect admins to /admin if not already on /admin
     //@ts-ignore
     if (session.user.isAdmin && !url.pathname.startsWith("/admin")) {
-      url.pathname = `/admin${url.pathname}`;
+      url.pathname = `/admin`;
       return NextResponse.redirect(url);
     }
     // Redirect non-admins away from /admin
+    //@ts-ignore
     if (!session.user.isAdmin && url.pathname.startsWith("/admin")) {
       url.pathname = "/";
       return NextResponse.redirect(url);

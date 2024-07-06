@@ -48,7 +48,7 @@ app.prepare().then(() => {
     socket.on("AcceptProduct", async (value, userId) => {
       const notification = await Notification.create({
         userId: value.userId,
-        message: value.message="Your product has been accepted and is  public.",
+        message: value.message||"Your product has been accepted and is  public.",
         productId: value.productId,
       });
       const populatedNotification = await Notification.findById(notification._id)

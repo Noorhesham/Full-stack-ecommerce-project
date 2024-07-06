@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import MiniSpinner from "./MiniSpinner";
 import NotificationItem from "./NotificationItem";
 import Image from "next/image";
+import { handleRead } from "../actions/products";
 
 interface NoftificationsProps {
   message: string;
@@ -29,14 +30,12 @@ interface NoftificationsProps {
 
 const Notifications = ({
   notifications,
-  handleRead,
-  handleDelete,
+
   userId,
   isAdmin,
 }: {
   notifications: NoftificationsProps[];
-  handleRead: (id: string) => void;
-  handleDelete: (id: string) => void;
+
   userId: string;
   isAdmin: boolean;
 }) => {
@@ -69,6 +68,7 @@ const Notifications = ({
 
       socket.on("AcceptProduct", (value) => {
         setPopNotification(value);
+        console.log("Product accepted:", value);
         console.log("Product accepted:", value);
       });
     }
@@ -131,7 +131,6 @@ const Notifications = ({
               handleDeleteState={handleDeleteState}
               data={data}
               handleMouseEnter={handleMouseEnter}
-              handleDelete={handleDelete}
             />
           ))}
         </HoverCardContent>
