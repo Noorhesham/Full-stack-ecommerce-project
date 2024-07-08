@@ -33,6 +33,7 @@ export interface ProductProps extends Document {
   salePrice: string;
   ribbon: string;
   status: string;
+  isFeatured: boolean;
 }
 const ProductSchema = new Schema<ProductProps>(
   {
@@ -57,7 +58,7 @@ const ProductSchema = new Schema<ProductProps>(
         variationOptions: [
           {
             variationOption: { type: Schema.Types.ObjectId, ref: "VariationOption" },
-            price: { type: String, default: '0' },
+            price: { type: String, default: "0" },
             images: { type: [{ imgUrl: String, publicId: String }], default: [] },
           },
         ],
@@ -68,21 +69,11 @@ const ProductSchema = new Schema<ProductProps>(
     salePrice: { type: String },
     ribbon: { type: String },
     status: { type: String, default: "pending" },
+    isFeatured: { type: Boolean, default: false },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
-ProductSchema.pre("save", function (next) {
-  const product = this as ProductProps;
-  product.variations.forEach((variation) => {
-    variation.variationOptions.forEach((option) => {
-      if (option.price === 0) {
-        option.price = product.price;
-      }
-    });
-  });
 
-  next();
-});
 
 ProductSchema.pre(/^find/, function (this: any, next) {
   this.populate({ path: "category", model: Category });

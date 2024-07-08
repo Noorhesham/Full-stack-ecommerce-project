@@ -22,7 +22,7 @@ import FormCard from "./FormCard";
 import AddingButton from "./AddingButton";
 import ModelCustom from "./ModelCustom";
 import AddtionalInfoForm from "./AddtionalInfoForm";
-import { BreadcrumbWithCustomSeparator } from "./BreacCumber";
+import { BreadcrumbWithCustomSeparator } from "./BreadCumber";
 const ProductStep1Form = ({ product }: { product?: ProductProps }) => {
   const { categories, isLoading: isGetting } = useGetCategories(); // getting all categoreis data
   const user: any = useSession().data?.user; // to pass it to the product creator
@@ -35,7 +35,7 @@ const ProductStep1Form = ({ product }: { product?: ProductProps }) => {
       name: (product && product?.name) || "",
       description: (product && product?.description) || "",
       category: (product && product?.category?._id) || "",
-      price: (product && product?.price + "") || "$10.00",
+      price: (product && product?.price + "") || "10",
       stock: (product && product?.stock + "") || "1",
       subCategories: product?.subCategories || [],
       additionalInfo: product?.additionalInfo || [],
@@ -46,17 +46,13 @@ const ProductStep1Form = ({ product }: { product?: ProductProps }) => {
   });
   const { handleSubmit, control, getValues, watch, setValue } = form;
   const additionalInfo = watch("additionalInfo");
-
   const { append, remove, fields } = useFieldArray({ control, name: "additionalInfo" });
   useEffect(() => {
     if (product?.category?._id) {
       const category = categories?.find((cat: any) => cat._id === product.category._id);
       if (category) {
         setValue("category", category._id);
-        setValue(
-          "subCategories",
-          product.category.subCategories.filter((sub: any) => product.subCategories.includes(sub._id))
-        );
+        setValue("subCategories", product.subCategories);
       }
     }
   }, [categories, product, setValue]);
@@ -88,14 +84,13 @@ const ProductStep1Form = ({ product }: { product?: ProductProps }) => {
   };
   const SubCategoriesIndex = categories?.findIndex((cat: any, i: number) => cat._id === getValues("category"));
   return (
-    <div className="container py-5">
+    <div className="container ">
       <div className="flex flex-col px-10  xl:pb-[1.6rem] relative rounded-2xl  items-center text-center">
         <div className="mx-auto w-full   space-y-6">
           <Form {...form}>
             <form onSubmit={handleSubmit(onSubmit)} className=" ">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex flex-col items-center gap-2">
-                  <BreadcrumbWithCustomSeparator />
                   <h1 className="text-2xl mr-auto font-semibold text-left">Create Product</h1>
                 </div>
                 <div className="flex items-center gap-3">
@@ -165,9 +160,9 @@ const ProductStep1Form = ({ product }: { product?: ProductProps }) => {
                                     "text/html"
                                   ).documentElement.textContent
                                 }
-                                {additionalInfo && additionalInfo?.[index].description.length > 100 && <span className=" ml-1 text-rose-400 hover:text-rose-50 duration-150">
-                                  Read more
-                                </span>}
+                                {additionalInfo && additionalInfo?.[index].description.length > 100 && (
+                                  <span className=" ml-1 text-rose-400 hover:text-rose-50 duration-150">Read more</span>
+                                )}
                               </div>
                             </div>
                           }

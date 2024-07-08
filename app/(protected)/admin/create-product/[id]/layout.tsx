@@ -1,5 +1,6 @@
 import { getProduct } from "@/app/actions/products";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { BreadcrumbWithCustomSeparator } from "@/app/components/BreadCumber";
 import Steps from "@/app/components/Steps";
 import { ProductProvider } from "@/app/context/ProductContext";
 import connect from "@/lib/database/connect";
@@ -22,7 +23,17 @@ export default async function RootLayout({
 
   return (
     <div className="h-full">
-      <Steps product={product && product.product} id={params.id || ""} />
+      <div className="flex flex-col gap-2">
+        <Steps product={product && product.product} id={params.id || ""} />
+        <div className=" px-5 py-3">
+          <BreadcrumbWithCustomSeparator
+            breadcrumbs={[
+              { name: "Home", href: "/" },
+              { name: `${product.product.name}`, href: `/create-product/${params.id}` },
+            ]}
+          />
+        </div>
+      </div>
       <ProductProvider product={product && product.product}>
         <div className="bg-gray-100 overflow-hidden">{children}</div>
       </ProductProvider>

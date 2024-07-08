@@ -28,6 +28,7 @@ export const authOptions: AuthOptions = {
             photo: user.photo || user.image,
             isAdmin: user.isAdmin || false,
             createdAt: user.createdAt,
+            cart: user.cart || [],
           };
         } catch (error: any) {
           throw new Error(error.message);
@@ -45,7 +46,8 @@ export const authOptions: AuthOptions = {
           lastName: profile.family_name,
           photo: profile.picture,
           role: "user",
-          isAdmin: false, // default value for Google login
+          isAdmin: false,
+          cart: [], // default value for Google login
         };
       },
     }),
@@ -67,6 +69,7 @@ export const authOptions: AuthOptions = {
           role: user.role,
           photo: user.photo,
           isAdmin: user.isAdmin,
+          cart: user.cart || [],
         };
       }
       return token;

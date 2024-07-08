@@ -11,16 +11,15 @@ export interface UserProps extends Document {
   passwordChangeAt?: Date | number;
   photo: string;
   image: string;
-  _id:string
-  active: boolean;
   _id: string;
-  id:String
+  active: boolean;
+  id: String;
   role: "user" | "admin";
   passwordResetToken?: string;
   confirmationToken?: mongoose.Types.ObjectId;
   googleAccessToken?: string;
   passwordResetExpires?: Date;
-  wishlist?: string[];
+  cart?: string[];
   isthirdParty?: boolean;
   phoneNumber?: number;
   createdAt: Date;
@@ -64,11 +63,19 @@ const UserSchema = new Schema<UserProps>(
     active: { type: Boolean, default: true, select: false },
     passwordResetToken: String,
     passwordResetExpires: Date,
-    wishlist: [String],
+    cart: {
+      type: [
+        {
+          productId: { type: Schema.Types.ObjectId, ref: "Product" },
+          variants: [  String] ,
+        },
+      ],
+      ref: "Product",
+    },
     isthirdParty: { type: Boolean, default: false },
     isActivated: { type: Boolean, default: false },
     activatedAt: Date,
-    phoneNumber: { type: Number, },
+    phoneNumber: { type: Number },
     confirmationToken: { type: Schema.Types.ObjectId, ref: "Activation" },
     isAdmin: { type: Boolean, default: false },
   },

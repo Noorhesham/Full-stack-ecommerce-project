@@ -3,7 +3,7 @@ import React, { Suspense, useState } from "react";
 import Logo from "./Logo";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { ArrowRight, Loader2,  } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,11 +15,13 @@ import { Form } from "@/components/ui/form";
 import { toast } from "react-toastify";
 import Social from "./Socials";
 import Loader from "./Loader";
+import { useUpdateCart } from "../queries/queries";
 const LoginForm = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [error, setError] = useState<string | undefined>(undefined);
   const isSeller = searchParams.get("as") === "seller";
+  const redirect = searchParams.get("redirect");
   const [isLoading, setIsLoading] = useState(false);
   const continueAsSeller = () => {
     router.push("?as=seller");
@@ -37,7 +39,7 @@ const LoginForm = () => {
     },
   });
   const { handleSubmit, control } = form;
-
+  const { updateCart } = useUpdateCart(true);
   const onSubmit = async ({ email, password }: z.infer<typeof loginSchema>) => {
     try {
       setIsLoading(true);
@@ -47,9 +49,15 @@ const LoginForm = () => {
         setError("Invalid email or password, please try again ! 😢");
         return;
       }
-      router.push("/");
+      router.push(`${redirect}`);
       toast.success("Login Successful");
-      router.refresh()
+
+      JSON.parse(localStorage.getItem("cart") || "[]").map(
+        ({ productId, variantId }: { productId: string; variantId: string[] }) => {
+          updateCart({ data: { productId, variantId }, remove: false });
+        }
+      );
+      router.refresh();
     } catch (error: any) {
       setError(error.message);
       console.log(error);

@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useEffect, useState, useTransition } from "react";
+import React, { useState, useTransition } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { variationSchema } from "../schemas/Schema";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { uploadToCloudinary } from "@/lib/utils";
 import { FancyMultiSelect } from "./MultiSelect";
@@ -18,31 +17,36 @@ import { VariationProps, variationOptionsProps } from "../types";
 import { CommandBox } from "./CommandBox";
 import ModelCustom from "./ModelCustom";
 import { Delete } from "./Delete";
+import { variationSchema } from "../schemas/Schema";
+import Image from "next/image";
 
-const VariationForm = ({
+interface VariationFormProps {
+  removeVariation: () => void;
+  productPrice: number;
+  defaultVariation?: any;
+  variants: VariationProps[];
+  productId?: string;
+  DeleteVariant: (id: string) => void;
+}
+
+const VariationForm: React.FC<VariationFormProps> = ({
   removeVariation,
+  productPrice,
   defaultVariation,
   variants,
   productId,
   DeleteVariant,
-}: {
-  removeVariation: any;
-  defaultVariation?: any;
-  variants: VariationProps[];
-  productId?: string;
-  DeleteVariant: any;
 }) => {
-  const defaultOptions: any =
-    defaultVariation?.variationOptions?.map((op: any) => {
-      return {
-        price: op.price,
-        images: op.images,
-        _id: op.variationOption._id,
-        variationOption: op.variationOption._id,
-      };
-    }) || [];
+  const defaultOptions: any[] =
+    defaultVariation?.variationOptions?.map((op: any) => ({
+      price: op.price,
+      images: op.images,
+      _id: op.variationOption._id,
+      variationOption: op.variationOption._id,
+    })) || [];
+
   const form = useForm({
-    resolver: zodResolver(variationSchema),
+    resolver: zodResolver(variationSchema(productPrice)),
     defaultValues: {
       variation: defaultVariation?.variation?._id || "",
       variationOptions: defaultOptions,
@@ -58,15 +62,15 @@ const VariationForm = ({
   });
   const [options, setOptions] = useState<variationOptionsProps[]>([]);
   const [isPending, startTransition] = useTransition();
-  const onSubmit = async (data: z.infer<typeof variationSchema>) => {
+
+  const onSubmit = async (data: z.infer<ReturnType<typeof variationSchema>>) => {
     try {
       startTransition(async () => {
         const updatedOptions = await Promise.all(
           data.variationOptions.map(async (option, index) => {
             if (!option.images) return option;
-            const uploadedImages: any = await Promise.all(
-              option.images.map((file: File) => {
-                console.log(file);
+            const uploadedImages = await Promise.all(
+              option.images.map((file: File | any) => {
                 if (!(file instanceof File)) return file;
                 return uploadToCloudinary(file, (progress) => {
                   setUploadProgress((prev) => ({ ...prev, [index]: progress }));
@@ -76,18 +80,14 @@ const VariationForm = ({
             return {
               ...option,
               image: null,
-              images: [
-                ...uploadedImages.map((img: any) => ({
-                  imgUrl: img.imgUrl || img.secure_url,
-                  publicId: img.publicId || img.public_id,
-                })),
-              ],
+              images: uploadedImages.map((img: any) => ({
+                imgUrl: img.imgUrl || img.secure_url,
+                publicId: img.publicId || img.public_id,
+              })),
             };
           })
         );
-        console.log(updatedOptions);
         const res = await addVariants({ ...data, variationOptions: updatedOptions }, productId || "");
-        console.log(res);
         if (res?.success) toast.success("Variants Added successfully");
         router.refresh();
       });
@@ -96,19 +96,22 @@ const VariationForm = ({
       console.error(error);
     }
   };
-  const multi = options.map((option) => {
-    return { name: option.title, _id: option._id };
-  });
+
+  const multi = options.map((option) => ({
+    name: option.title,
+    _id: option._id,
+  }));
+
   const deleteOption = (variationId: string, variationOptionId: string) => {
     startTransition(async () => {
-      console.log(variationId);
       const res = await deleteVariantOption(productId || "", variationId, variationOptionId);
       if (res?.success) toast.success("Variation deleted successfully");
       if (res?.error) toast.error(res?.error.message);
       router.refresh();
     });
   };
-  const deleteImage = ({
+
+  const deleteImage = async ({
     variationId,
     variationOptionId,
     publicId,
@@ -121,7 +124,6 @@ const VariationForm = ({
       const res = await deleteVariantOptionImage(productId || "", variationId, variationOptionId, publicId);
       if (res?.success) toast.success(res?.success);
       if (res?.error) toast.error(res?.error.message);
-
       router.refresh();
     });
   };
@@ -132,14 +134,16 @@ const VariationForm = ({
           <CommandBox setOptions={setOptions} label="Variation" options={variants} control={control} name="variation" />
           <FancyMultiSelect control={control} label="Options" options={multi} name="variationOptions" />
         </div>
-        {fields.map((field: any, index) => (
+        {fields.map((field, index) => (
           <ModelCustom
             text="Edit Option"
             title="Edit Option"
             key={field.id}
             content={
-              <div className="flex flex-col py-2 px-4 border-gray-400 rounded-xl border items-start gap-2" key={index}>
+              <div className="flex flex-col py-8 px-4 border-gray-400 rounded-xl border items-start gap-2" key={index}>
                 <FormInput
+                  desc="The price for the variant will be added to the normal price .. if there is no specific  price 
+                 add 0"
                   price
                   control={control}
                   optional={true}
@@ -151,7 +155,7 @@ const VariationForm = ({
                 <ImageSmallInput
                   progress={uploadProgress}
                   control={control}
-                  args={{variationId:options[index]?.variation,variationOptionId: field.variationOption}}
+                  args={{ variationId: options[index]?.variation, variationOptionId: field.variationOption }}
                   label={field.name}
                   deleteImage={deleteImage}
                   name={`variationOptions.${index}.images`}
@@ -179,6 +183,15 @@ const VariationForm = ({
                       key={op._id}
                       className="flex cursor-pointer hover:bg-rose-300 hover:text-gray-950 duration-150 w-full py-2 px-4  items-center gap-3"
                     >
+                      {field.images && (
+                        <Image
+                          src={field.images?.[0].imgUrl}
+                          alt="product image"
+                          width={20}
+                          height={20}
+                          className="w-5 h-5 rounded-full"
+                        />
+                      )}
                       <p>{op.name}</p>
                     </div>
                   ))}

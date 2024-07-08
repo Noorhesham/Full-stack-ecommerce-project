@@ -2,6 +2,8 @@ import MaxWidthWrapper from "../components/MaxWidthWrapper";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ArrowDownToLineIcon, CheckCircle, Leaf } from "lucide-react";
+import ProductReel from "../components/ProductReel";
+import { HeroHighlightDemo } from "../components/HighLight";
 const perks = [
   { name: "Instant Delivery", description: "Get your order in as fast as one hour !", icon: ArrowDownToLineIcon },
   {
@@ -19,22 +21,29 @@ export default function Home() {
   return (
     <>
       <MaxWidthWrapper>
-        <div className=" py-20 mx-auto  text-center flex flex-col items-center max-w-3xl">
-          <h1 className="text-4xl font-bold capitalize tracking-tight text-gray-900 sm:text-6xl">
-            Your market place for high quality <span className=" text-rose-600">Online Products.</span>
-          </h1>
-          <p className=" mt-6 text-lg max-w-prose text-muted-foreground">
-            Welcome to our store. Every product on out plattform is verified by our team to ensure our highest quality
-            standards.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 mt-6">
-            <Link className={buttonVariants()} href={"/products"}>
-              Browse Trending
-            </Link>
-            <Button variant={"ghost"}>Our Quality Promise &rarr;</Button>
+        <HeroHighlightDemo>
+          <div className=" py-20 mx-auto  text-center flex flex-col items-center max-w-3xl">
+            <h1 className="text-4xl font-bold capitalize tracking-tight text-gray-900 sm:text-6xl">
+              Your market place for high quality <span className=" text-rose-600">Online Products.</span>
+            </h1>
+            <p className=" mt-6 text-lg max-w-prose text-muted-foreground">
+              Welcome to our store. Every product on out plattform is verified by our team to ensure our highest quality
+              standards.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 mt-6">
+              <Link className={buttonVariants()} href={"/products"}>
+                Browse Trending
+              </Link>
+              <Button variant={"ghost"}>Our Quality Promise &rarr;</Button>
+            </div>
           </div>
-        </div>
-        {/*todo:list products in a grid*/}
+        </HeroHighlightDemo>
+        <ProductReel
+          filters={{ isFeatured: true }}
+          title="Featured Products"
+          subTitle="Our top selling products"
+          href="/gaming"
+        />
       </MaxWidthWrapper>
       <section className=" border-t border-gray-200 bg-gray-50">
         <MaxWidthWrapper className=" py-20">

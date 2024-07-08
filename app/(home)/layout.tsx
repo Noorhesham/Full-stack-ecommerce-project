@@ -15,36 +15,10 @@ const inter = Inter({ subsets: ["latin"] });
 //todos
 /* 
 Dashboard for Seller
-
 Overview of sales and revenue
-List of products with edit and delete options
 Orders management (view orders, update order status)
 Sales analytics (charts and graphs)
-Product inventory management
-Product Form
 
-Step 1: Basic Details
-Product name
-Price
-Description
-Stock
-Brand
-Subcategory
-Category
-Step 2: Images
-Upload multiple images
-Preview uploaded images
-Save image URLs to database
-Step 3: Additional Information
-Creator (automatically set from user session)
-Attributes and variations (size, color, etc.)
-Categories
-
-Define categories for products
-Gaming devices
-Consoles
-Computers
-Manage categories (add, edit, delete)
 Admin Dashboard
 
 Manage pending products
@@ -54,9 +28,7 @@ View all orders
 Update order status
 User management
 View and manage users
-Assign roles (admin, seller, buyer)
 
-Implement NextAuth for authentication
 Role-based access control
 Password reset functionality
 Product Listing and Search

@@ -26,7 +26,7 @@ export const confirmSchema = z.object({
 
 export const productStep1Schema = z.object({
   name: z.string().min(1, "Product name is required"),
-  description: z.string().min(1, "Product description is required"),
+  description: z.string().min(1, "Product description is required").max(2500, "Product description is too long"),
   category: z.string().min(1, "Product category is required"),
   subCategories: z.array(z.object({ _id: z.string() })).optional(),
   price: z.string().min(1, "Product price is required"),
@@ -36,7 +36,7 @@ export const productStep1Schema = z.object({
     .array(
       z.object({
         title: z.string().min(1, "title is required"),
-        description: z.string().min(1, "description is required"),
+        description: z.string().min(1, "description is required").max(100, "description is too long"),
       })
     )
     .optional(),
@@ -46,21 +46,29 @@ export const productStep1Schema = z.object({
 export const addImagesSchema = z.object({
   images: z.array(z.string().url()).min(4, "Four images are required"),
 });
-export const variationSchema = z.object({
-  variation: z.string().min(1, "Variation name is required"),
-  variationOptions: z
-    .array(
-      z.object({
-        price: z.any().optional(),
-        variationOption: z.string().min(1, "Option title is required"),
-        image: z.any().optional(),
-        images: z.array(z.any()).optional(),
-      })
-    )
-    .max(3, "Maximum 3 options allowed")
-    .min(1, "Minimum 1 option required"),
-});
+export const variationSchema = (productPrice: number) =>
+  z.object({
+    variation: z.string().min(1, "Variation name is required"),
+    variationOptions: z
+      .array(
+        z.object({
+          price: z
+            .string()
+
+            .refine((price) => price && Number(price) < productPrice, {
+              message: "Variation price must be less than product price",
+            })
+            .optional(),
+          variationOption: z.string().min(1, "Option title is required"),
+          image: z.any().optional(),
+          images: z.array(z.any()).optional(),
+        })
+      )
+      .max(3, "Maximum 3 options allowed")
+      .min(1, "Minimum 1 option required"),
+  });
 export const statusSchema = z.object({
   status: z.string().nonempty("status is required"),
   message: z.string().optional(),
+  isFeatured: z.boolean().optional(),
 });

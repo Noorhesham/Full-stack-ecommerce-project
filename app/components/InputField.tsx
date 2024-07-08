@@ -1,6 +1,6 @@
 "use client";
 import React, { ReactNode, useState } from "react";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
@@ -10,6 +10,7 @@ import { CommandBox } from "./CommandBox";
 import RichText from "./RichText";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { BsCurrencyDollar } from "react-icons/bs";
 
 const FormInput = ({
   control,
@@ -27,7 +28,8 @@ const FormInput = ({
   select,
   register,
   switchToggle = false,
-  password = false, // Added password prop with default value false
+  desc,
+  password = false, // Added password prop with default value false,
 }: {
   control: any;
   onChange?: any;
@@ -43,6 +45,7 @@ const FormInput = ({
   icon?: ReactNode;
   select?: boolean;
   price?: boolean;
+  desc?: string;
   className?: string;
   password?: boolean; // Define password prop
 }) => {
@@ -93,7 +96,7 @@ const FormInput = ({
                 ) : switchToggle ? (
                   <div className="flex gap-2 items-center ">
                     <Switch id="sale" checked={field.value} onCheckedChange={field.onChange} />
-                    <Label htmlFor="sale">On Sale</Label>
+                    <Label htmlFor="sale">{label ? label : "On Sale"}</Label>
                   </div>
                 ) : description ? (
                   <RichText description={value || field.value} onChange={onChange ? onChange : field.onChange} />
@@ -113,7 +116,7 @@ const FormInput = ({
                     }}
                     onChange={(e) => {
                       if (onChange) return onChange(e);
-                      field.onChange(price ? handlePriceChange(e.target.value) : e.target.value);
+                      field.onChange(e.target.value);
                       setIsFocused((s) => (s = true));
                     }}
                   />
@@ -127,7 +130,13 @@ const FormInput = ({
                   {showPassword ? <EyeIcon className="w-4 h-4" /> : <EyeOffIcon className="w-4 h-4" />}
                 </span>
               )}
+              {price && (
+                <span className=" absolute left-2  cursor-pointer hover:text-gray-900 text-gray-800">
+                  <BsCurrencyDollar className="w-4 h-4" />
+                </span>
+              )}
             </div>
+            {desc && <FormDescription className=" text-sm text-muted-foreground">{desc}</FormDescription>}
             <FormMessage className=" text-sm dark:text-red-500" />
           </FormItem>
         )}

@@ -89,7 +89,7 @@ const LastFormProduct = ({ variations, isNotified }: { variations: VariationProp
                 productId={product?._id}
                 removeVariation={removeVariation}
                 variants={variations}
-                key={variationIndex}
+                key={variationIndex} productPrice={product?.price||10}
                 defaultVariation={
                   product && product?.variations?.length > 0 ? product?.variations?.[variationIndex] : []
                 }

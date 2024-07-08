@@ -7,18 +7,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { CopyIcon, MoreHorizontal, PenIcon } from "lucide-react";
 import Link from "next/link";
-import ModelCustom from "./ModelCustom";
-import { deleteProduct } from "../actions/products";
+import { deleteProduct, toggleFeatured } from "../actions/products";
 import { Delete } from "./Delete";
 import { ImBin2 } from "react-icons/im";
 import { toast } from "react-toastify";
 import { ProductProps } from "../types";
-import SelectFormStatus from "./SelectFormStatus";
+
 const TableActionsComponent = ({ product }: { product: ProductProps }) => {
   const queryClient = useQueryClient();
 
@@ -48,6 +47,32 @@ const TableActionsComponent = ({ product }: { product: ProductProps }) => {
           >
             Edit <PenIcon className="h-4 w-4 ml-auto" />
           </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          className="cursor-pointer text-sm flex justify-between hover:text-green-400 duration-150"
+          onClick={() => navigator.clipboard.writeText(product._id)}
+        >
+          Copy Product Id <CopyIcon className="h-4 w-4" />
+        </DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer w-full text-sm ">
+          <div className="flex items-center space-x-2">
+            <label
+              htmlFor="terms"
+              className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Mark as featured
+            </label>
+            <Checkbox
+              defaultChecked={product.isFeatured}
+              onCheckedChange={async (val: any) => {
+                console.log(val);
+                const res = await toggleFeatured(product._id, val);
+                if (res) toast.success(res.success);
+              }}
+              id="terms"
+            />
+          </div>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
 

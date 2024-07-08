@@ -12,7 +12,8 @@ export interface ProductProps {
   name: string;
   description: string;
   status: string;
-
+  isFeatured?: boolean;
+  variants?:string[]
   price: number;
   image: string;
   category: CategoryProps;
@@ -23,7 +24,7 @@ export interface ProductProps {
   images: { publicId: string; imgUrl: string; secure_url: string; public_id: string }[];
   createdAt: string;
   stock: number | string;
-  variations: VariationProps[];
+  variations: {variation:VariationProps&string,variationOptions:variationOptionsProps[]}[];
   id?: string;
   step: number;
   additionalInfo?:

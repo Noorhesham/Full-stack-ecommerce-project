@@ -125,10 +125,11 @@ export async function deleteImage(id: string, url: string, publicId: string) {
     console.log(error);
   }
 }
-export async function getProduct(id: string) {
+export async function getProduct(id: string,) {
   try {
     await connect();
     const product = await Product.findById(id)
+      .populate("category").populate("creator").populate("subCategories")
       .populate({
         path: "variations.variation",
         model: "Variation",
@@ -144,6 +145,23 @@ export async function getProduct(id: string) {
   }
 }
 
+export async function getSimilar(id: string) {
+  try {
+    await connect();
+    const product = await Product.findById(id).populate("category");
+    if (!product) throw new Error("Product not found");
+
+    const similarProducts = await Product.find({
+      category: product.category._id,
+      _id: { $ne: product._id },
+    })
+      .limit(5) // Adjust the number of similar products to retrieve
+      .populate("category");
+    return { similarProducts: JSON.parse(JSON.stringify(similarProducts)) };
+  } catch (error) {
+    console.log(error);
+  }
+}
 export async function getVariants() {
   try {
     await connect();
@@ -191,6 +209,12 @@ export async function getProducts(pageNum = 1, pageSize = 20, filters: any = {})
     if (filters.search) {
       query.search = { $regex: new RegExp(filters.search, "i") };
     }
+    if (filters.isFeatured) {
+      query.isFeatured = { $eq: true };
+    }
+    if(filters._id){
+      query._id =  filters._id ;
+    }
     const products = await Product.find(query)
       .skip(skip)
       .limit(pageSize)
@@ -201,7 +225,9 @@ export async function getProducts(pageNum = 1, pageSize = 20, filters: any = {})
       .populate({
         path: "creator",
         model: "User",
-      });
+        select: "firstName lastName _id",
+      })
+      .select("name category status createdAt price images numReviews rating ribbon salePrice isOnSale");
     const productsObj = JSON.parse(JSON.stringify(products));
     const totalCount = await Product.countDocuments(query).lean();
 
@@ -235,7 +261,16 @@ export async function getStats() {
     console.log(error);
   }
 }
-
+export async function toggleFeatured(id: string, value: boolean) {
+  try {
+    const product = await Product.findById(id);
+    if (!product) throw new Error("Product not found");
+    product.isFeatured = value;
+    await product.save();
+    const productObj = JSON.parse(JSON.stringify(product));
+    return { success: "Featured updated successfully!", status: 200, data: { productObj } };
+  } catch (error) {}
+}
 export async function addVariants(data: any, id: string) {
   try {
     const { variation, variationOptions } = data;

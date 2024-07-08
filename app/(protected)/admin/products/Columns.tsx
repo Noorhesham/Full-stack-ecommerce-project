@@ -108,6 +108,7 @@ export const columns: ColumnDef<ProductProps>[] = [
       );
     },
     cell({ row }) {
+      console.log(row.getValue("createdAt"));
       return <div className=" font-medium">{new Date(row.getValue("createdAt")).toLocaleDateString()}</div>;
     },
   },

@@ -14,19 +14,21 @@ import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import SelectField from "./SelectField";
 import BabySpinner from "./BabySpinner";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const SelectFormStatus = ({ product }: { product: ProductProps }) => {
   const form = useForm<z.infer<typeof statusSchema>>({
     resolver: zodResolver(statusSchema),
     defaultValues: {
       status: product?.status || "pending",
+      isFeatured: product?.isFeatured || false,
     },
   });
   console.log(form.formState);
   const queryClient = useQueryClient();
   const { handleSubmit, control } = form;
   const [isPending, startTransition] = React.useTransition();
-  const onSubmit =  (data: z.infer<typeof statusSchema>) => {
+  const onSubmit = (data: z.infer<typeof statusSchema>) => {
     startTransition(async () => {
       const res = await updateStatus(product._id, data.status);
       if (res.success) toast.success(res.success);
@@ -62,7 +64,7 @@ const SelectFormStatus = ({ product }: { product: ProductProps }) => {
           />
           <FormInput
             control={control}
-            name="message" 
+            name="message"
             className="w-full"
             label={`Message for ${product?.creator?.firstName}`}
             type="text"

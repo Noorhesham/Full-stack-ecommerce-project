@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { ReactNode } from "react";
 import {
   Dialog,
@@ -10,6 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+
 const ModelCustom = ({
   value,
   className,
@@ -18,7 +19,7 @@ const ModelCustom = ({
   create,
   title,
   btn,
-  content,
+  content,isOpen=false,
 }: {
   value?: any;
   className?: string;
@@ -26,10 +27,10 @@ const ModelCustom = ({
   onClick?: any;
   create?: boolean;
   title: string;
-  btn: ReactNode;
-  content: ReactNode;
+  btn?: ReactNode;
+  content: ReactNode;isOpen?:boolean
 }) => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(isOpen);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{btn}</DialogTrigger>
@@ -39,20 +40,21 @@ const ModelCustom = ({
           <DialogDescription>{text}</DialogDescription>
         </DialogHeader>
         {content}
-      <DialogFooter className=" self-end flex items-center gap-3">
-        <Button variant="outline" onClick={() => setOpen(false)}>
-          Cancel
-        </Button>
-        <Button type="button"
-          variant="default"
-          onClick={() => {
-            onClick&&onClick();
-            setOpen(false);
-          }}
-        >
-          Add Info
-        </Button>
-      </DialogFooter>
+        <DialogFooter className="self-end flex items-center gap-3">
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            variant="default"
+            onClick={() => {
+              onClick && onClick();
+              setOpen(false);
+            }}
+          >
+            Add Info
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

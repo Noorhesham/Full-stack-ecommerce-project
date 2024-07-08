@@ -5,7 +5,7 @@ import React from "react";
 import ModelCustom from "./ModelCustom";
 import UserOptions from "./UserOptions";
 
-const UserCard = ({ user }: { user: UserProps | any }) => {
+const UserCard = ({ user,noemail=false }: { user: UserProps | any,noemail?:boolean }) => {
   return (
     <ModelCustom title="Profile" text="View your profile"
       btn={
@@ -16,7 +16,7 @@ const UserCard = ({ user }: { user: UserProps | any }) => {
           </Avatar>
           <div className="flex flex-col text-sm items-start gap-1">
             <h1 className="font-bold">{user.firstName}</h1>
-            <p className="text-xs text-gray-400">{user.email}</p>
+            {!noemail&&<p className="text-xs text-gray-400">{user.email}</p>}
           </div>
         </div>
       }

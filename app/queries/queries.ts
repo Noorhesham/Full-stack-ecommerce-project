@@ -1,4 +1,3 @@
-
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   deleteImage as deleteImageApi,
@@ -13,6 +12,7 @@ import { toast } from "react-toastify";
 import Product from "@/lib/database/models/ProductsModel";
 import { deleteCategoryOrSub, updateCategoryOrSub } from "../actions/categoryActions";
 import { useEffect } from "react";
+import { addToCart, getCart, getProductByIdCart, removeFromCart } from "../actions/CartActions";
 
 const useDeleteImage = () => {
   const querClient = useQueryClient();
@@ -69,7 +69,7 @@ const useGetProduct = (id: string) => {
 };
 const useGetProducts = (page = 1, filters: {}) => {
   const queryClient = useQueryClient();
-  console.log(filters)
+  console.log(filters);
   const { data, isLoading, isError } = useQuery({
     queryKey: ["products", page, JSON.stringify(filters)],
     queryFn: async () => await getProducts(page, 10, filters),
@@ -165,7 +165,56 @@ const useUpdateCategories = (sub = false, parent?: string) => {
 
   return { update, isPending, isSuccess, newData };
 };
+const useGetCart = () => {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: [`cart`],
+    queryFn: async () => await getCart(),
+  });
+  const cartItems = data?.cart?.map((c: any) => ({
+    ...c.productId,
+    variants: [...c.variants],
+  }));
+  return { cartItems, isLoading, isError };
+};
+const useUpdateCart = (toaster = true) => {
+  const queryClient = useQueryClient();
+  const {
+    mutate: updateCart,
+    isPending,
+    isSuccess,
+    data: newData,
+  } = useMutation({
+    mutationFn: async ({ data, remove }: { data: { productId: string; variantId?: string[] }; remove?: boolean }) =>
+      remove ? removeFromCart(data.productId) : addToCart(data.productId, data.variantId),
+    onSuccess: (response: any) => {
+      if (response?.success) {
+        if (toaster) toast.success(response.success);
+        //@ts-ignore
+        queryClient.invalidateQueries("cart");
+      } else {
+        toast.error(response?.error || "An error occurred");
+      }
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "An error occurred");
+      console.log("onError:", err);
+    },
+  });
 
+  return { updateCart, isPending, isSuccess, newData };
+};
+const useGetProductCart = (id: string[]) => {
+  const queryKey = id.filter((id) => id);
+  const {
+    data: cart,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: [`cart ${queryKey}`],
+    queryFn: async () => await Promise.all(id.map((id) => getProduct(id))),
+  });
+  return { cart, isLoading, isError };
+};
 export {
   useDeleteImage,
   useUpdateImage,
@@ -175,4 +224,7 @@ export {
   useUpdateCategories,
   useGetSubCategories,
   useGetProducts,
+  useGetCart,
+  useUpdateCart,
+  useGetProductCart,
 };

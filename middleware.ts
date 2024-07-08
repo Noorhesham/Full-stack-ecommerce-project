@@ -7,7 +7,10 @@ export async function middleware(req: NextRequest) {
   const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const isLoggedIn = !!session;
   const isApiRoute = url.pathname.startsWith(apiAuthPrefix);
-  const isPublicRoute = publicRoutes.includes(url.pathname);
+  const isPublicRoute = publicRoutes.some((route) => {
+    const regex = new RegExp(`^${route.replace(/\[.*\]/, ".*")}$`);
+    return regex.test(url.pathname);
+  });
   const isAuthRoute = authRoutes.includes(url.pathname);
 
   if (isApiRoute) {

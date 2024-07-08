@@ -9,6 +9,7 @@ import User from "./User";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import ServerNotification from "./ServerNotification";
+import SignButtons from "./SignButtons";
 
 const NavBar = async () => {
   const data = await getServerSession(authOptions);
@@ -31,22 +32,7 @@ const NavBar = async () => {
                   {data?.user ? (
                     <User user={data.user} />
                   ) : (
-                    <>
-                      <Link
-                        className={buttonVariants({ variant: "ghost", className: " text-xs sm:text-sm" })}
-                        href={"/signin"}
-                      >
-                        Sign in
-                      </Link>
-                      <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
-                      <Link
-                        className={buttonVariants({ size: "sm", className: " text-xs sm:text-sm" })}
-                        href={"/signup"}
-                      >
-                        Create account
-                      </Link>
-                      <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
-                    </>
+                   <SignButtons/>
                   )}
                   <div className=" ml-4 flow-root lg:ml-6">
                     <Cart />
