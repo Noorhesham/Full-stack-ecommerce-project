@@ -9,7 +9,7 @@ import { Slider } from "@/components/ui/slider";
 import { cn } from "../utils/cn";
 import { Button } from "@/components/ui/button";
 import debounce from "lodash.debounce";
-import {motion} from "framer-motion";
+import { motion } from "framer-motion";
 const PRICE_FILTERS = [
   { value: [0, 10000], label: "Any Price", isCustom: false },
   { value: [1, 200], label: "Under 200$", isCustom: false },
@@ -107,7 +107,7 @@ const Filters = () => {
   const handlePriceChange = ({
     range,
     isCustom,
-    debounce,
+    debounce = false,
   }: {
     range: [number, number];
     isCustom: boolean;
@@ -116,7 +116,7 @@ const Filters = () => {
     const url = new URL(window.location.href);
     const [newMin, newMax] = range;
     setPriceFilter({ range: [newMin, newMax], isCustom });
-    debounce ? debouncePriceChange(range) : updatePriceUrl([newMin, newMax]);
+    debounce ? debouncePriceChange(range) : updatePriceUrl(range);
     replace(url.toString(), { scroll: false });
   };
   const handleResetFilters = () => {
@@ -203,12 +203,19 @@ const Filters = () => {
                         priceFilter?.range?.[1] === filter.value?.[1] &&
                         !priceFilter?.isCustom
                       }
-                      onChange={() =>
+                      onChange={() => {
+                        const url = new URL(window.location.href);
                         handlePriceChange({
                           range: filter.value,
                           isCustom: false,
-                        })
-                      }
+                          debounce: false,
+                        });
+                        url.searchParams.delete("minPrice");
+                        url.searchParams.delete("maxPrice");
+                        url.searchParams.append("minPrice", filter.value[0].toString());
+                        url.searchParams.append("maxPrice", filter.value[1].toString());
+                        replace(url.toString(), { scroll: false });
+                      }}
                     />
                     <label
                       htmlFor={filter.value}
