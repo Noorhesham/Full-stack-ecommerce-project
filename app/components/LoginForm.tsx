@@ -57,6 +57,7 @@ const LoginForm = () => {
           updateCart({ data: { productId, variantId }, remove: false });
         }
       );
+      localStorage.removeItem("cart");
       router.refresh();
     } catch (error: any) {
       setError(error.message);

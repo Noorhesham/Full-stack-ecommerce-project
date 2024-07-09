@@ -10,25 +10,27 @@ const ProductCard = ({ product, index }: { product: ProductProps; index: number 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(true);
-    }, index * 45);
+    }, index * 75);
     return () => clearTimeout(timer);
   }, [index]);
   return isVisible ? (
     <Link
-      className={`${cn("invisible h-full w-full cursor-pointer group/main ", {
-        "visible animate-in fade-in-5 shadow-sm rounded-xl": isVisible,
-      })}`}
+      className={`${cn(" opacity-0  h-full w-full cursor-pointer group-main ", {
+        " opacity-100 animate-in duration-200 fade-in-5 shadow-sm rounded-xl": isVisible,
+      })} self-stretch flex flex-col `}
       href={`/product/${product._id}`}
     >
       <ImageSlider stock={product.stock} productId={product._id} urls={product.images.map((image) => image.imgUrl)} />
-      <div className=" flex flex-col py-1 px-2 w-full">
+      <div className=" flex flex-col self-stretch justify-between py-1 px-2 w-full">
         <h3 className=" mt-4 font-medium text-sm text-gray-700 ">{product.name}</h3>
-        <p className=" mt-1 text-sm text-gray-500">{product.category.name}</p>
-        <p className=" mt-1 font-medium text-sm text-gray-900">{formatPrice(product.price)}</p>
+       <div className=" mt-auto">
+       <p className=" mt-1 text-sm text-gray-500">{product.category.name}</p>
+       <p className=" mt-1 font-medium text-sm text-gray-900">{formatPrice(product.price)}</p>
+       </div>
       </div>
     </Link>
   ) : (
-    Array.from({ length: 8 }, (_, i) => <ProductLoader key={i} />)
+    <ProductLoader  />
   );
 };
 

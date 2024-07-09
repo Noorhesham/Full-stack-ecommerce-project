@@ -69,3 +69,11 @@ export function convertToHTML(input: string) {
 
   return html;
 }
+
+export function debounce(fn: any, delay: number) {
+  let timeout: NodeJS.Timeout;
+  return (...args: any[]) => {
+    timeout = setTimeout(() => fn(...args), delay);
+    clearTimeout(timeout);
+  };
+}

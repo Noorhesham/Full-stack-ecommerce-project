@@ -1,17 +1,22 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { startTransition, useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
-import { motion } from "framer-motion";
+import { Reorder, motion, useDragControls, useMotionValue } from "framer-motion";
 import ImageInput from "./ImageInput";
 import { toast } from "react-toastify";
 import { useDeleteImage, useGetProduct, useUpdateImage } from "../queries/queries";
-import { UploadImage } from "../actions/products";
+import { reOrderImages, UploadImage } from "../actions/products";
 import MiniSpinner from "./MiniSpinner";
 import axios from "axios";
 import NextStep from "./NextStep";
 import { ProductProps } from "../types";
 import { useRouter } from "next/navigation";
+import { useRaisedShadow } from "../hooks/useRaisedShadow";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { ReorderIcon } from "./ReorderIcon";
+import { debounce } from "@/lib/utils";
 
 const AddImagesForm = ({ product }: { product: ProductProps | any }) => {
   const { DeleteImage, isPending, isDeleted } = useDeleteImage();
@@ -19,8 +24,12 @@ const AddImagesForm = ({ product }: { product: ProductProps | any }) => {
   const [isLoading, setIsLoading] = useState<{ i: number; loading: boolean; progress?: number }[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [rejected, setRejected] = useState<File[]>([]);
-  const [preview, setPreview] = useState<string[]>([]);
+  const [preview, setPreview] = useState<string[]>([...product.images.map((img: any) => img.imgUrl)]);
   const [isUploaded, setIsUploaded] = useState(false);
+  const [imgCount, setImgCount] = useState(product.images.length > 4 ? product.images.length : 4);
+  const y = useMotionValue(0);
+  const DragControls = useDragControls();
+  const boxShadow = useRaisedShadow(y);
   const handleLoading = (index: number, loading: boolean, progress?: number) => {
     setIsLoading((prevState) => {
       const updatedState = [...prevState];
@@ -55,7 +64,6 @@ const AddImagesForm = ({ product }: { product: ProductProps | any }) => {
         publicId: product?.images[index].publicId,
       });
     }
-    console.log(preview);
     setPreview((prevFiles) => [...prevFiles.filter((_, i) => i !== index)]);
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
     console.log(files, preview, index);
@@ -109,7 +117,22 @@ const AddImagesForm = ({ product }: { product: ProductProps | any }) => {
     }
     router.refresh();
   };
-
+  const handleReorder = (newOrder: string[]) => {
+    setPreview(newOrder);
+    const ids = newOrder.map((img, index) => {
+      console.log(product.images[index].imgUrl, img);
+      return product.images.find((image: any) => image.imgUrl === img);
+    });
+    debounce(
+      startTransition(async () => {
+        const res = await reOrderImages(product._id, ids);
+        if (res?.success) toast.success(res?.success);
+        if (res?.error) toast.error(res?.error);
+        router.refresh();
+      }),
+      1000
+    );
+  };
   return (
     <motion.div
       initial={{ x: 1000 }}
@@ -127,7 +150,7 @@ const AddImagesForm = ({ product }: { product: ProductProps | any }) => {
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="flex min-h-[60vh] flex-col items-center">
             <div className="px-3 py-1.5 mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              {Array.from({ length: 4 }, (_, i) => (
+              {Array.from({ length: imgCount }, (_, i) => (
                 <ImageInput
                   key={i}
                   id={product?._id}
@@ -144,7 +167,9 @@ const AddImagesForm = ({ product }: { product: ProductProps | any }) => {
                 />
               ))}
             </div>
-
+            <Button type="button" className=" ml-auto" onClick={() => setImgCount((prev) => prev + 1)}>
+              Add Image
+            </Button>
             <NextStep
               isReady={product.images?.length > 1}
               error="Please upload at least 2 images"
@@ -162,6 +187,27 @@ const AddImagesForm = ({ product }: { product: ProductProps | any }) => {
               </div>
             ))}
         </Form>
+        <div className=" px-4 py-2">
+          <h1 className="text-2xl text-gray-900  font-semibold  my-3 tracking-tight">Reorder your images</h1>
+          <Reorder.Group axis="x" className=" gap-3 flex flex-wrap" values={preview} onReorder={handleReorder}>
+            {preview.map((image, index) => (
+              <Reorder.Item
+                key={image}
+                dragControls={DragControls}
+                value={image}
+                className="w-40 h-40 bg-gray-200 rounded-lg relative flex items-center justify-center cursor-grab"
+              >
+                <ReorderIcon dragControls={DragControls} />
+                <Image
+                  fill
+                  src={image}
+                  alt="Preview"
+                  className="w-full select-none absolute h-full object-cover rounded-lg"
+                />
+              </Reorder.Item>
+            ))}
+          </Reorder.Group>
+        </div>
       </div>
     </motion.div>
   );

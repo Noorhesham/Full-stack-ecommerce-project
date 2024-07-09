@@ -17,10 +17,11 @@ import { Delete } from "./Delete";
 import { ImBin2 } from "react-icons/im";
 import { toast } from "react-toastify";
 import { ProductProps } from "../types";
+import { useSession } from "next-auth/react";
 
 const TableActionsComponent = ({ product }: { product: ProductProps }) => {
   const queryClient = useQueryClient();
-
+  const {data}=useSession()
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -43,7 +44,7 @@ const TableActionsComponent = ({ product }: { product: ProductProps }) => {
         >
           <Link
             className="flex justify-between w-full   hover:text-green-400 duration-150"
-            href={`/create-product/${product._id}`}
+            href={`${data?.user.isAdmin ? "/admin" : "/seller"}/create-product/${product._id}`}
           >
             Edit <PenIcon className="h-4 w-4 ml-auto" />
           </Link>

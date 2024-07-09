@@ -2,21 +2,22 @@
 import React from "react";
 import { ProductProps } from "../types";
 import Image from "next/image";
-import { X } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useUpdateCart } from "../queries/queries";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatPrice } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 const CartItem = ({
   product,
   calculateFinalPrice,
-  variants,
+  variants,check=false
 }: {
   product: ProductProps;
   calculateFinalPrice?: any;
-  variants?: any;
+  variants?: any;check?:boolean
 }) => {
   const { updateCart, isPending } = useUpdateCart();
   const { data } = useSession();
@@ -51,15 +52,19 @@ const CartItem = ({
             <span className=" line-clamp-1 text-sm font-medium mb-1">{product.name}</span>{" "}
             <span className=" line-clamp-1 text-sm capitalize text-muted-foreground ">{product.category.name}</span>
             <div className=" mt-4 text-xs text-muted-foreground">
-              <button
+              <Button aria-label="Remove item" variant={"ghost"}
                 onClick={() => handleRemoveItem(product._id)}
                 className="flex  hover:text-red-400 duration-150 items-center gap-0.5"
               >
                 <X className="w-3 h-4" />
                 Remove
-              </button>
+              </Button>
             </div>
           </div>
+          {check&& <p className=" mt-4 flex space-x-2 text-sm text-gray-700">
+            <Check className=" h-5 w-5  text-green-500"/>
+            <span>Eligible for free shipping</span>
+          </p>}
         </div>
         <div className="flex flex-col  space-y-1 font-medium">
           <span className=" ml-auto line-clamp-1 text-sm">

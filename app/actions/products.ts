@@ -84,7 +84,19 @@ export async function UploadImage(res: any, id: string) {
     console.log(error);
   }
 }
-
+export async function reOrderImages(id: string, images: string[]) {
+  try {
+    await connect();
+    const product = await Product.findById(id);
+    product.images = images;
+    await product.save();
+    const productObject = JSON.parse(JSON.stringify(product));
+    return { success: "Images re-ordered successfully!", status: 200, data: { product: productObject } };
+  } catch (error) {
+    console.log(error);
+    return { error: "An error occurred while processing the request. Please try again!" };
+  }
+}
 export async function updateImage(formData: any, id: string, url: string) {
   try {
     const data = await fetch(process.env.NEXT_PUBLIC_PUBLIC_CLOUDINARY_URL!, {
@@ -125,11 +137,13 @@ export async function deleteImage(id: string, url: string, publicId: string) {
     console.log(error);
   }
 }
-export async function getProduct(id: string,) {
+export async function getProduct(id: string) {
   try {
     await connect();
     const product = await Product.findById(id)
-      .populate("category").populate("creator").populate("subCategories")
+      .populate("category")
+      .populate("creator")
+      .populate("subCategories")
       .populate({
         path: "variations.variation",
         model: "Variation",
@@ -195,7 +209,7 @@ export async function getSubCategories(parentId: string) {
   }
 }
 
-export async function getProducts(pageNum = 1, pageSize = 20, filters: any = {}) {
+export async function getProducts(pageNum = 1, pageSize = 20, filters: any = {}, sort?:any) {
   try {
     await connect();
     const skip = (pageNum - 1) * pageSize;
@@ -212,12 +226,27 @@ export async function getProducts(pageNum = 1, pageSize = 20, filters: any = {})
     if (filters.isFeatured) {
       query.isFeatured = { $eq: true };
     }
-    if(filters._id){
-      query._id =  filters._id ;
+    if (filters._id) {
+      query._id = filters._id;
     }
+    if (filters.subCategories && filters.subCategories.length > 0) {
+      query.subCategories = { $in: filters.subCategories };
+    }
+    if (filters.price) {
+      query.price = { $gte: filters.price.min || 0, $lte: filters.price.max || Infinity };
+    }
+    const sortCriteria: any = {};
+    if (sort) {
+      const [sortBy, sortOrder] = sort.split(":");
+      sortCriteria[sortBy] = sortOrder === "desc" ? -1 : 1;
+    } else {
+      sortCriteria.createdAt = -1;
+    }
+    console.log(sortCriteria);
     const products = await Product.find(query)
       .skip(skip)
       .limit(pageSize)
+      .sort(sortCriteria)
       .populate({
         path: "category",
         model: "Category",
@@ -230,7 +259,6 @@ export async function getProducts(pageNum = 1, pageSize = 20, filters: any = {})
       .select("name category status createdAt price images numReviews rating ribbon salePrice isOnSale");
     const productsObj = JSON.parse(JSON.stringify(products));
     const totalCount = await Product.countDocuments(query).lean();
-
     return {
       products: productsObj,
       totalPages: Math.ceil(totalCount / pageSize),

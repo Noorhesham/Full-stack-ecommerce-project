@@ -4,6 +4,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { ArrowDownToLineIcon, CheckCircle, Leaf } from "lucide-react";
 import ProductReel from "../components/ProductReel";
 import { HeroHighlightDemo } from "../components/HighLight";
+import Filters from "../components/Filters";
 const perks = [
   { name: "Instant Delivery", description: "Get your order in as fast as one hour !", icon: ArrowDownToLineIcon },
   {
@@ -17,7 +18,17 @@ const perks = [
     icon: CheckCircle,
   },
 ];
-export default function Home() {
+export default function Home({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
+  const category = searchParams.category;
+  const subCategories = searchParams.subcategories;
+  const price = {
+    min: searchParams.minPrice,
+    max: searchParams.maxPrice,
+  };
+  //@ts-ignore
+  const page = searchParams.page !== undefined ? parseInt(searchParams.page) : 1;
+  const sort = searchParams.sort;
+  const filters = { category, subCategories, price };
   return (
     <>
       <MaxWidthWrapper>
@@ -43,7 +54,24 @@ export default function Home() {
           title="Featured Products"
           subTitle="Our top selling products"
           href="/gaming"
+          sort={""}
         />
+        <section id="products" className="  grid-cols-1 md:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 grid gap-4 py-5 mt-5">
+          <div className=" hidden lg:block">
+          <Filters />
+          </div>
+          <div className=" ml-3 col-span-full lg:col-span-2 xl:col-span-3 ">
+            <ProductReel
+              filters={filters ? filters : null}
+              className=" py-0"
+              page={page}
+              title="All Products"
+              subTitle="Browse All products"
+              sort={sort} paginate={true}
+            />
+
+          </div>
+        </section>
       </MaxWidthWrapper>
       <section className=" border-t border-gray-200 bg-gray-50">
         <MaxWidthWrapper className=" py-20">
