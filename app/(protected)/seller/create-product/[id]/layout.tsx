@@ -20,7 +20,7 @@ export default async function RootLayout({
   await connect();
   const product: any = await getProduct(params.id);
   const session = await getServerSession(authOptions);
-  if (product?.product.creator !== session?.user.id) redirect("/");
+  if (product?.product.creator != session?.user.id) redirect("/");
   return (
     <div className="h-full">
       <Steps product={product && product.product} id={params.id || ""} />
