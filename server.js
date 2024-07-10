@@ -3,7 +3,9 @@ const next = require("next");
 const { Server } = require("socket.io");
 const mongoose = require("mongoose");
 const Notification = require("./lib/database/models/NotificationModel.ts");
-
+const bodyParser = require("body-parser");
+const stripeWebhookHandler = require("./app/api/webhooks/route.js").POST; // Import the webhook handler function
+// Import the webhook handler function
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
 const port = 3000;
@@ -11,7 +13,22 @@ const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
 
 app.prepare().then(() => {
-  const httpServer = createServer(handler);
+  const express = require("express");
+  const expressApp = express();
+  expressApp.use(bodyParser.raw({ type: "application/json" }));
+
+  expressApp.post("/api/webhooks", async (req, res) => {
+    console.log(req.body, req.headers);
+    await stripeWebhookHandler(req, res); // Call the webhook handler
+  });
+
+  const httpServer = createServer((req, res) => {
+    if (req.url.startsWith("/api/webhooks")) {
+      expressApp(req, res);
+    } else {
+      handler(req, res);
+    }
+  });
 
   const io = new Server(httpServer);
 
@@ -27,7 +44,6 @@ app.prepare().then(() => {
       console.log(`User ${userId} joined the room`);
     });
 
-    //listening to notifications from user to admin
     socket.on("sendNotification", async (value, userId) => {
       const notification = await Notification.create({
         userId: value.userId,
@@ -40,15 +56,13 @@ app.prepare().then(() => {
         .populate({ path: "userId", select: "firstName lastName" })
         .lean();
       console.log(notification, populatedNotification);
-      //sending notifications to admin
       io.to(userId.toString()).emit("sentNotification", populatedNotification);
     });
 
-    //listening to notifications from admin to specific user
     socket.on("AcceptProduct", async (value, userId) => {
       const notification = await Notification.create({
         userId: value.userId,
-        message: value.message||"Your product has been accepted and is  public.",
+        message: value.message || "Your product has been accepted and is public.",
         productId: value.productId,
       });
       const populatedNotification = await Notification.findById(notification._id)

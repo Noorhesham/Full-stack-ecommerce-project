@@ -1,38 +1,39 @@
 "use client";
+import { payProduct } from "@/app/actions/pay";
+import BabySpinner from "@/app/components/BabySpinner";
 import CartItem from "@/app/components/CartItem";
 import Loader from "@/app/components/Loader";
 import { useGetCart } from "@/app/queries/queries";
 import { ProductProps } from "@/app/types";
-import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
-import { cn, formatPrice } from "@/lib/utils";
-import { X } from "lucide-react";
+import { calculateFinalPrice, cn, formatPrice } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import { redirect } from "next/navigation";
+import React, { useTransition } from "react";
+import { toast } from "react-toastify";
 
 const Page = () => {
   const { cartItems, isLoading } = useGetCart();
+  const [isPending, startTransition] = useTransition();
   if (isLoading) return <Loader className="w-40 h-40 m-auto" />;
-  const calculateFinalPrice = (price: any, variants: any, variations: any) => {
-    let basePrice = typeof price === "number" ? price : +price.replace("$", "");
-    if (!variants || !variations) return basePrice;
-
-    variants.forEach((variantId: string) => {
-      variations.forEach((variation: any) => {
-        const option = variation.variationOptions.find((vo: any) => vo._id == variantId);
-        if (option && typeof option.price === "string") {
-          basePrice += +option.price.replace("$", "") || 0;
-        }
-      });
-    });
-
-    return basePrice;
-  };
   const cartTotal = cartItems?.reduce((acc: number, { price, isOnSale, salePrice, variants, variations }: any) => {
     const finalPrice = calculateFinalPrice(price, variants, variations);
     return acc + (isOnSale ? finalPrice - +salePrice.replace("$", "") : finalPrice);
   }, 0);
+  const productsData = cartItems.map((item: ProductProps) => {
+    return { ...item, price: calculateFinalPrice(item.price, item.variants, item.variations) };
+  });
+  const handleCheckout = async () => {
+    startTransition(async () => {
+      const response = await payProduct(productsData, cartTotal);
+      if (response) {
+        toast.success("redirecting to payment page");
+        //@ts-ignore
+        redirect(response?.url);
+      } else toast.error("An error occurred");
+    });
+  };
   return (
     <div className=" bg-white">
       <div className=" mx-auto max-w-2xl px-4 pb-24 pt-16 sm:px-6 lg:max-w-7xl  lg:px-8">
@@ -56,19 +57,10 @@ const Page = () => {
             <ul
               className={cn({ "divide-y divide-gray-200 border-b  border-gray-200 border-t": cartItems?.length > 0 })}
             >
-              {cartItems?.map((product: ProductProps) => {
+              {cartItems?.map((product: ProductProps, i: number) => {
                 const variantsItems = product.variants;
-                const basePrice = calculateFinalPrice(product.price, variantsItems, product.variations);
                 return (
-                  <CartItem
-                    check={true}
-                    key={product._id}
-                    product={product}
-                    variants={variantsItems}
-                    calculateFinalPrice={calculateFinalPrice}
-                    variations={product.variations}
-                    basePrice={basePrice}
-                  />
+                  <CartItem check={true} key={i} product={product} variants={variantsItems}  />
                 );
               })}
             </ul>
@@ -89,12 +81,16 @@ const Page = () => {
                 <dd>$0.00</dd>
               </div>
             </div>
-            <Link href="/checkout" className={cn(buttonVariants({ variant: "default", size: "lg" }), "w-full mt-4")}>
-              Checkout
-            </Link>
+            <button
+              disabled={isPending}
+              onClick={() => handleCheckout()}
+              className={cn(buttonVariants({ variant: "default", size: "lg" }), "w-full mt-4")}
+            >
+              {!isPending ? "Checkout" : <BabySpinner />}
+            </button>
             <p className="mt-6 text-center text-sm text-gray-500">or</p>
-            <Link href="/#products" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "w-full mt-4")}>
-              Continue Shopping
+            <Link href="/products" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "w-full mt-4")}>
+              Continue Shopping <span aria-hidden="true"> &rarr;</span>
             </Link>
           </section>
         </div>

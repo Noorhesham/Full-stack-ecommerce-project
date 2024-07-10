@@ -80,9 +80,10 @@ export async function getCart() {
         },
       })
       .lean();
+      const userData=JSON.parse(JSON.stringify(user))
     if (!user) throw new Error("User not found");
     //@ts-ignore
-    return { success: "Cart fetched", status: 200, cart: user.cart };
+    return { success: "Cart fetched", status: 200, cart: userData.cart };
   } catch (error: any) {
     return { error: error.message, status: 500 };
   }

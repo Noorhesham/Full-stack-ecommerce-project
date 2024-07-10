@@ -77,3 +77,18 @@ export function debounce(fn: any, delay: number) {
     clearTimeout(timeout);
   };
 }
+export   const calculateFinalPrice = (price: any, variants: any, variations: any) => {
+  let basePrice = typeof price === "number" ? price : +price.replace("$", "");
+  if (!variants || !variations) return basePrice;
+
+  variants.forEach((variantId: string) => {
+    variations.forEach((variation: any) => {
+      const option = variation.variationOptions.find((vo: any) => vo._id == variantId);
+      if (option && typeof option.price === "string") {
+        basePrice += +option.price.replace("$", "") || 0;
+      }
+    });
+  });
+
+  return basePrice;
+};

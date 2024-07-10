@@ -7,6 +7,7 @@ export async function middleware(req: NextRequest) {
   const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const isLoggedIn = !!session;
   const isApiRoute = url.pathname.startsWith(apiAuthPrefix);
+  console.log(req.url);
   const isPublicRoute = publicRoutes.some((route) => {
     const regex = new RegExp(`^${route.replace(/\[.*\]/, ".*")}$`);
     return regex.test(url.pathname);
@@ -28,6 +29,10 @@ export async function middleware(req: NextRequest) {
     //@ts-ignore
     if (!session.user.isAdmin && url.pathname.startsWith("/admin")) {
       url.pathname = "/";
+      return NextResponse.redirect(url);
+    }
+    if (isAuthRoute) {
+      url.pathname = defaultLoginRedirect;
       return NextResponse.redirect(url);
     }
     return NextResponse.next();

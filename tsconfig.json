@@ -21,6 +21,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "lib/database/models/SubCategoreyModel.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "lib/database/models/SubCategoreyModel.ts", "lib/stripe.js", "server.mts", "lib/database/models/NotificationModel.ts", "app/api/webhooks/route.js"],
   "exclude": ["node_modules"]
 }

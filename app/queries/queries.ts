@@ -13,6 +13,7 @@ import Product from "@/lib/database/models/ProductsModel";
 import { deleteCategoryOrSub, updateCategoryOrSub } from "../actions/categoryActions";
 import { useEffect } from "react";
 import { addToCart, getCart, getProductByIdCart, removeFromCart } from "../actions/CartActions";
+import { getOrderStatus } from "../actions/pay";
 
 const useDeleteImage = () => {
   const querClient = useQueryClient();
@@ -170,12 +171,13 @@ const useGetCart = () => {
     queryKey: [`cart`],
     queryFn: async () => await getCart(),
   });
-  const cartItems = data?.cart?.map((c: any) => ({
+  let cartItems = data?.cart?.map((c: any) => ({
     ...c.productId,
     variants: [...c.variants],
   }));
   return { cartItems, isLoading, isError };
 };
+
 const useUpdateCart = (toaster = true) => {
   const queryClient = useQueryClient();
   const {
@@ -215,6 +217,31 @@ const useGetProductCart = (id: string[]) => {
   });
   return { cart, isLoading, isError };
 };
+const useGetOrderStatus = (id: string) => {
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: [`orderStatus ${id}`],
+    queryFn: async () => await getOrderStatus(id),
+  });
+
+  // Conditional refetching logic
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+
+    if (data?.order .isPaid === false) {
+      interval = setInterval(() => {
+        refetch();
+      }, 2000);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [data, refetch]);
+
+  return { data, isLoading, isError };
+};
 export {
   useDeleteImage,
   useUpdateImage,
@@ -227,4 +254,5 @@ export {
   useGetCart,
   useUpdateCart,
   useGetProductCart,
+  useGetOrderStatus,
 };

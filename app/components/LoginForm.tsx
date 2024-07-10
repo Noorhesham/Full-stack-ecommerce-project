@@ -49,7 +49,7 @@ const LoginForm = () => {
         setError("Invalid email or password, please try again ! 😢");
         return;
       }
-      router.push(`${redirect}`);
+      router.push(`${redirect ? redirect : "/"}`);
       toast.success("Login Successful");
 
       JSON.parse(localStorage.getItem("cart") || "[]").map(

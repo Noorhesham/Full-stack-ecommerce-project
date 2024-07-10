@@ -2,9 +2,6 @@ import React, { Suspense } from "react";
 import NextLink from "./NextLink";
 import ProductReelFetch from "./ProductReelFetch";
 import { Skeleton } from "@/components/ui/skeleton";
-import Sort from "./Sort";
-import { FaFilter } from "react-icons/fa";
-import Filters from "./Filters";
 import FilterMobile from "./FilterMobile";
 interface ProductReelProps {
   title: string;

@@ -3,7 +3,7 @@ import React from 'react'
 
 const BabySpinner = () => {
   return (
-    <Loader2 className='h-8 text-sm w-8 animate-spin '/>
+    <Loader2 className='h-8 m-auto text-center text-sm w-8 animate-spin '/>
   )
 }
 

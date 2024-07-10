@@ -209,7 +209,7 @@ export async function getSubCategories(parentId: string) {
   }
 }
 
-export async function getProducts(pageNum = 1, pageSize = 20, filters: any = {}, sort?:any) {
+export async function getProducts(pageNum = 1, pageSize = 20, filters: any = {}, sort?: any) {
   try {
     await connect();
     const skip = (pageNum - 1) * pageSize;
