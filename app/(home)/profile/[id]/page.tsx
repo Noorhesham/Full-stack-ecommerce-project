@@ -11,19 +11,16 @@ type Props = {
   params: { id: string };
   searchParams: { [key: string]: string | string[] | undefined };
 };
+
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const id = params.id;
 
   const user = await User.findById(id);
-
-  return {
+  return constructMetadata({
     title: `Shinobi Store - ${user.firstName} ${user.lastName}`,
-    openGraph: {
-      images: [{ url: user.photo?.imgUrl || "/logo.jpg" }],
-    },
-  };
+    image: user.photo?.imgUrl || "/logo1.jpg",
+  });
 }
-
 const page = async ({
   params,
   searchParams,
