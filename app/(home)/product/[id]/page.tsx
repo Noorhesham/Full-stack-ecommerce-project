@@ -171,7 +171,7 @@ const page = async ({
                 <h2 className="text-sm font-medium text-muted-foreground text-gray-900">Published By</h2>
                 <div className="flex items-center gap-1">
                   <Avatar>
-                    <AvatarImage src={`${product.creator.photo}` || "/avatar.jpg"} />
+                    <AvatarImage src={`${product.creator.photo.imgUrl}` || "/avatar.jpg"} />
                     <AvatarFallback className=" bg-orange-300">{product.creator.firstName}</AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col text-sm items-start gap-1">
@@ -209,7 +209,7 @@ const page = async ({
         filters={{ category: product.category._id, _id: { $ne: product._id } }}
         pageSize={5}
         subTitle={"Browse more like this"}
-        title={`Similar ${product.category.name} Products just like ${product.name.split("").slice(0, 15).join("")}`}
+        title={`Similar ${product.category.name} Products `}
       />
     </MaxWidthWrapper>
   );

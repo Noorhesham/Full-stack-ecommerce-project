@@ -195,8 +195,8 @@ export async function getVariants() {
   }
 }
 export async function getCategories() {
+  await connect();
   try {
-    await connect();
     const categories = await Category.find();
     const categoriesObj = JSON.parse(JSON.stringify(categories));
     return categoriesObj;
@@ -205,8 +205,8 @@ export async function getCategories() {
   }
 }
 export async function getSubCategories(parentId: string) {
+  await connect();
   try {
-    await connect();
     const categories = await SubCategory.find({
       parentCategory: parentId,
     });

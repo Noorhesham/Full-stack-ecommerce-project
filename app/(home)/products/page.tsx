@@ -10,7 +10,7 @@ const page = async ({ searchParams }: { searchParams: { [key: string]: string | 
   const sort = searchParams.sort;
 
   const categoryItem = await Category.findOne({ name: categoryParam }).lean();
-  if (!categoryItem) return notFound();
+
   return (
     <MaxWidthWrapper className=" mt-10">
       <section
@@ -24,10 +24,10 @@ const page = async ({ searchParams }: { searchParams: { [key: string]: string | 
           <ProductReel
             paginate
             onlyPrice
-            filters={{ category: categoryItem }}
+            filters={{ category: categoryItem && categoryItem }}
             subTitle=" "
             sort={sort}
-            title={`Our Products for ${categoryItem?.name}`}
+            title={`Our Products ${categoryItem ? `for ${categoryItem?.name} ` : ""}`}
           />
         </div>
       </section>
