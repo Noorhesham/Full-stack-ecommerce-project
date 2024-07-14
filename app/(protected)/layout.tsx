@@ -6,7 +6,6 @@ import { constructMetadata } from "@/lib/utils";
 import connect from "@/lib/database/connect";
 
 export const metadata = constructMetadata({
-  image: "/logo1.jpg",
   icons: "/favicon.ico",
   title: "Shinobi Store - Sell and manage your products",
 });
