@@ -27,10 +27,10 @@ export default function ThreeDSpace({ className }: { className?: string }) {
       <Canvas className="w-full mb-20 h-full">
         <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
         <Suspense fallback={<Loader />}>
-          <directionalLight intensity={0.5} />
+          <directionalLight intensity={0.8} />
           <ambientLight intensity={0.3} />
-          <pointLight intensity={0.5} />
-          <hemisphereLight intensity={0.6} />
+          <pointLight intensity={0.8} />
+          <hemisphereLight intensity={0.8} />
           <Space />
         </Suspense>
       </Canvas>
