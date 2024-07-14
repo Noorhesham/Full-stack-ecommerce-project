@@ -54,14 +54,14 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
           </div>
         </HeroHighlightDemo>
         <ProductReel
-          filters={{ isFeatured: true }}
+          filters={{ isFeatured: true, status: "published" }}
           title="Featured Products"
           subTitle="Our top selling products"
           href="/products"
           sort={""}
         />
         <ProductReel
-          filters={{ category: "6679b412d0b3a021c9dca130" }}
+          filters={{ category: "6679b412d0b3a021c9dca130",status:'published' }}
           className=" py-0"
           page={page}
           href={`/products/category=Gaming`}
@@ -71,7 +71,7 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
           sort={""}
         />
         <ProductReel
-          filters={{ category: "6679be4dd0b3a021c9dca3b0" }}
+          filters={{ category: "6679be4dd0b3a021c9dca3b0",status:'published' }}
           className=" py-0"
           page={page}
           href={`/products/category=Computers`}
