@@ -39,7 +39,7 @@ const ProductStep1Form = ({ product }: { product?: ProductProps }) => {
       stock: (product && product?.stock + "") || "1",
       subCategories: product?.subCategories || [],
       additionalInfo: product?.additionalInfo || [],
-      ribbon: "",
+      ribbon: (product && product?.ribbon) || "",
       isOnSale: product?.isOnSale || false,
       salePrice: (product && product?.salePrice) || "",
     },
