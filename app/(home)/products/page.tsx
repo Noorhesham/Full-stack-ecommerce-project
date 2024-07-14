@@ -8,7 +8,7 @@ import Filters from "@/app/components/Filters";
 const page = async ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
   const categoryParam = searchParams.category;
   const sort = searchParams.sort;
-
+  await connect()
   const categoryItem = await Category.findOne({ name: categoryParam }).lean();
 
   return (
