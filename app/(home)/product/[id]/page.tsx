@@ -74,15 +74,17 @@ const page = async ({
     });
     return price;
   };
-  const images = product.images
-    .map((image: any) => image.imgUrl)
-    .concat(
-      product.variations
-        .map((variation: any) => variation.images)
-        .flat()
-        .map((image: any) => image?.imgUrl)
-    );
-  console.log(product.reviews, "product.reviews");
+  const images = [
+    ...product.images.map((image: any) => image.imgUrl),
+    ...product.variations.flatMap((variation: any) =>
+      variation.variationOptions.flatMap((option: any) =>
+        option.images ? option.images.map((image: any) => image.imgUrl) : []
+      )
+    ),
+  ];
+
+  console.log(images);
+
   return (
     <MaxWidthWrapper>
       <div className=" bg-white ">
