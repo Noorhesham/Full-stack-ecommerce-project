@@ -1,4 +1,3 @@
-
 export const PRODUCT_CATEGORIES = [
   {
     label: "Gaming",
@@ -7,6 +6,21 @@ export const PRODUCT_CATEGORIES = [
       { name: "Latest Games", href: "/products?category=Gaming&subcategory=latest games", imageSrc: "/latest.jpg" },
       { name: "Top Picks", href: "/products?category=Gaming&subcategory=top picks", imageSrc: "/gaming.webp" },
     ],
+  },
+  {
+    label: "Action Figures",
+    value: "action-figures",
+    featured: [
+      { name: "Figures", href: "/products?category=action-figures", imageSrc: "/action-figures.webp" },
+    ],
+  },
+  {
+    label:"Clothes",
+    value:"clothes",
+    featured:[
+      {name:"Summer",href:"/products?category=clothes",imageSrc:"/summer.jpg"}
+      ,{name:"Winter",href:"/products?category=clothes",imageSrc:"/winter.jpg"}
+    ]
   },
   {
     label: "Devices & Consoles",

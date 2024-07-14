@@ -21,7 +21,7 @@ const NavItem = ({ category, isAnyOpen, isOpen, handleOpen }: NavItemProps) => {
   return (
     <div className="flex">
       <div className="relative flex items-center">
-        <Button variant={isOpen ? "secondary" : "ghost"} onClick={handleOpen} className="gap-1.5">
+        <Button size={'sm'} variant={isOpen ? "secondary" : "ghost"} onClick={handleOpen} className="gap-1.5 text-sm">
           {category.label}
           <ChevronDown className={cn("h-4 w-4 transition-all text-muted-foreground", isOpen && "-rotate-180")} />
         </Button>
@@ -53,7 +53,7 @@ const NavItem = ({ category, isAnyOpen, isOpen, handleOpen }: NavItemProps) => {
                         className="group relative text-base sm:text-sm"
                       >
                         <div className="relative flex aspect-video items-center overflow-hidden rounded-lg bg-gray-100 duration-150 group-hover:opacity-75">
-                          <Image fill src={item.imageSrc} alt={item.name} className="object-center object-cover" />
+                          <Image fill src={item.imageSrc} alt={item.name} className="object-center object-contain" />
                         </div>
                         <Link
                           href={`/products?category=${category.value}`}

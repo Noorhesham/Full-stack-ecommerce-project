@@ -117,7 +117,7 @@ const Notifications = ({
       <HoverCard>
         <HoverCardTrigger asChild>
           <div className="cursor-pointer relative p-2 bg-gray-100 hover:bg-gray-200 hover:text-rose-400 rounded-full duration-150">
-            <IoNotifications className="w-6 h-6" />
+            <IoNotifications className="w-5 h-5" />
             <span className="absolute top-1 -right-2 h-4 w-4 text-center my-auto rounded-full bg-orange-500 text-xs text-gray-50">
               {existingNotifications?.filter((notification) => !notification.isRead).length}
             </span>
