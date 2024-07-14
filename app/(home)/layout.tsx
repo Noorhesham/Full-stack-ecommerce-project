@@ -36,10 +36,6 @@ Manage reviews (admin can delete inappropriate reviews)
 
 
 */
-export const metadata = constructMetadata({
-  icons: "/favicon.ico",
-  title: "Shinobi Store - Your market place to sell any product or buy products for best prices ! ",
-});
 
 export default async function RootLayout({
   children,
