@@ -6,6 +6,7 @@ export interface ReviewProps {
   user: mongoose.Types.ObjectId;
   product: mongoose.Types.ObjectId;
   createdAt: Date;
+  _id: string;
   updatedAt: Date;
 }
 const ReviewSchema = new Schema({

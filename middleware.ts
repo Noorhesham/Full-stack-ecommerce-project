@@ -7,7 +7,6 @@ export async function middleware(req: NextRequest) {
   const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const isLoggedIn = !!session;
   const isApiRoute = url.pathname.startsWith(apiAuthPrefix);
-  console.log(req.url);
   const isPublicRoute = publicRoutes.some((route) => {
     const regex = new RegExp(`^${route.replace(/\[.*\]/, ".*")}$`);
     return regex.test(url.pathname);
@@ -20,8 +19,14 @@ export async function middleware(req: NextRequest) {
 
   if (isLoggedIn) {
     // Redirect admins to /admin if not already on /admin
-    //@ts-ignore
-    if (session.user.isAdmin && !url.pathname.startsWith("/admin")) {
+    if (
+      //@ts-ignore
+      session.user.isAdmin &&
+      !url.pathname.startsWith("/admin") &&
+      !isPublicRoute &&
+      !url.pathname.startsWith("/cart") &&
+      !url.pathname.startsWith("/thank-you")
+    ) {
       url.pathname = `/admin`;
       return NextResponse.redirect(url);
     }

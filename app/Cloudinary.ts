@@ -9,7 +9,6 @@ cloudinary.config({
 });
 export const uploadImageToCloudinary = async (imagePath: string) => {
   const result = await cloudinary.uploader.upload(imagePath);
-  console.log(result)
   return result.secure_url;
 };
 module.exports = cloudinary;

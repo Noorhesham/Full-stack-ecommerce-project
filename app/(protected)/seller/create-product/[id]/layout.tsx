@@ -20,8 +20,7 @@ export default async function RootLayout({
   await connect();
   const product: any = await getProduct(params.id);
   const session = await getServerSession(authOptions);
-  console.log(product)
-  console.log(product.product.creator,session.user.id);
+  console.log(product);
   if (product?.product.creator._id != session?.user.id) redirect("/");
   return (
     <div className="h-full">

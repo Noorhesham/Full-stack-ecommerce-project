@@ -28,14 +28,17 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
   //@ts-ignore
   const page = searchParams.page !== undefined ? parseInt(searchParams.page) : 1;
   const sort = searchParams.sort;
-  const filters = { category, subCategories, price };
+  const filters = { category, subCategories, price, status: "published" };
   return (
     <>
       <MaxWidthWrapper>
         <HeroHighlightDemo>
           <div className=" py-20 mx-auto  text-center flex flex-col items-center max-w-3xl">
             <h1 className="text-4xl font-bold capitalize tracking-tight text-gray-900 sm:text-6xl">
-              Your market place for high quality <span className=" text-rose-600">Online Products.</span>
+              Your market place for high quality{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-yellow-500 to-orange-400">
+                Online Products.
+              </span>
             </h1>
             <p className=" mt-6 text-lg max-w-prose text-muted-foreground">
               Welcome to our store. Every product on out plattform is verified by our team to ensure our highest quality
@@ -56,9 +59,12 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
           href="/gaming"
           sort={""}
         />
-        <section id="products" className="  grid-cols-1 md:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 grid gap-4 py-5 mt-5">
+        <section
+          id="products"
+          className="  grid-cols-1 md:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 grid gap-4 py-5 mt-5"
+        >
           <div className=" hidden lg:block">
-          <Filters />
+            <Filters />
           </div>
           <div className=" ml-3 col-span-full lg:col-span-2 xl:col-span-3 ">
             <ProductReel
@@ -67,9 +73,9 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
               page={page}
               title="All Products"
               subTitle="Browse All products"
-              sort={sort} paginate={true}
+              sort={sort}
+              paginate={true}
             />
-
           </div>
         </section>
       </MaxWidthWrapper>
@@ -79,7 +85,7 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
             {perks.map((perk) => (
               <div key={perk.name} className="text-center md:flex md:items-start md:text-left lg:block lg:text-center">
                 <div className="md:flex-shrink-0 flex  justify-center">
-                  <div className="h-16 w-16 flex items-center justify-center rounded-full bg-rose-100 text-rose-900">
+                  <div className="h-16 w-16 flex items-center justify-center rounded-full bg-yellow-100 text-yellow-900">
                     {<perk.icon className=" w-1/3 h-1/3" />}
                   </div>
                 </div>

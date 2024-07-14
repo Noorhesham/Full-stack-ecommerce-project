@@ -12,7 +12,8 @@ import { revalidatePath } from "next/cache";
 import { ProductProps } from "../types";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
-const Notification = require("@/lib/database/models/NotificationModel");
+import Review from "@/lib/database/models/ReviewModel";
+const Notification = require("@/lib/database/models/NotificationModel.ts");
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -137,6 +138,10 @@ export async function deleteImage(id: string, url: string, publicId: string) {
     console.log(error);
   }
 }
+export const imgDeletion = async (id: string) => {
+  const result = await cloudinary.uploader.destroy(id);
+  if (!result) throw new Error("An error occurred while processing the request. Please try again!");
+};
 export async function getProduct(id: string) {
   try {
     await connect();
@@ -151,7 +156,10 @@ export async function getProduct(id: string) {
       .populate({
         path: "variations.variationOptions.variationOption",
         model: "VariationOption",
-      });
+      })
+      .populate({ path: "creator", model: "User" })
+      .populate({ path: "reviews", model: Review, populate: { path: "user", model: "User" } })
+      .lean();
     if (!product) throw new Error("Product not found");
     return { product: JSON.parse(JSON.stringify(product)) };
   } catch (error) {
@@ -235,6 +243,9 @@ export async function getProducts(pageNum = 1, pageSize = 20, filters: any = {},
     if (filters.price) {
       query.price = { $gte: filters.price.min || 0, $lte: filters.price.max || Infinity };
     }
+    if (filters.user) {
+      query.creator = filters.user;
+    }
     const sortCriteria: any = {};
     if (sort) {
       const [sortBy, sortOrder] = sort.split(":");
@@ -256,7 +267,7 @@ export async function getProducts(pageNum = 1, pageSize = 20, filters: any = {},
         model: "User",
         select: "firstName lastName _id",
       })
-      .select("name category status createdAt price images numReviews rating ribbon salePrice isOnSale");
+      .select("name creator category status createdAt price images numReviews rating ribbon salePrice isOnSale");
     const productsObj = JSON.parse(JSON.stringify(products));
     const totalCount = await Product.countDocuments(query).lean();
     return {
@@ -401,9 +412,9 @@ export async function deleteProduct(id: string) {
     const session = await getServerSession(authOptions);
     const product = await Product.findById(id);
     if (!product) throw new Error("Product not found");
-    if (!session?.user.isAdmin || !session?.user.id === product.creator) return { error: "Unauthorized", status: 401 };
     await Product.findByIdAndDelete(id);
     await Notification.deleteMany({ productId: id });
+    console.log(product);
     revalidatePath("/admin/products");
     revalidatePath("/seller/products");
     return { success: "Product deleted successfully!", status: 200, data: null };
@@ -437,14 +448,44 @@ export const fetchNotifications = async (user: UserProps & any) => {
   await connect();
 
   let notificationsQuery;
-  notificationsQuery = user.isAdmin
-    ? Notification.find({ isAdmin: true })
-    : Notification.find({ userId: user?.id, isAdmin: false });
+  if (user.isAdmin) {
+    notificationsQuery = Notification.find({ isAdmin: true });
+  } else {
+    notificationsQuery = Notification.find({ userId: user?.id, isAdmin: false });
+  }
 
   const notifications = await notificationsQuery
     .populate({ path: "productId", model: Product, select: "name" })
     .populate({ path: "userId", model: User, select: "firstName lastName" })
     .lean();
-
   return notifications;
+};
+export const cerateOrUpdateReview = async function (data: any, id?: string) {
+  const session = await getServerSession(authOptions);
+  const review = await Review.findById(id);
+  if (review) {
+    const newReview = await Review.findByIdAndUpdate(id, { ...data, user: session?.user.id }, { new: true });
+    revalidatePath(`/product/${data.product}`);
+    return { success: "Review updated successfully!", status: 200, data: newReview };
+  }
+  const newReview = await Review.create({ ...data, user: session?.user.id });
+  if (!newReview) throw new Error("Review not found");
+  const product = await Product.findById(newReview.product);
+  product.reviews.push(newReview._id);
+  console.log(product.reviews);
+  product.numReviews = product.reviews.length;
+  await product.save();
+  revalidatePath(`/product/${product._id}`);
+  return { success: "Review created successfully!", status: 200, data: newReview };
+};
+export const deleteReview = async function (id: string) {
+  const review = await Review.findById(id);
+  if (!review) throw new Error("Review not found");
+  await Review.findByIdAndDelete(id);
+  const product = await Product.findById(review.product);
+  if (!product) throw new Error("Product not found");
+  product.reviews = product.reviews.filter((r: any) => r.toString() !== id);
+  product.numReviews = product.reviews.length;
+  await product.save();
+  return { success: "Review deleted successfully!", status: 200, data: null };
 };

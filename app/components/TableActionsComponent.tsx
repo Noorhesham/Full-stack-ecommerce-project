@@ -81,7 +81,7 @@ const TableActionsComponent = ({ product }: { product: ProductProps }) => {
           btn={
             <div className="flex px-3 py-1.5 hover:bg-gray-100 duration-150 justify-between cursor-pointer">
               Delete{" "}
-              <span className=" hover:text-red-500  my-auto  self-center cursor-pointer text-red-400 duration-200  ">
+              <span className=" hover:text-amber-500  my-auto  self-center cursor-pointer text-amber-400 duration-200  ">
                 <ImBin2 />
               </span>
             </div>
@@ -89,6 +89,7 @@ const TableActionsComponent = ({ product }: { product: ProductProps }) => {
           value={product.name}
           onClick={async () => {
             const res = await deleteProduct(product._id);
+            console.log(res)
             if (res.success) toast.success(res.success);
             //@ts-ignore
             queryClient.invalidateQueries("products");

@@ -29,6 +29,7 @@ const FormInput = ({
   register,
   switchToggle = false,
   desc,
+  disabled,
   password = false, // Added password prop with default value false,
 }: {
   control: any;
@@ -47,6 +48,7 @@ const FormInput = ({
   price?: boolean;
   desc?: string;
   className?: string;
+  disabled?: boolean;
   password?: boolean; // Define password prop
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -55,6 +57,7 @@ const FormInput = ({
   // Function to toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+    console.log("Password visibility toggled", showPassword);
   };
   const handlePriceChange = (value: string) => {
     const numberValue = parseFloat(value.replace(/[^0-9.-]+/g, ""));
@@ -87,6 +90,7 @@ const FormInput = ({
               >
                 {phone ? (
                   <PhoneInput
+                    disabled={disabled}
                     {...field}
                     className="  w-full flex-row-reverse py-2 px-4 rounded-2xl gap-2"
                     international
@@ -95,7 +99,7 @@ const FormInput = ({
                   />
                 ) : switchToggle ? (
                   <div className="flex gap-2 items-center ">
-                    <Switch id="sale" checked={field.value} onCheckedChange={field.onChange} />
+                    <Switch disabled={disabled} id="sale" checked={field.value} onCheckedChange={field.onChange} />
                     <Label htmlFor="sale">{label ? label : "On Sale"}</Label>
                   </div>
                 ) : description ? (
@@ -104,8 +108,9 @@ const FormInput = ({
                   <CommandBox name="category" control={control} />
                 ) : (
                   <Input
+                    disabled={disabled}
                     {...field}
-                    type={password && !showPassword ? "password" : type} // Toggle input type based on password prop and showPassword state
+                    type={password && !showPassword ? "password" : type === "password" ? "text" : type} // Toggle input type based on password prop and showPassword state
                     className={` w-full`}
                     onFocus={() => setIsFocused((s) => (s = true))}
                     value={value || field.value}

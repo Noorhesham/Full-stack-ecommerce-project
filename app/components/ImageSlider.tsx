@@ -67,7 +67,7 @@ const ImageSlider = ({
           }}
           className={cn(activeStyles, "right-3 transition", {
             [inactiveStyles]: slideConfig.isEnd,
-            "hover:bg-red-300 text-red-800 opacity-100": !slideConfig.isEnd,
+            "hover:bg-amber-300 text-amber-800 opacity-100": !slideConfig.isEnd,
           })}
           aria-label="next image"
         >
@@ -80,7 +80,7 @@ const ImageSlider = ({
           }}
           className={cn(inactiveStyles, "left-3 transition", {
             [activeStyles]: !slideConfig.isBeginning,
-            "hover:bg-red-300 text-red-800 opacity-100": !slideConfig.isBeginning,
+            "hover:bg-orange-300 text-orange-800 opacity-100": !slideConfig.isBeginning,
           })}
         >
           <ChevronLeft className="h-4 w-4 text-zinc-700" />
@@ -90,7 +90,7 @@ const ImageSlider = ({
         <Swiper
           pagination={{
             renderBullet: (_, className) => {
-              return `<span class="rounded-full transition bg-red-400 ${className}"></span>`;
+              return `<span class="rounded-full transition bg-orange-400 ${className}"></span>`;
             },
           }}
           onSwiper={(swiper) => setSwiper(swiper)}
@@ -119,7 +119,7 @@ const ImageSlider = ({
                 className={cn(
                   "overflow-hidden cursor-pointer hover:opacity-95 duration-200 relative aspect-square h-20 w-20 rounded-xl",
                   { "opacity-80": i !== activeIndex },
-                  { "border border-red-500": i === activeIndex }
+                  { "border border-orange-500": i === activeIndex }
                 )}
                 key={i}
                 onClick={() => swiper?.slideTo(i)}

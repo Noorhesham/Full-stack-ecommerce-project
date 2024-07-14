@@ -7,6 +7,7 @@ import MaxWidthWrapper from "@/app/components/MaxWidthWrapper";
 import ParaGraph from "@/app/components/ParaGraph";
 import Price from "@/app/components/Price";
 import ProductReel from "@/app/components/ProductReel";
+import ReviewsSection from "@/app/components/ReviewsSection";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { convertToHTML } from "@/lib/utils";
 import { Check, Shield, X } from "lucide-react";
@@ -56,6 +57,15 @@ const page = async ({
     });
     return price;
   };
+  const images = product.images
+    .map((image: any) => image.imgUrl)
+    .concat(
+      product.variations
+        .map((variation: any) => variation.images)
+        .flat()
+        .map((image: any) => image?.imgUrl)
+    );
+  console.log(product.reviews, "product.reviews");
   return (
     <MaxWidthWrapper>
       <div className=" bg-white ">
@@ -64,7 +74,7 @@ const page = async ({
             <div className="lg:max-w-lg col-start-1 ">
               <BreadcrumbWithCustomSeparator breadcrumbs={BREADCRUMBS} />
               <div className=" mt-4">
-                <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{product.name}</h1>
+                <h1 className="text-3xl  font-bold tracking-tight text-gray-900 sm:text-4xl">{product.name}</h1>
               </div>
               <section className="mt-4">
                 <div className="flex items-start">
@@ -75,8 +85,8 @@ const page = async ({
                   />
                   <div className="ml-4 rounded flex items-center border-l text-muted-foreground border-gray-300 pl-4">
                     <Link
-                      href={`/category/${product.category.id}`}
-                      className=" transition hover:text-red-400  mb-auto self-start underline"
+                      href={`/products?category=${product.category.name}`}
+                      className=" transition hover:text-orange-400  mb-auto self-start underline"
                     >
                       {product.category.name}
                     </Link>
@@ -85,9 +95,9 @@ const page = async ({
                         :{" "}
                         {product.subCategories.map((subCategory: any) => (
                           <Link
-                            href={`/category/${subCategory.id}`}
+                            href={`/products?category=${product.category.name}`}
                             key={subCategory.id}
-                            className=" transition hover:text-red-400  underline px-2 py-1 text-xs rounded-full text-gray-900 bg-gray-100 flex"
+                            className=" transition hover:text-orange-400  underline px-2 py-1 text-xs rounded-full text-gray-900 bg-gray-100 flex"
                           >
                             {subCategory.name}
                           </Link>
@@ -105,7 +115,7 @@ const page = async ({
                     {product.stock > 0 ? (
                       <Check aria-hidden="true" className="h-5 w-5  flex-shrink-0 text-green-500" />
                     ) : (
-                      <X aria-hidden="true" className="h-5 w-5  flex-shrink-0 text-red-500" />
+                      <X aria-hidden="true" className="h-5 w-5  flex-shrink-0 text-orange-500" />
                     )}
                     <p className=" ml-2  text-sm text-muted-foreground">
                       {product.stock > 0 ? "In stock" : "Out of stock"}
@@ -119,7 +129,7 @@ const page = async ({
                   <div>
                     <div className="">
                       <AddToCart
-                        variantId={selectedVariantOptions }
+                        variantId={selectedVariantOptions}
                         price={getPriceForVariant()}
                         stock={product.stock}
                         btn
@@ -138,14 +148,14 @@ const page = async ({
             </div>
             <div className="mt-10 flex flex-col gap-2  lg:mt-0 ">
               <div className=" aspect-square rounded-lg">
-                <ImageSlider paginationImage={true} urls={product.images.map((image: any) => image.imgUrl)} />
+                <ImageSlider paginationImage={true} urls={images} />
               </div>
               <div className="flex  gap-2 justify-between flex-col">
                 <h2 className="text-sm font-medium text-muted-foreground text-gray-900">Published By</h2>
                 <div className="flex items-center gap-1">
                   <Avatar>
                     <AvatarImage src={`${product.creator.photo}` || "/avatar.jpg"} />
-                    <AvatarFallback className=" bg-red-300">{product.creator.firstName}</AvatarFallback>
+                    <AvatarFallback className=" bg-orange-300">{product.creator.firstName}</AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col text-sm items-start gap-1">
                     <h1 className="font-medium ml-1">{product.creator.firstName}</h1>
@@ -161,13 +171,28 @@ const page = async ({
             </div>
           </div>
         </div>
+        <div className=" w-full py-2 mt-2 px-4">
+          <h1 className=" font-semibold text-3xl lg:text-4xl ">Product Specifications</h1>
+          <div className=" mt-3 flex flex-col gap-2">
+            {product.additionalInfo.map(({ title, description }: any, index: number) => (
+              <div
+                className=" py-2 px-4 flex items-center justify-between border-t border-b border-gray-300"
+                key={index}
+              >
+                <h2 className="text-lg font-medium text-gray-900">{title}</h2>
+                <ParaGraph desc={convertToHTML(description)} />
+              </div>
+            ))}
+          </div>
+        </div>
+        <ReviewsSection reviews={product.reviews} productId={product._id} />
       </div>
       <ProductReel
-        href={`/category/${product.category.id}`}
-        filters={{ category: product.category.id, _id: { $ne: product._id } }}
+        href={`/products?category=${product.category.name}`}
+        filters={{ category: product.category._id, _id: { $ne: product._id } }}
         pageSize={5}
         subTitle={"Browse more like this"}
-        title={`Similar ${product.category.name} Products just like ${product.name}`}
+        title={`Similar ${product.category.name} Products just like ${product.name.split("").slice(0, 15).join("")}`}
       />
     </MaxWidthWrapper>
   );

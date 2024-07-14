@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { PRODUCT_CATEGORIES } from "../constants";
 import NavItem from "./NavItem";
 import { useOnClickOutside } from "../hooks/useClickOutside";
+import BabySpinner from "./BabySpinner";
 
 const NavItems = () => {
   const [active, setActive] = useState<null | number>(null);
@@ -20,11 +21,13 @@ const NavItems = () => {
     <div ref={navRef} className="flex gap-4  h-full">
       {PRODUCT_CATEGORIES.map((category, i) => {
         const handleOpen = () => {
-          if(active === i) setActive(null);
+          if (active === i) setActive(null);
           else setActive(i);
         };
         const isOpen = active === i;
-        return <NavItem key={i} category={category} isOpen={isOpen} isAnyOpen={isAnyOpen} handleOpen={handleOpen} />;
+        return (
+          <NavItem key={i} category={category} isOpen={isOpen} isAnyOpen={isAnyOpen} handleOpen={handleOpen} />
+        );
       })}
     </div>
   );

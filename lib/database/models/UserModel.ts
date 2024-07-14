@@ -9,10 +9,11 @@ export interface UserProps extends Document {
   password?: string; // Making it optional
   passwordConfirm?: string; // Making it optional
   passwordChangeAt?: Date | number;
-  photo: string;
+  photo:  {imgUrl:string,publicId:string};
   image: string;
   _id: string;
   active: boolean;
+  city: string;
   id: String;
   role: "user" | "admin";
   passwordResetToken?: string;
@@ -21,11 +22,18 @@ export interface UserProps extends Document {
   passwordResetExpires?: Date;
   cart?: string[];
   isthirdParty?: boolean;
-  phoneNumber?: number;
+  phoneNumber?: string;
   createdAt: Date;
   activatedAt?: Date;
   isAdmin: boolean;
   isActivated: boolean;
+  stripeAccountId?: string;
+  address?: string;
+  country?: string;
+  location?: {
+    lat: number;
+    lng: number;
+  };
 }
 
 const UserSchema = new Schema<UserProps>(
@@ -40,7 +48,7 @@ const UserSchema = new Schema<UserProps>(
       lowercase: true,
       validate: [validator.isEmail, "Please provide a valid email."],
     },
-    photo: { type: String, default: "" },
+    photo: { imgUrl: String, publicId: String },
     password: {
       type: String,
       required: function () {
@@ -67,7 +75,7 @@ const UserSchema = new Schema<UserProps>(
       type: [
         {
           productId: { type: Schema.Types.ObjectId, ref: "Product" },
-          variants: [  String] ,
+          variants: [String],
         },
       ],
       ref: "Product",
@@ -78,6 +86,13 @@ const UserSchema = new Schema<UserProps>(
     phoneNumber: { type: Number },
     confirmationToken: { type: Schema.Types.ObjectId, ref: "Activation" },
     isAdmin: { type: Boolean, default: false },
+    stripeAccountId: { type: String },
+    address: { type: String },
+    city: { type: String },
+    location: {
+      lat: { type: Number, required: false },
+      lng: { type: Number, required: false },
+    },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );

@@ -55,7 +55,10 @@ const NavItem = ({ category, isAnyOpen, isOpen, handleOpen }: NavItemProps) => {
                         <div className="relative flex aspect-video items-center overflow-hidden rounded-lg bg-gray-100 duration-150 group-hover:opacity-75">
                           <Image fill src={item.imageSrc} alt={item.name} className="object-center object-cover" />
                         </div>
-                        <Link href={item.href} className="pointer-events-auto mt-6 block font-medium text-gray-900">
+                        <Link
+                          href={`/products?category=${category.value}`}
+                          className="pointer-events-auto mt-6 block font-medium text-gray-900"
+                        >
                           {item.name}
                         </Link>
                         <p className="mt-1" aria-hidden="true">

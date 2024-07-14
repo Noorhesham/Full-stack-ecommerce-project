@@ -19,7 +19,8 @@ const ModelCustom = ({
   create,
   title,
   btn,
-  content,isOpen=false,
+  content,
+  isOpen = false,
 }: {
   value?: any;
   className?: string;
@@ -28,13 +29,14 @@ const ModelCustom = ({
   create?: boolean;
   title: string;
   btn?: ReactNode;
-  content: ReactNode;isOpen?:boolean
+  content: ReactNode;
+  isOpen?: boolean;
 }) => {
   const [open, setOpen] = React.useState(isOpen);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{btn}</DialogTrigger>
-      <DialogContent className="sm:max-w-[525px]">
+      <DialogContent className="sm:max-w-[525px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{text}</DialogDescription>

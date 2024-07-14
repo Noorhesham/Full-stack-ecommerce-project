@@ -3,7 +3,7 @@ import { SubCategory } from "./SubCategory";
 
 const CategorySchema = new Schema(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: true,unique: true },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );

@@ -2,8 +2,9 @@
 import React, { useEffect, useState } from "react";
 import { useGetProductCart } from "../queries/queries";
 import CartContent from "./CartContent";
+import { calculateFinalPrice } from "@/lib/utils";
 
-const CartLocal = ({ calculateFinalPrice }: { calculateFinalPrice: any }) => {
+const CartLocal = () => {
   const [localCart, setLocalCart] = useState([]);
 
   useEffect(() => {
@@ -42,7 +43,6 @@ const CartLocal = ({ calculateFinalPrice }: { calculateFinalPrice: any }) => {
   return (
     <CartContent
       variants={variants}
-      calculateFinalPrice={calculateFinalPrice}
       cart={cart.map((c) => c?.product)}
       fee={fee}
       cartTotal={cartTotal}

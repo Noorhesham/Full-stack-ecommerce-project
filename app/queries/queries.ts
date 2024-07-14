@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  cerateOrUpdateReview,
   deleteImage as deleteImageApi,
   getCategories,
   getProduct,
@@ -12,8 +13,9 @@ import { toast } from "react-toastify";
 import Product from "@/lib/database/models/ProductsModel";
 import { deleteCategoryOrSub, updateCategoryOrSub } from "../actions/categoryActions";
 import { useEffect } from "react";
-import { addToCart, getCart, getProductByIdCart, removeFromCart } from "../actions/CartActions";
-import { getOrderStatus } from "../actions/pay";
+import { addToCart, getCart, getProductByIdCart, getUserDetails, removeFromCart } from "../actions/CartActions";
+import { getOrders, getOrderStatus, updateOrderStatus } from "../actions/pay";
+import UpdateOrderStatus from "../components/UpdateOrderStatus";
 
 const useDeleteImage = () => {
   const querClient = useQueryClient();
@@ -93,6 +95,30 @@ const useGetProducts = (page = 1, filters: {}) => {
     }
   }, [data, page, filters, queryClient]);
 
+  return { data, isLoading, isError };
+};
+const useGetOrders = (page = 1, customer: boolean = false) => {
+  const queryClient = useQueryClient();
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["orders", page, customer],
+    queryFn: async () => await getOrders(page, 10, customer),
+  });
+  useEffect(() => {
+    // Prefetch the next two pages when the current page is loaded
+    if (data && data.totalPages > page) {
+      queryClient.prefetchQuery({
+        queryKey: ["orders", page + 1, customer],
+        queryFn: async () => await getOrders(page + 1, 10, customer),
+      });
+
+      if (data.totalPages > page + 1) {
+        queryClient.prefetchQuery({
+          queryKey: ["orders", page + 2, customer],
+          queryFn: async () => await getOrders(page + 2, 10, customer),
+        });
+      }
+    }
+  }, [data, page, queryClient, customer]);
   return { data, isLoading, isError };
 };
 const useGetVariants = () => {
@@ -227,7 +253,7 @@ const useGetOrderStatus = (id: string) => {
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
 
-    if (data?.order .isPaid === false) {
+    if (data?.order.isPaid === false) {
       interval = setInterval(() => {
         refetch();
       }, 2000);
@@ -242,6 +268,39 @@ const useGetOrderStatus = (id: string) => {
 
   return { data, isLoading, isError };
 };
+const useGetUserDetails = () => {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: [`user`],
+    queryFn: async () => await getUserDetails(),
+  });
+  return { data, isLoading, isError };
+};
+const useDeliverOrder = () => {
+  const { mutate: update, isPending } = useMutation({
+    mutationFn: async ({ data, id }: { data: any; id: string }) => await updateOrderStatus(data, id),
+    onSuccess: (response: any) => {
+      if (response?.success) {
+        toast.success(response.success);
+      } else {
+        toast.error(response?.error || "An error occurred");
+      }
+    },
+  });
+  return { update, isPending };
+};
+const useUpdateReview = () => {
+  const { mutate: makeReview, isPending } = useMutation({
+    mutationFn: async ({ data, id }: { data: any; id?: string }) => await cerateOrUpdateReview(data, id),
+    onSuccess: (response: any) => {
+      if (response?.success) {
+        toast.success(response.success);
+      } else {
+        toast.error(response?.error || "An error occurred");
+      }
+    },
+  });
+  return { makeReview, isPending };
+};
 export {
   useDeleteImage,
   useUpdateImage,
@@ -255,4 +314,8 @@ export {
   useUpdateCart,
   useGetProductCart,
   useGetOrderStatus,
+  useGetUserDetails,
+  useGetOrders,
+  useDeliverOrder,
+  useUpdateReview,
 };

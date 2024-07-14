@@ -17,7 +17,7 @@ const PRICE_FILTERS = [
   { isCustom: true, value: [0, 10000] },
 ];
 const DEFAULT_RANGE = [0, 10000];
-const Filters = () => {
+const Filters = ({ onlyPrice = false }: { onlyPrice?: boolean }) => {
   const { categories, isLoading } = useGetCategories();
   const [selectedCategories, setSelectedCategories] = React.useState<string[]>([]);
   const [selectedSubcategories, setSelectedSubcategories] = React.useState<string[]>([]);
@@ -134,54 +134,55 @@ const Filters = () => {
   const maxPrice = Math.max(priceFilter.range[0], priceFilter.range[1]);
   return (
     <motion.div initial={{ y: -100 }} animate={{ y: 1 }} className="   lg:block">
-      <span className="font-semibold mb-4 text-gray-800">Categories</span>
+      {!onlyPrice && <span className="font-semibold mb-4 text-gray-800">Categories</span>}
 
       {
         <Accordion defaultValue={defaultOpen?.length > 0 ? [...defaultOpen, "price"] : ["price"]} type="multiple">
-          {categories.map((category: any) => (
-            <AccordionItem key={category.id} value={category._id}>
-              <AccordionTrigger className="text-sm font-medium text-gray-400 hover:text-gray-500 py-3">
-                <span className="font-medium text-gray-500">{category.name}</span>
-              </AccordionTrigger>
-              <AccordionContent className="pt-6">
-                <ul className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
-                  <li className="flex items-center gap-2">
-                    <Checkbox
-                      id={category._id}
-                      checked={selectedCategories.includes(category._id)}
-                      onCheckedChange={() => handleCategoryChange(category._id)}
-                    />
-                    <label
-                      htmlFor={category._id}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      All for {category.name}
-                    </label>
-                  </li>
-                  {category.subCategories.map((subCategory: any) => (
-                    <li
-                      key={subCategory.id}
-                      className={`${
-                        selectedSubcategories.includes(subCategory._id) ? "text-gray-500" : "text-gray-900"
-                      } flex items-center gap-2`}
-                    >
+          {!onlyPrice &&
+            categories.map((category: any) => (
+              <AccordionItem key={category.id} value={category._id}>
+                <AccordionTrigger className="text-sm font-medium text-gray-400 hover:text-gray-500 py-3">
+                  <span className="font-medium text-gray-500">{category.name}</span>
+                </AccordionTrigger>
+                <AccordionContent className="pt-6">
+                  <ul className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
+                    <li className="flex items-center gap-2">
                       <Checkbox
-                        id={subCategory._id}
-                        checked={selectedSubcategories.includes(subCategory._id)}
-                        onCheckedChange={() => handleSubcategoryChange(subCategory._id)}
+                        id={category._id}
+                        checked={selectedCategories.includes(category._id)}
+                        onCheckedChange={() => handleCategoryChange(category._id)}
                       />
                       <label
-                        htmlFor={subCategory._id}
+                        htmlFor={category._id}
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
-                        {subCategory.name}
+                        All for {category.name}
                       </label>
                     </li>
-                  ))}
-                </ul>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
+                    {category.subCategories.map((subCategory: any) => (
+                      <li
+                        key={subCategory.id}
+                        className={`${
+                          selectedSubcategories.includes(subCategory._id) ? "text-gray-500" : "text-gray-900"
+                        } flex items-center gap-2`}
+                      >
+                        <Checkbox
+                          id={subCategory._id}
+                          checked={selectedSubcategories.includes(subCategory._id)}
+                          onCheckedChange={() => handleSubcategoryChange(subCategory._id)}
+                        />
+                        <label
+                          htmlFor={subCategory._id}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          {subCategory.name}
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
           <AccordionItem value={"price"}>
             <AccordionTrigger className="text-sm font-medium text-gray-400 hover:text-gray-500 py-3">
               <span className="font-medium text-gray-500">Price</span>

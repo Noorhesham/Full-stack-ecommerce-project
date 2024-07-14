@@ -86,7 +86,7 @@ const EditForm = ({
         <Button
           type="button"
           variant="ghost"
-          className="hover:text-red-500 duration-200 flex items-center gap-2 w-fit self-end"
+          className="hover:text-amber-500 duration-200 flex items-center gap-2 w-fit self-end"
           onClick={() => setSubcategory((sub) => [...sub, subcategory.length + 1].filter((i) => i != undefined))}
         >
           <PlusIcon /> Add Subcategory
@@ -96,7 +96,7 @@ const EditForm = ({
         <Delete
           disabled={isPending}
           btn={
-            <Button disabled={isPending} className="bg-red-500 hover:bg-red-400 duration-200 text-gray-50 ml-auto">
+            <Button disabled={isPending} className="bg-amber-500 hover:bg-amber-400 duration-200 text-gray-50 ml-auto">
               {isPending ? <MiniSpinner /> : "Delete Category"}
             </Button>
           }

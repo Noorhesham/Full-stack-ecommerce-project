@@ -55,10 +55,22 @@ app.prepare().then(() => {
         .populate({ path: "productId", select: "name" })
         .populate({ path: "userId", select: "firstName lastName" })
         .lean();
-      console.log(notification, populatedNotification);
-      io.to(userId.toString()).emit("sentNotification", populatedNotification);
+      console.log(value, userId);
+      io.to(typeof userId === "string" ? userId : userId.toString()).emit("sentNotification", populatedNotification);
     });
-
+    socket.on("statusOrderUpdate", async (value,userId) => {
+      console.log(value);
+      const notification = await Notification.create({
+        userId: value.userId,
+        message: value.message,
+        isAdmin: value.isAdmin,
+      });
+      const populatedNotification = await Notification.findById(notification._id)
+        .populate({ path: "userId", select: "firstName lastName" })
+        .lean();
+      console.log(populatedNotification, value.userId);
+      io.to(userId).emit("sentNotification", populatedNotification);
+    });
     socket.on("AcceptProduct", async (value, userId) => {
       const notification = await Notification.create({
         userId: value.userId,
@@ -66,7 +78,6 @@ app.prepare().then(() => {
         productId: value.productId,
       });
       const populatedNotification = await Notification.findById(notification._id)
-        .populate({ path: "productId", select: "name" })
         .populate({ path: "userId", select: "firstName lastName" })
         .lean();
       io.to(userId.toString()).emit("sentNotification", populatedNotification);

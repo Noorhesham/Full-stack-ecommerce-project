@@ -52,8 +52,8 @@ const ImageInput = ({
             />
             {isLoading && progress ? (
               <CircularProgressbar
-                styles={{ path: { stroke: "#F43F5E", color: "#F43F5E", backgroundColor: "#F43F5E", fill: "#F43F5E" } }}
-                className="z-20 text-red-500"
+                styles={{ path: { stroke: " #f97316", color: " #f97316", backgroundColor: " #f97316", fill: " #f97316" } }}
+                className="z-20 text-orange-500"
                 text={`${progress}%`}
                 value={progress}
               />
@@ -63,7 +63,7 @@ const ImageInput = ({
             {isLoading && !progress && <MiniSpinner />}
             <span
               onClick={(e) => deleteImage()}
-              className="absolute text-red-500 hover:text-red-300 duration-200 top-2 z-50 text-2xl right-3 text-center font-semibold hidden group-hover:flex items-center gap-2"
+              className="absolute text-amber-500 hover:text-amber-300 duration-200 top-2 z-50 text-2xl right-3 text-center font-semibold hidden group-hover:flex items-center gap-2"
             >
               <FaCircleXmark />
             </span>
@@ -87,17 +87,17 @@ const ImageInput = ({
         >
           <input {...getInputProps()} />
           {isDragActive ? (
-            <div className="flex text-red-500 flex-col items-center">
+            <div className="flex text-amber-500 flex-col items-center">
               <span>Choose a file or drag & drop it here</span>
               <span>Jepg or png</span>
             </div>
           ) : (
             <>
-              <TbCameraPlus className="text-4xl group-hover:text-red-500 duration-200" />
+              <TbCameraPlus className="text-4xl group-hover:text-amber-500 duration-200" />
               <span
                 className={cn(
                   buttonVariants({ variant: "outline", size: "lg" }),
-                  "group-hover:text-red-500 duration-200 rounded-full mt-4"
+                  "group-hover:text-amber-500 duration-200 rounded-full mt-4"
                 )}
               >
                 Upload

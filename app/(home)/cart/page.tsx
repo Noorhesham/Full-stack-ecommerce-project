@@ -3,7 +3,8 @@ import { payProduct } from "@/app/actions/pay";
 import BabySpinner from "@/app/components/BabySpinner";
 import CartItem from "@/app/components/CartItem";
 import Loader from "@/app/components/Loader";
-import { useGetCart } from "@/app/queries/queries";
+import PaymentForm from "@/app/components/PaymentForm";
+import { useGetCart, useGetUserDetails } from "@/app/queries/queries";
 import { ProductProps } from "@/app/types";
 import { buttonVariants } from "@/components/ui/button";
 import { calculateFinalPrice, cn, formatPrice } from "@/lib/utils";
@@ -14,9 +15,10 @@ import React, { useTransition } from "react";
 import { toast } from "react-toastify";
 
 const Page = () => {
+  const { data, isLoading: userLoading } = useGetUserDetails();
   const { cartItems, isLoading } = useGetCart();
   const [isPending, startTransition] = useTransition();
-  if (isLoading) return <Loader className="w-40 h-40 m-auto" />;
+  if (isLoading || userLoading) return <Loader className="w-40 h-40 m-auto" />;
   const cartTotal = cartItems?.reduce((acc: number, { price, isOnSale, salePrice, variants, variations }: any) => {
     const finalPrice = calculateFinalPrice(price, variants, variations);
     return acc + (isOnSale ? finalPrice - +salePrice.replace("$", "") : finalPrice);
@@ -24,9 +26,9 @@ const Page = () => {
   const productsData = cartItems.map((item: ProductProps) => {
     return { ...item, price: calculateFinalPrice(item.price, item.variants, item.variations) };
   });
-  const handleCheckout = async () => {
+  const handleCheckout = async (shippingAddress: string, city: string,location:any) => {
     startTransition(async () => {
-      const response = await payProduct(productsData, cartTotal);
+      const response = await payProduct(productsData, cartTotal, shippingAddress, city,location);
       if (response) {
         toast.success("redirecting to payment page");
         //@ts-ignore
@@ -34,6 +36,8 @@ const Page = () => {
       } else toast.error("An error occurred");
     });
   };
+  // @ts-ignore
+  const { user } = data?.data;
   return (
     <div className=" bg-white">
       <div className=" mx-auto max-w-2xl px-4 pb-24 pt-16 sm:px-6 lg:max-w-7xl  lg:px-8">
@@ -59,39 +63,12 @@ const Page = () => {
             >
               {cartItems?.map((product: ProductProps, i: number) => {
                 const variantsItems = product.variants;
-                return (
-                  <CartItem check={true} key={i} product={product} variants={variantsItems}  />
-                );
+                return <CartItem check={true} key={i} product={product} variants={variantsItems} />;
               })}
             </ul>
           </div>
           <section className=" mt-16 bg-gray-50 px-4 py-6 sm:px-6 lg:col-span-5 lg:mt-0 lg:p-8">
-            <h2 className="sr-only text-lg font-medium text-gray-900">Order summary</h2>
-            <div className="space-y-6 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
-              <div className="flex items-center justify-between">
-                <dt>Subtotal</dt>
-                <dd>{formatPrice(cartTotal)}</dd>
-              </div>
-              <div className="flex items-center justify-between">
-                <dt>Shipping</dt>
-                <dd>$0.00</dd>
-              </div>
-              <div className="flex items-center justify-between">
-                <dt>Tax</dt>
-                <dd>$0.00</dd>
-              </div>
-            </div>
-            <button
-              disabled={isPending}
-              onClick={() => handleCheckout()}
-              className={cn(buttonVariants({ variant: "default", size: "lg" }), "w-full mt-4")}
-            >
-              {!isPending ? "Checkout" : <BabySpinner />}
-            </button>
-            <p className="mt-6 text-center text-sm text-gray-500">or</p>
-            <Link href="/products" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "w-full mt-4")}>
-              Continue Shopping <span aria-hidden="true"> &rarr;</span>
-            </Link>
+            <PaymentForm cartTotal={cartTotal} handleCheckout={handleCheckout} user={user} />
           </section>
         </div>
       </div>

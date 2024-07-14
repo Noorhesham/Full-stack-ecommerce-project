@@ -29,6 +29,7 @@ export const authOptions: AuthOptions = {
             isAdmin: user.isAdmin || false,
             createdAt: user.createdAt,
             cart: user.cart || [],
+            phoneNumber: user.phoneNumber || null,
           };
         } catch (error: any) {
           throw new Error(error.message);
@@ -47,7 +48,7 @@ export const authOptions: AuthOptions = {
           photo: profile.picture,
           role: "user",
           isAdmin: false,
-          cart: [], // default value for Google login
+          cart: [],
         };
       },
     }),
@@ -59,7 +60,12 @@ export const authOptions: AuthOptions = {
     newUser: "/signup",
   },
   callbacks: {
-    async jwt({ token, user }: { token: any; user: any }) {
+    async jwt({ token, user, trigger, session }: { token: any; user: any; trigger: any; session: any }) {
+      if (trigger === "update" && session) {
+        console.log(trigger, session, token, user,"updaaaaaaaaaaaaaaaaaaaaaaaaaaate");
+        token.user = session.user;
+        return token;
+      }
       if (user) {
         token.user = {
           id: user.id,
@@ -70,14 +76,14 @@ export const authOptions: AuthOptions = {
           photo: user.photo,
           isAdmin: user.isAdmin,
           cart: user.cart || [],
+          createdAt: user.createdAt,
+          phoneNumber: user.phoneNumber || null,
         };
       }
       return token;
     },
     async session({ session, token }: { session: any; token: any }) {
-      if (token.user) {
-        session.user = token.user;
-      }
+      session.user = token.user;
       return session;
     },
     //@ts-ignore

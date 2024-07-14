@@ -7,7 +7,7 @@ interface ProductReelProps {
   title: string;
   subTitle?: string;
   href?: string;
-  className?: string;
+  className?: string;onlyPrice?:boolean
 }
 export interface ProductPropsServerProps {
   filters?: any;
@@ -26,7 +26,7 @@ const ProductReel = async (props: ProductReelProps & ProductPropsServerProps) =>
           {subTitle ? <p className=" mt-2 text-sm text-muted-foreground">{subTitle}</p> : ""}
         </div>
         <div className="flex items-start w-full self-end justify-end ml-auto my-2 gap-3">
-          {sort !== "" && <FilterMobile />}
+          {sort !== "" && <FilterMobile onlyPrice />}
         </div>
         {href ? <NextLink text="Shop the collection" href={href} /> : null}
       </div>

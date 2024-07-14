@@ -36,7 +36,7 @@ export default async function RootLayout({
 }>) {
   await connect();
   return (
-    <html className="h-full" lang="en">
+    <html className="h-full " lang="en">
       <AuthProvider>
         <QueryProvider>
           <body className={cn("relative h-full font-sans antialiased", inter.className)}>

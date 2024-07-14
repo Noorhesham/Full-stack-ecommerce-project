@@ -14,7 +14,7 @@ export interface ProductProps extends Document {
   createdAt: Date;
   brand: string;
   subCategories: [mongoose.Types.ObjectId];
-  reviews: mongoose.Types.ObjectId;
+  reviews: mongoose.Types.ObjectId[];
   creator: mongoose.Types.ObjectId;
   rating: number;
   published: boolean;
@@ -47,7 +47,7 @@ const ProductSchema = new Schema<ProductProps>(
     category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
     subCategories: { type: [Schema.Types.ObjectId], ref: "SubCategory" },
     createdAt: { type: Date, default: Date.now },
-    reviews: { type: Schema.Types.ObjectId, ref: "Review" },
+    reviews: { type:[ Schema.Types.ObjectId], ref: "Review" },
     creator: { type: Schema.Types.ObjectId, ref: "User", required: true },
     rating: { type: Number, default: 0 },
     published: { type: Boolean, default: false },

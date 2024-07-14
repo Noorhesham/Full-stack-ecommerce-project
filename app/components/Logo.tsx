@@ -2,10 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const Logo = () => {
+const Logo = ({ className }: { className?: string }) => {
   return (
-    <Link href={"/"} className=" w-16 h-16 sm:w-20 sm:h-20  relative">
-      <Image src="/logo.png" className=" absolute object-cover" alt="logo" fill />
+    <Link href={"/"} className={`${className} w-16 rounded-full h-16 sm:w-16 sm:h-16  relative`}>
+      <Image src="/logo1.jpg" className=" absolute rounded-full object-cover" alt="logo" fill />
     </Link>
   );
 };

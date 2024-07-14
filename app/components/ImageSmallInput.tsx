@@ -64,7 +64,7 @@ const ImageSmallInput = ({
                   />
                   <Delete value={'Image'}
                     btn={
-                      <button disabled={isPending} type="button" className="absolute top-0 right-0  text-red-400 hover:text-red-700 duration-150 rounded-full p-1">
+                      <button disabled={isPending} type="button" className="absolute top-0 right-0  text-amber-400 hover:text-amber-700 duration-150 rounded-full p-1">
                         <Bin />
                       </button>
                     }

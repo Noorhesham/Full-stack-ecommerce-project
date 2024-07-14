@@ -48,7 +48,7 @@ const ZoomImage = ({ btn, urls, active }: { btn: ReactNode; urls: string[]; acti
                 loading="eager"
                 src={url}
                 alt="product image"
-                className="-z-10 h-full w-full object-cover object-center"
+                className="-z-10 h-full w-full object-contain object-center"
               />
             </SwiperSlide>
           ))}
@@ -61,7 +61,7 @@ const ZoomImage = ({ btn, urls, active }: { btn: ReactNode; urls: string[]; acti
           }}
           className={cn(activeStyles, "right-3 transition", {
             [inactiveStyles]: slideConfig.isEnd,
-            "hover:bg-red-300 text-red-800 opacity-100": !slideConfig.isEnd,
+            "hover:bg-orange-300 text-orange-800 opacity-100": !slideConfig.isEnd,
           })}
           aria-label="next image"
         >
@@ -74,7 +74,7 @@ const ZoomImage = ({ btn, urls, active }: { btn: ReactNode; urls: string[]; acti
           }}
           className={cn(inactiveStyles, "left-3 transition", {
             [activeStyles]: !slideConfig.isBeginning,
-            "hover:bg-red-300 text-red-800 opacity-100": !slideConfig.isBeginning,
+            "hover:bg-orange-300 text-orange-800 opacity-100": !slideConfig.isBeginning,
           })}
         >
           <ChevronLeft className="h-4 w-4 text-zinc-700" />

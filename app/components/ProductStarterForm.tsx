@@ -85,7 +85,7 @@ const ProductStep1Form = ({ product }: { product?: ProductProps }) => {
   const SubCategoriesIndex = categories?.findIndex((cat: any, i: number) => cat._id === getValues("category"));
   return (
     <div className="container ">
-      <div className="flex flex-col px-10  xl:pb-[1.6rem] relative rounded-2xl  items-center text-center">
+      <div className="flex flex-col px-10 pt-5  xl:pb-[1.6rem] relative rounded-2xl  items-center text-center">
         <div className="mx-auto w-full   space-y-6">
           <Form {...form}>
             <form onSubmit={handleSubmit(onSubmit)} className=" ">

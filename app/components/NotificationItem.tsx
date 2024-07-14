@@ -26,17 +26,20 @@ const NotificationItem = ({
       } duration-150 cursor-pointer flex flex-col mt-1 gap-4 py-1 px-2 rounded-lg items-center justify-between space-x-4`}
     >
       <div className="text-xs">
-        {data.userId.firstName} {data.userId.lastName} uploaded a new product {`(${data.productId.name})`}
+        {/* {data.productId &&
+          `${data.userId.firstName} ${data.userId.lastName} uploaded a new product ${`(${data.productId.name})`}`} */}
         <br />
         <p className="text-xs">{data.message}</p>
         <div className="flex flex-col items-center">
-          <Link
-            className="text-xs mr-auto text-red-400 hover:text-red-500 duration-150 
+          {data.productId && (
+            <Link
+              className="text-xs mr-auto text-orange-400 hover:text-orange-500 duration-150 
        hover:underline"
-            href={`/products#${data.productId._id}`}
-          >
-            Approve it now
-          </Link>
+              href={`/products#${data.productId._id}`}
+            >
+              Approve it now
+            </Link>
+          )}
           <div className="flex items-center ml-auto">
             <Button
               onClick={() => {
@@ -46,7 +49,7 @@ const NotificationItem = ({
                 });
               }}
               variant={"ghost"}
-              className="ml-auto hover:text-red-500 duration-150 text-xs"
+              className="ml-auto hover:text-orange-500 duration-150 text-xs"
             >
               Dismiss
             </Button>

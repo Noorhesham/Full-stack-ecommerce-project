@@ -5,10 +5,9 @@ import { useGetCart } from "../queries/queries";
 import CartContent from "./CartContent";
 import CartLocal from "./CartLocal";
 
-
 const Cart = () => {
   const { cartItems, isLoading } = useGetCart();
- 
+
   const calculateFinalPrice = (price: any, variants: any, variations: any) => {
     let basePrice = typeof price === "number" ? price : +price.replace("$", "");
     if (!variants || !variations) return basePrice;
@@ -33,15 +32,9 @@ const Cart = () => {
   return (
     <Sheet>
       {cartItems ? (
-        <CartContent
-          calculateFinalPrice={calculateFinalPrice}
-          cart={cartItems}
-          fee={fee}
-          cartTotal={cartTotal}
-          itemsCount={itemsCount}
-        />
+        <CartContent cart={cartItems} fee={fee} cartTotal={cartTotal} itemsCount={itemsCount} />
       ) : (
-        <CartLocal  calculateFinalPrice={calculateFinalPrice} />
+        <CartLocal />
       )}
     </Sheet>
   );

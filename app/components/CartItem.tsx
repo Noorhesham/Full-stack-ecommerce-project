@@ -9,17 +9,18 @@ import { useQueryClient } from "@tanstack/react-query";
 import { calculateFinalPrice, formatPrice } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const CartItem = ({
   product,
   variants,
   check = false,
-  show = false,
+  show = false,showOnly=false
 }: {
   product: ProductProps;
   variants?: any;
   check?: boolean;
-  show?: boolean;
+  show?: boolean;showOnly?:boolean
 }) => {
   const { updateCart, isPending } = useUpdateCart();
   const { data } = useSession();
@@ -48,24 +49,40 @@ const CartItem = ({
       <div className="flex items-start justify-between gap-4">
         <div className=" flex items-center space-x-4">
           <div className=" relative aspect-square w-16 h-16 min-w-fit overflow-hidden rounded">
-            <Image src={product.images[0].imgUrl} alt={product.name} fill className=" object-cover" />
+            <Image src={product.images[0]?.imgUrl} alt={product.name} fill className=" object-cover" />
           </div>
           <div className="flex flex-col self-start">
-            <span className=" line-clamp-1 text-sm font-medium mb-1">{product.name}</span>{" "}
-            <span className=" line-clamp-1 text-sm capitalize text-muted-foreground ">{product.category.name}</span>
-           {!show&& <div className=" mt-4 text-xs text-muted-foreground">
-              <Button
-                aria-label="Remove item"
-                variant={"ghost"}
-                onClick={() => handleRemoveItem(product._id)}
-                className="flex  hover:text-red-400 duration-150 items-center gap-0.5"
-              >
-                <X className="w-3 h-4" />
-                Remove
-              </Button>
-            </div>}
+            <Link href={`/product/${product._id}`} className=" hover:text-amber-400 hover:underline duration-150 line-clamp-1 text-sm font-medium mb-1">
+              {product.name}
+            </Link>{" "}
+            <Link
+              href={`/products?category=${product.category.name}`}
+              className=" hover:text-amber-400 hover:underline duration-150 line-clamp-1 text-sm capitalize text-muted-foreground "
+            >
+              {product.category.name}
+            </Link>
+            <Link
+              href={`/profile/${product.creator?._id}`}
+              className=" hover:text-amber-400 text-xs hover:underline duration-150 line-clamp-1 mt-1 capitalize text-muted-foreground "
+            >
+              {/*@ts-ignore*/}
+              from {product.creator?.firstName} {product.creator?.lastName}
+            </Link>
+            <div className=" mt-4 text-xs text-muted-foreground">
+            {!show&&!showOnly && (
+                <Button
+                  aria-label="Remove item"
+                  variant={"ghost"}
+                  onClick={() => handleRemoveItem(product._id)}
+                  className="flex  hover:text-amber-400 duration-150 items-center gap-0.5"
+                >
+                  <X className="w-3 h-4" />
+                  Remove
+                </Button>
+            )}
+            </div>
           </div>
-          {check&&!show && (
+          {check && !show && (
             <p className=" mt-4 flex space-x-2 text-sm text-gray-700">
               <Check className=" h-5 w-5  text-green-500" />
               <span>Eligible for free shipping</span>
@@ -75,7 +92,7 @@ const CartItem = ({
         <div className="flex flex-col  space-y-1 font-medium">
           <span className=" ml-auto line-clamp-1 text-sm">
             {" "}
-            <div className="   font-medium text-gray-900">
+            <div className=" ml-auto font-medium text-gray-900">
               {product.isOnSale && product?.salePrice ? (
                 <p className="flex items-center gap-1 flex-col">
                   {formatPrice(+basePrice - Number(product?.salePrice.replace("$", "")))}
@@ -87,14 +104,12 @@ const CartItem = ({
             </div>
           </span>
         </div>
-        <div className="flex flex-col gap-3 items-end">
-          {variantsItems &&
-            variantsItems.length > 0 &&
-            variantsItems.map((variant: any, i: number) =>
+        {variantsItems && variantsItems.length > 0 && (
+          <div className="flex flex-col gap-3 items-end">
+            {variantsItems.map((variant: any, i: number) =>
               product.variations.map((variation: any, j: number) => {
                 const option = variation.variationOptions.find((vo: any) => vo._id == variant);
                 if (!option) return;
-                console.log(option);
                 return (
                   <div className="flex items-center gap-1" key={variation._id}>
                     <Badge
@@ -108,7 +123,8 @@ const CartItem = ({
                 );
               })
             )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

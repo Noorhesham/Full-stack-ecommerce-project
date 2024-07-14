@@ -11,7 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import React from "react";
-interface OrderProps {
+export interface OrderProps {
   name: string;
   price: number;
   _id: string;
@@ -23,6 +23,9 @@ interface OrderProps {
   shippingAddress: string;
   paymentMethod: string;
   isPaid: boolean;
+  isDelieverd: boolean;
+  deliveredAt: Date;
+  location: { lat: number; lng: number };
 }
 const ThankYouPage = async ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
   const orderId = searchParams?.orderId;
@@ -32,7 +35,6 @@ const ThankYouPage = async ({ searchParams }: { searchParams: { [key: string]: s
   const { order }: OrderProps | null = await getOrderStatus(orderId);
 
   if (!order) return notFound();
-  console.log(order);
   const orderUserId = order.user._id;
 
   if (orderUserId != user?.id) return redirect(`/signin?redirect=/thank-you?orderId=${orderId}`);
@@ -45,18 +47,18 @@ const ThankYouPage = async ({ searchParams }: { searchParams: { [key: string]: s
   }, 0);
   return (
     <main className=" relative  lg:min-h-[90vh]">
-      <div className=" hidden sm:block h-full overflow-hidden lg:absolute lg:h-full  lg:w-[50%] lg:pr-4 xl:pr-12 ">
+        <div className=" mx-auto max-w-2xl px-4 py-12 sm:px-6 sm:py-24 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8 lg:py-32 xl:gap-x-24">
+      <div className=" hidden sm:block h-full overflow-hidden relative  inset-0 lg:h-full  w-full lg:pr-4 xl:pr-12 ">
         <Image
           src={"/naruto ninja evolution.jpg"}
           fill
-          className="object-center h-full w-full object-contain"
+          className="object-center h-full absolute w-full object-cover"
           alt="thank you image"
         />
       </div>
       <div>
-        <div className=" mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8 lg:py-32 xl:gap-x-24">
           <div className=" lg:col-start-2">
-            <p className=" text-sm font-medium text-red-600">Order Placed Successfully</p>
+            <p className=" text-sm font-medium text-orange-600">Order Placed Successfully</p>
             <h1 className=" mt-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
               Thank you for shopping with us.
             </h1>
@@ -71,6 +73,9 @@ const ThankYouPage = async ({ searchParams }: { searchParams: { [key: string]: s
                 will send you confirmation email very soon.
               </p>
             )}
+            <div className="mt-5 mx-auto text-center h-40 w-40 relative">
+              <Image src={"/happy.gif"} fill className="object-contain absolute" alt="happy image" />
+            </div>
             <div className=" mt-16 text-sm font-medium">
               <div className=" text-muted-foreground">Order nr.</div>
               <div className=" text-gray-900 mt-2">{order._id}</div>
@@ -103,7 +108,7 @@ const ThankYouPage = async ({ searchParams }: { searchParams: { [key: string]: s
                 orderEmail={user?.email || ""}
               />
               <div className=" mt-16 border-t border-gray-200  py-6 text-right ">
-                <Link href={`/products`} className=" text-red-500 hover:text-red-400 text-sm font-medium">
+                <Link href={`/products`} className=" text-orange-500 hover:text-orange-400 text-sm font-medium">
                   Continue Shopping &rarr;
                 </Link>
               </div>

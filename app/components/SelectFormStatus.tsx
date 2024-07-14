@@ -17,6 +17,7 @@ import BabySpinner from "./BabySpinner";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const SelectFormStatus = ({ product }: { product: ProductProps }) => {
+  console.log(product);
   const form = useForm<z.infer<typeof statusSchema>>({
     resolver: zodResolver(statusSchema),
     defaultValues: {
@@ -24,7 +25,6 @@ const SelectFormStatus = ({ product }: { product: ProductProps }) => {
       isFeatured: product?.isFeatured || false,
     },
   });
-  console.log(form.formState);
   const queryClient = useQueryClient();
   const { handleSubmit, control } = form;
   const [isPending, startTransition] = React.useTransition();
@@ -40,8 +40,9 @@ const SelectFormStatus = ({ product }: { product: ProductProps }) => {
           userId: product.creator._id,
           productId: product._id,
           message:
-            `your product is ${data.status} by the admin / admin comment :${data.message}` ||
-            `your product is ${data.status} by the admin`,
+            `your product ${product.name} was ${data.status} by the admin  ${
+              data.message !== "" ? `admin comment :${data.message}` : ""
+            }` || `your product is ${data.status} by the admin`,
         },
         product.creator._id
       );

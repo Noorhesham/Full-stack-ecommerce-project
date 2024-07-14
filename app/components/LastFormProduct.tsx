@@ -63,7 +63,7 @@ const LastFormProduct = ({ variations, isNotified }: { variations: VariationProp
                 <Button
                   type="button"
                   variant="ghost"
-                  className="hover:text-red-500 duration-200 flex items-center gap-2 w-fit self-end"
+                  className="hover:text-orange-500 duration-200 flex items-center gap-2 w-fit self-end"
                   onClick={() => appendVariation({ name: "", options: [{ title: "", image: "" }] })}
                 >
                   <PlusIcon /> Add Variation
@@ -73,12 +73,17 @@ const LastFormProduct = ({ variations, isNotified }: { variations: VariationProp
                 <Button
                   type="button"
                   variant="default"
-                  className="hover:text-red-100 duration-200 flex items-center gap-2 w-fit self-end"
+                  className="hover:text-orange-100 duration-200 flex items-center gap-2 w-fit self-end"
                 >
                   <a href={`/products#${product?._id}`}>Finish Updating Product ! </a>
                 </Button>
               ) : (
-                <NotificationSender userId={product?.creator || ""} productId={product?._id || ""} />
+                <NotificationSender
+                  productName={product?.name || ""}
+                  userName={`${product?.creator?.firstName} ${product?.creator?.lastName}`}
+                  userId={product?.creator || ""}
+                  productId={product?._id || ""}
+                />
               )}
             </div>
           </div>
@@ -89,7 +94,8 @@ const LastFormProduct = ({ variations, isNotified }: { variations: VariationProp
                 productId={product?._id}
                 removeVariation={removeVariation}
                 variants={variations}
-                key={variationIndex} productPrice={product?.price||10}
+                key={variationIndex}
+                productPrice={product?.price || 10}
                 defaultVariation={
                   product && product?.variations?.length > 0 ? product?.variations?.[variationIndex] : []
                 }

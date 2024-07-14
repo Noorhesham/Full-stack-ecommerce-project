@@ -51,7 +51,7 @@ const Steps = ({ id, product }: { id?: string; product?: ProductProps }) => {
                   "absolute left-0 duration-150 top-0 h-full w-1 bg-zinc-400 lg:bottom-0 lg:top-auto lg:h-1 lg:w-full",
                   {
                     "bg-zinc-700": isCurrent,
-                    " bg-red-500": isCompleted,
+                    " bg-orange-500": isCompleted,
                   }
                 )}
                 aria-hidden="true"
@@ -74,7 +74,7 @@ const Steps = ({ id, product }: { id?: string; product?: ProductProps }) => {
                 <span className="ml-4 h-full mt-0.5 flex min-w-0 flex-col justify-center">
                   <span
                     className={cn("text-sm duration-200 font-semibold text-zinc-700", {
-                      "text-red-500": isCompleted,
+                      "text-yellow-500": isCompleted,
                       "text-zinc-700": isCurrent,
                     })}
                   >

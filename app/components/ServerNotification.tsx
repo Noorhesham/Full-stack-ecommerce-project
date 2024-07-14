@@ -7,6 +7,7 @@ import { fetchNotifications } from "../actions/products";
 const ServerNotification = async ({ user }: { user: UserProps & any }) => {
   await connect();
   const notifications = await fetchNotifications(user);
+  console.log(notifications);
   return <Notifications isAdmin={user?.isAdmin || false} userId={user?.id || ""} notifications={notifications} />;
 };
 

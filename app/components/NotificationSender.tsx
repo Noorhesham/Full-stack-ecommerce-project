@@ -4,7 +4,17 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { toast } from "react-toastify";
 
-const NotificationSender = ({ userId, productId }: { userId: string; productId: string }) => {
+const NotificationSender = ({
+  userId,
+  productId,
+  productName,
+  userName,
+}: {
+  userId: string;
+  productId: string;
+  productName?: string;
+  userName: string;
+}) => {
   const [isConnected, setIsConnected] = useState(false);
   const [transport, setTransport] = useState("N/A");
   useEffect(() => {
@@ -49,12 +59,12 @@ const NotificationSender = ({ userId, productId }: { userId: string; productId: 
           {
             userId,
             productId,
-            message: "Product is waiting for confirmation from the admin",
+            message: `Product ${productName||""} was added by ${userName} and it is waiting for confirmation from the admin`,
           },
           "admin"
         )
       }
-      className="hover:text-red-100 duration-200 flex items-center gap-2 w-fit self-end"
+      className="hover:text-orange-100 duration-200 flex items-center gap-2 w-fit self-end"
     >
       <Link href={`/congrats`}>Finish Product ! </Link>
     </Button>

@@ -142,7 +142,7 @@ const ShowVariants = () => {
           <Button
             type="button"
             variant="ghost"
-            className="hover:text-red-500 duration-200 flex items-center gap-2 w-fit self-end"
+            className="hover:text-orange-500 duration-200 flex items-center gap-2 w-fit self-end"
             onClick={() => append({ title: "", _id: "" })}
           >
             <PlusIcon /> Add Option

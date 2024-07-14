@@ -53,6 +53,7 @@ const Notifications = ({
 
     function onConnect() {
       socket.on("sentNotification", (data: NoftificationsProps) => {
+        console.log("sentNotification event received:", data);
         setNotifications((prev) => [data, ...prev]);
         setPopNotification(data);
         router.refresh();
@@ -67,15 +68,22 @@ const Notifications = ({
       });
 
       socket.on("AcceptProduct", (value) => {
+        setNotifications((prev) => [value, ...prev]);
         setPopNotification(value);
         console.log("Product accepted:", value);
-        console.log("Product accepted:", value);
+      });
+
+      socket.on("statusOrderUpdate", (data) => {
+        setNotifications((prev) => [data, ...prev]);
+        setPopNotification(data);
+        console.log("statusOrderUpdate", data);
       });
     }
 
     function onDisconnect() {
       socket.off("sentNotification");
       socket.off("AcceptProduct");
+      socket.off("statusOrderUpdate");
       socket.off("connect");
       socket.off("disconnect");
     }
@@ -110,7 +118,7 @@ const Notifications = ({
         <HoverCardTrigger asChild>
           <div className="cursor-pointer relative p-2 bg-gray-100 hover:bg-gray-200 hover:text-rose-400 rounded-full duration-150">
             <IoNotifications className="w-6 h-6" />
-            <span className="absolute top-1 -right-2 h-4 w-4 text-center my-auto rounded-full bg-red-500 text-xs text-gray-50">
+            <span className="absolute top-1 -right-2 h-4 w-4 text-center my-auto rounded-full bg-orange-500 text-xs text-gray-50">
               {existingNotifications?.filter((notification) => !notification.isRead).length}
             </span>
           </div>
@@ -120,7 +128,7 @@ const Notifications = ({
           {existingNotifications?.length === 0 && (
             <div className="flex h-full flex-col items-center ">
               <div className=" w-40 relative h-40 ">
-                <Image fill className="object-cover" src="/empty.png" alt="empty" />
+                <Image fill className="object-cover" src="/empty.jpg" alt="empty" />
               </div>
               <p className="text-sm text-center">No new notifications</p>
             </div>

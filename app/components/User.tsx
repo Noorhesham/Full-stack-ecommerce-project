@@ -3,15 +3,20 @@ import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { UserProps } from "@/lib/database/models/UserModel";
-import { signOut } from "next-auth/react";
-import { Calendar, LayoutDashboard, LogOutIcon, Settings } from "lucide-react";
-import Link from "next/link";
-import { formattedDate } from "@/lib/utils";
 import UserOptions from "./UserOptions";
 
-const User = ({ user, className, open }: { user: UserProps | any; className?: string; open?: boolean }) => {
+const User = ({
+  user,
+  className,
+  open,
+  show,
+}: {
+  user: UserProps | any;
+  className?: string;
+  open?: boolean;
+  show?: boolean;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
-
   const handleTriggerClick = () => {
     if (open) return;
     setIsOpen(!isOpen);
@@ -21,14 +26,16 @@ const User = ({ user, className, open }: { user: UserProps | any; className?: st
       <HoverCardTrigger className="cursor-pointer" asChild>
         <div onClick={handleTriggerClick}>
           <Avatar className={`${className || ""}`}>
-            <AvatarImage src={user.image || `${user.photo}` || "/avatar.jpg"} />
+            <AvatarImage src={user.image || `${user.photo?.imgUrl}` || "/avatarDefualt.jpg"} />
             <AvatarFallback>{user.firstName}</AvatarFallback>
           </Avatar>
         </div>
       </HoverCardTrigger>
-      <HoverCardContent className="w-80">
-        <UserOptions user={user} />
-      </HoverCardContent>
+      {
+        <HoverCardContent className="w-80 z-[999999]">
+          <UserOptions show={show} user={user} />
+        </HoverCardContent>
+      }
     </HoverCard>
   );
 };

@@ -71,7 +71,7 @@ export function DataTable<TData extends TableData, TValue>({
     },
   });
   //@ts-ignore
-  const chosen = table.getSelectedRowModel().flatRows.map((row) => row.original?._id);
+  const chosen = table?.getSelectedRowModel().flatRows.map((row) => row.original?._id);
   useEffect(() => {
     const hash = window.location.hash;
     if (hash) {
@@ -92,15 +92,17 @@ export function DataTable<TData extends TableData, TValue>({
   }, [data, table]);
   return (
     <div className="">
-      {chosen.length > 1 && <PopUp count={chosen.length} handleDelete={() => handleDeleteAll(chosen)} />}
+      {chosen.length > 0 && <PopUp count={chosen.length} handleDelete={() => handleDeleteAll(chosen)} />}
       <div className="flex justify-between items-center py-4">
         <div className="flex gap-2 items-center">
-          <Input
-            placeholder="Filter names..."
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
-            className="max-w-sm"
-          />
+          {table.getColumn("name") && (
+            <Input
+              placeholder="Filter names..."
+              value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+              onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
+              className="max-w-sm"
+            />
+          )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">

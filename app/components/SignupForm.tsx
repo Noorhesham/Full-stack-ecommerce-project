@@ -15,6 +15,7 @@ import { redirect, useRouter } from "next/navigation";
 import Social from "./Socials";
 import { sendConfirmationEmail } from "@/lib/database/email";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 const SignupForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -50,59 +51,64 @@ const SignupForm = () => {
 
   return (
     <>
-      <div className="container relative flex pt-12 flex-col items-center justify-center lg:px-0">
-        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-          <div className="flex flex-col items-center space-y-2 text-center">
-            <Logo />
-            <h1 className="text-2xl font-semibold tracking-tight">Create an account</h1>
-
-            <Link
-              className={buttonVariants({
-                variant: "link",
-                className: "gap-1.5",
-              })}
-              href="/signin"
-            >
-              Already have an account? Sign-in
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-
-          <div className="flex flex-col  gap-6">
-            <Form {...form}>
-              <form onSubmit={handleSubmit(onSubmit)} className="flex  justify-center px-5 py-5 flex-col gap-6 ">
-                <FormInput control={control} className={"w-full"} name="email" label="Email" type="email" />
-                <div className="flex items-center gap-4">
-                  <FormInput control={control} name="lastName" label=" Last Name" type="text" />
-                  <FormInput control={control} name="firstName" label="First Name" type="text" />
-                </div>
-                <FormInput phone name="phone" control={control} label=""/>
-                <FormInput
-                  password
-                  className={"w-full"}
-                  control={control}
-                  name="password"
-                  label="password"
-                  type="password"
-                />
-                <FormInput
-                  password
-                  className={"w-full"}
-                  control={control}
-                  name="confirmPassword"
-                  label=" password confirm"
-                  type="password"
-                />
-                <Button disabled={isLoading}>
-                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Sign up
-                </Button>
-                <Social />
-              </form>
-            </Form>
-          </div>
+      <div className="flex  w-full max-w-4xl items-center gap-2">
+        <div className=" lg:block hidden relative h-full w-1/2  flex-[50%]">
+          <Image src="/signup.webp" fill alt="login image" className="object-cover object-center w-full h-full absolute" />
         </div>
-        {error && <p className=" font-semibold text-red-500">{error}</p>}
+        <div className="container relative flex pt-12 flex-col items-center justify-center lg:px-0">
+          <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+            <div className="flex flex-col items-center space-y-2 text-center">
+              <Logo />
+              <h1 className="text-2xl font-semibold tracking-tight">Create an account</h1>
+
+              <Link
+                className={buttonVariants({
+                  variant: "link",
+                  className: "gap-1.5",
+                })}
+                href="/signin"
+              >
+                Already have an account? Sign-in
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            <div className="flex flex-col  gap-6">
+              <Form {...form}>
+                <form onSubmit={handleSubmit(onSubmit)} className="flex  justify-center px-5 py-5 flex-col gap-6 ">
+                  <FormInput control={control} className={"w-full"} name="email" label="Email" type="email" />
+                  <div className="flex items-center gap-4">
+                    <FormInput control={control} name="lastName" label=" Last Name" type="text" />
+                    <FormInput control={control} name="firstName" label="First Name" type="text" />
+                  </div>
+                  <FormInput phone name="phoneNumber" control={control} label="" />
+                  <FormInput
+                    password
+                    className={"w-full"}
+                    control={control}
+                    name="password"
+                    label="password"
+                    type="password"
+                  />
+                  <FormInput
+                    password
+                    className={"w-full"}
+                    control={control}
+                    name="confirmPassword"
+                    label=" password confirm"
+                    type="password"
+                  />
+                  <Button disabled={isLoading}>
+                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Sign up
+                  </Button>
+                  <Social />
+                </form>
+              </Form>
+            </div>
+          </div>
+          {error && <p className=" font-semibold text-red-500">{error}</p>}
+        </div>
       </div>
     </>
   );

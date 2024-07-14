@@ -2,22 +2,22 @@
 export const PRODUCT_CATEGORIES = [
   {
     label: "Gaming",
-    value: "gaming" as const,
+    value: "Gaming" as const,
     featured: [
-      { name: "Latest Games", href: "#", imageSrc: "/latest.jpg" },
-      { name: "Top Picks", href: "#", imageSrc: "/gaming.webp" },
+      { name: "Latest Games", href: "/products?category=Gaming&subcategory=latest games", imageSrc: "/latest.jpg" },
+      { name: "Top Picks", href: "/products?category=Gaming&subcategory=top picks", imageSrc: "/gaming.webp" },
     ],
   },
   {
     label: "Devices & Consoles",
-    value: "devices_consoles" as const,
+    value: "Devices-Consoles" as const,
     featured: [
       {
         name: "PlayStation",
-        href: "#",
+        href: "/products?category=Devices & Consoles&subcategory=playstation",
         imageSrc: "/ps5.webp",
         categories: [
-          { name: "devices", href: "#" },
+          { name: "devices", href: "/products?category=Devices & Consoles" },
           { name: "games", href: "#" },
         ],
       },
@@ -28,7 +28,7 @@ export const PRODUCT_CATEGORIES = [
   },
   {
     label: "Computers",
-    value: "computers" as const,
+    value: "Computers" as const,
     featured: [
       { name: "Laptops", href: "#", imageSrc: "/pc.webp" },
       { name: "PCs", href: "#", imageSrc: "/laplap.jpg" },
@@ -36,7 +36,7 @@ export const PRODUCT_CATEGORIES = [
   },
   {
     label: "Mobile Phones",
-    value: "mobile_phones" as const,
+    value: "Mobile-Phones" as const,
     featured: [
       { name: "IPhone", href: "#", imageSrc: "/iphone.jpg" },
       { name: "Samsung", href: "#", imageSrc: "/eg-galaxy-s24-s928-sm-s928bztqmea-thumb-539296238.webp" },
@@ -45,7 +45,7 @@ export const PRODUCT_CATEGORIES = [
   },
   {
     label: "Wearables",
-    value: "wearables" as const,
+    value: "Wearables" as const,
     featured: [
       { name: "Smartwatches", href: "#", imageSrc: "/smart.webp" },
       { name: "Headphones", href: "#", imageSrc: "/headphones.jpg" },

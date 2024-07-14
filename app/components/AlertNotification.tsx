@@ -39,7 +39,7 @@ const AlertNotification = ({ message }: { message: string }) => {
               <Button
                 variant="ghost"
                 onClick={() => setVisible(false)}
-                className="ml-auto hover:text-red-500 duration-150 text-xs"
+                className="ml-auto hover:text-amber-500 duration-150 text-xs"
               >
                 Dismiss
               </Button>
