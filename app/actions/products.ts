@@ -246,6 +246,9 @@ export async function getProducts(pageNum = 1, pageSize = 20, filters: any = {},
     if (filters.user) {
       query.creator = filters.user;
     }
+    if(filters.status){
+      query.status = filters.status
+    }
     const sortCriteria: any = {};
     if (sort) {
       const [sortBy, sortOrder] = sort.split(":");
