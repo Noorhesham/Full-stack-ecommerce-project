@@ -8,7 +8,7 @@ export const signupSchema = z
     email: z.string().email({ message: "😢 Please enter a valid email" }),
     password: z.string().min(6, { message: "Password must be at least 6 characters" }),
     confirmPassword: z.string().min(6, { message: "Please confirm your password" }),
-    phone: z.string().regex(phoneRegex, { message: "Please enter a valid phone number" }),
+    phoneNumber: z.string().regex(phoneRegex, { message: "Please enter a valid phone number" }),
     // phone: z.string().regex(phoneRegex, { message: "Please enter a valid phone number" }),
   })
   .refine((data) => data.password === data.confirmPassword, {

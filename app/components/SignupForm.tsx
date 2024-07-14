@@ -48,7 +48,7 @@ const SignupForm = () => {
       setIsLoading(false);
     }
   };
-
+  console.log(form.formState.errors)
   return (
     <>
       <div className="flex  w-full max-w-4xl items-center gap-2">
@@ -78,8 +78,8 @@ const SignupForm = () => {
                 <form onSubmit={handleSubmit(onSubmit)} className="flex  justify-center px-5 py-5 flex-col gap-6 ">
                   <FormInput control={control} className={"w-full"} name="email" label="Email" type="email" />
                   <div className="flex items-center gap-4">
-                    <FormInput control={control} name="lastName" label=" Last Name" type="text" />
                     <FormInput control={control} name="firstName" label="First Name" type="text" />
+                    <FormInput control={control} name="lastName" label=" Last Name" type="text" />
                   </div>
                   <FormInput phone name="phoneNumber" control={control} label="" />
                   <FormInput

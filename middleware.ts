@@ -18,24 +18,27 @@ export async function middleware(req: NextRequest) {
   }
 
   if (isLoggedIn) {
-    // Redirect admins to /admin if not already on /admin
-    if (
-      //@ts-ignore
-      session.user.isAdmin &&
-      !url.pathname.startsWith("/admin") &&
-      !isPublicRoute &&
-      !url.pathname.startsWith("/cart") &&
-      !url.pathname.startsWith("/thank-you")
-    ) {
-      url.pathname = `/admin`;
-      return NextResponse.redirect(url);
-    }
-    // Redirect non-admins away from /admin
+    // Admin specific redirection logic
     //@ts-ignore
-    if (!session.user.isAdmin && url.pathname.startsWith("/admin")) {
-      url.pathname = "/";
-      return NextResponse.redirect(url);
+    if (session.user.isAdmin) {
+      // Redirect admins to /admin if they are not already on /admin
+      if (
+        !url.pathname.startsWith("/admin") &&
+        !isPublicRoute &&
+        !url.pathname.startsWith("/cart") &&
+        !url.pathname.startsWith("/thank-you")
+      ) {
+        url.pathname = `/admin`;
+        return NextResponse.redirect(url);
+      }
+    } else {
+      // Redirect non-admins away from /admin
+      if (url.pathname.startsWith("/admin")) {
+        url.pathname = "/";
+        return NextResponse.redirect(url);
+      }
     }
+
     if (isAuthRoute) {
       url.pathname = defaultLoginRedirect;
       return NextResponse.redirect(url);
@@ -44,7 +47,6 @@ export async function middleware(req: NextRequest) {
   }
 
   if (isAuthRoute) {
-    // Handle authenticated routes
     //@ts-ignore
     if (isLoggedIn && session.user.isAdmin && !url.pathname.startsWith("/admin")) {
       url.pathname = "/admin";
