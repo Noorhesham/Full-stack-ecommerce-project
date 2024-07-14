@@ -42,11 +42,12 @@ export const metadata = constructMetadata({
   title: "Shinobi Store - Your market place to sell any product or buy products for best prices ! ",
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  await connect();
   return (
     <main className="relative  flex flex-col min-h-screen">
       <NavBar />
