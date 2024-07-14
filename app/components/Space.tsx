@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useAnimations, useGLTF } from "@react-three/drei";
 import { Group } from "three";
 import { useFrame } from "@react-three/fiber";
@@ -7,7 +7,7 @@ const Space = () => {
   const group = useRef<Group>(null);
   const { nodes, animations, scene } = useGLTF("/naruto.glb");
   const { actions, names } = useAnimations(animations, scene);
-  console.log(names)
+
   useEffect(() => {
     // Play all animations and log any issues
     names.forEach((name, index) => {
@@ -44,4 +44,3 @@ const Space = () => {
 };
 
 export default Space;
-
