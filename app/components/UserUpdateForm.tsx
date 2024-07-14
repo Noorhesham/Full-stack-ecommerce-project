@@ -128,7 +128,7 @@ const UserUpdateForm = ({ userData }: { userData: UserProps }) => {
           <div className="flex flex-col gap-7 mb-5 mt-3 items-center">
             <label htmlFor="img" className="h-32 group rounded-full border border-gray-400 w-32 relative">
               <Image
-                src={(image && URL.createObjectURL(image)) || userData?.photo.imgUrl || "/avatarDefault.jpg"}
+                src={(image && URL.createObjectURL(image)) || userData?.photo?.imgUrl || "/avatarDefault.jpg"}
                 alt="user image"
                 fill
                 className={`rounded-full group-hover:opacity-90 duration-150 cursor-pointer absolute object-cover object-center ${
