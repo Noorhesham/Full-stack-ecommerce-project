@@ -3,9 +3,9 @@ import { useAnimations, useGLTF } from "@react-three/drei";
 import { Group } from "three";
 import { useFrame } from "@react-three/fiber";
 
-const Space = () => {
+const Space = ({path,sizes}:{path?:string,sizes?:[number,number,number]}) => {
   const group = useRef<Group>(null);
-  const { nodes, animations, scene } = useGLTF("/naruto.glb");
+  const { nodes, animations, scene } = useGLTF(`${path?path:'/naruto.glb'}`) as any;
   const { actions, names } = useAnimations(animations, scene);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const Space = () => {
   });
 
   return (
-    <group ref={group} position={[0, -2, 0]} scale={[1.6, 1.6, 1.6]}>
+    <group ref={group} position={[0, -2, 0]} scale={sizes||[1.6, 1.6, 1.6]}>
       <primitive object={scene} />
     </group>
   );

@@ -112,6 +112,7 @@ const UserUpdateForm = ({ userData }: { userData: UserProps }) => {
               },
             },
           });
+          reloadSession();
         } else {
           toast.error(res.error);
         }

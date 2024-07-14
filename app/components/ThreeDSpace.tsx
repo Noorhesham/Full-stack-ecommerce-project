@@ -21,7 +21,7 @@ function Loader() {
   );
 }
 
-export default function ThreeDSpace({ className }: { className?: string }) {
+export default function ThreeDSpace({ className,path,sizes }: { className?: string ,path?:string,sizes?:[number,number,number]}) {
   return (
     <div className={className}>
       <Canvas className="w-full mb-20 h-full">
@@ -31,7 +31,7 @@ export default function ThreeDSpace({ className }: { className?: string }) {
           <ambientLight intensity={0.3} />
           <pointLight intensity={0.8} />
           <hemisphereLight intensity={0.8} />
-          <Space />
+          <Space sizes={sizes} path={path}/>
         </Suspense>
       </Canvas>
     </div>

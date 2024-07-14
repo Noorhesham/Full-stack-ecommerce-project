@@ -26,9 +26,9 @@ const UserOptions = ({ user, show = false }: { user: UserProps; show?: boolean }
           <AvatarFallback>{user.firstName}</AvatarFallback>
         </Avatar>
         <div className="space-y-1 text-center">
-          <h4 className="text-sm font-semibold hover:underline duration-200 cursor-pointer">
+          <Link href={`/profile/${user.id}`} className="text-sm font-semibold hover:underline duration-200 cursor-pointer">
             {user.firstName} {user.lastName}
-          </h4>
+          </Link>
           <p className="text-sm">{user.email}</p>
           <div className="flex items-center pt-2">
             <Calendar className="mr-2 h-4 w-4 opacity-70" />{" "}
@@ -37,7 +37,12 @@ const UserOptions = ({ user, show = false }: { user: UserProps; show?: boolean }
         </div>
       </div>
       {show ? (
-        <Link className=" text-center text-muted-foreground hover:underline duration-150 hover:text-orange-300" href={`/profile/${user._id}`}>Show Profile</Link>
+        <Link
+          className=" text-center text-muted-foreground hover:underline duration-150 hover:text-orange-300"
+          href={`/profile/${user._id}`}
+        >
+          Show Profile
+        </Link>
       ) : (
         <div className="flex flex-col mt-5 text-right">
           {

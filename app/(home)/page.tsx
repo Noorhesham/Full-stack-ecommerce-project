@@ -57,8 +57,28 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
           filters={{ isFeatured: true }}
           title="Featured Products"
           subTitle="Our top selling products"
-          href="/gaming"
+          href="/products"
           sort={""}
+        />
+        <ProductReel
+          filters={{ category: "6679b412d0b3a021c9dca130" }}
+          className=" py-0"
+          page={page}
+          href={`/products/category=Gaming`}
+          title="Gaming Products"
+          subTitle="Browse All products"
+          paginate={true}
+          sort={""}
+        />
+        <ProductReel
+          filters={{ category: "6679be4dd0b3a021c9dca3b0" }}
+          className=" py-0"
+          page={page}
+          href={`/products/category=Computers`}
+          title="Computers"
+          subTitle="Browse All products"
+          sort={""}
+          paginate={true}
         />
         <section
           id="products"
@@ -114,7 +134,16 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
             </p>
           </div>
         </div>
-      
+        {/* <div className="flex px-5 md:px-10  village backdrop-blur-lg  flex-col md:mb-20 md:flex-row items-center">
+          <div className="text-center mt-16 text-gray-100 md:text-left md:w-1/2 p-4">
+            <p className="mt-4 text-gray-50 ">
+              Discover high-quality, hand-picked products perfect for every occasion. Our team ensures rigorous
+              standards of excellence, providing you with unmatched quality and satisfaction. Shop with us for a
+              seamless experience and unparalleled customer service.
+            </p>
+          </div>
+          <ThreeDSpace sizes={[18,18,18]}  path="/ramen.glb" className="w-full md:w-1/2 lg:w-[80%] h-[400px] md:h-[500px]" />
+        </div> */}
       </section>
     </>
   );
