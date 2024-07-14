@@ -185,7 +185,7 @@ const VariationForm: React.FC<VariationFormProps> = ({
                     >
                       {field.images && (
                         <Image
-                          src={field.images?.[0].imgUrl}
+                          src={field.images?.[0]?.imgUrl}
                           alt="product image"
                           width={20}
                           height={20}
