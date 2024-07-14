@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { cn,  } from "@/lib/utils";
+import { cn, constructMetadata,  } from "@/lib/utils";
 import AuthProvider from "./utils/SessionProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,7 +23,11 @@ product name ,price description stock ,brand subcategory categories and info  2i
 9.
 10.
 */
-
+export const metadata = constructMetadata({
+  icons: "/favicon.ico",
+  title: "Shinobi Store - Your market place to sell any product or buy products for best prices ! ",
+  image: "/logo1.jpg",
+});
 export default async function RootLayout({
   children,
 }: Readonly<{

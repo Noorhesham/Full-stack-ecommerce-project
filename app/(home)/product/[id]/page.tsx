@@ -30,6 +30,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     openGraph: {
       images: [{ url: product.images.map((img: any) => img.imgUrl)[0] }],
     },
+    metadataBase: new URL("https://nine-tails-shinobi-shop.vercel.app"),
   };
 }
 const page = async ({

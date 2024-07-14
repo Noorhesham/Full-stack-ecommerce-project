@@ -21,7 +21,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     openGraph: {
       images: [{ url: user.photo?.imgUrl || "/logo.jpg" }],
     },
-    metadataBase: new URL("https://nine-tails-shinobi-shop.vercel.app/"),
+    metadataBase: new URL("https://nine-tails-shinobi-shop.vercel.app"),
   };
 }
 
