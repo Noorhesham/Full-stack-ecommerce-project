@@ -7,13 +7,7 @@ export const PRODUCT_CATEGORIES = [
       { name: "Top Picks", href: "/products?category=Gaming&subcategory=top picks", imageSrc: "/gaming.webp" },
     ],
   },
-  {
-    label: "Action Figures",
-    value: "action-figures",
-    featured: [
-      { name: "Figures", href: "/products?category=action-figures", imageSrc: "/action-figures.webp" },
-    ],
-  },
+
   {
     label:"Clothes",
     value:"clothes",
@@ -57,12 +51,5 @@ export const PRODUCT_CATEGORIES = [
       { name: "Huwawi", href: "#", imageSrc: "/huwawi.jpg" },
     ],
   },
-  {
-    label: "Wearables",
-    value: "Wearables" as const,
-    featured: [
-      { name: "Smartwatches", href: "#", imageSrc: "/smart.webp" },
-      { name: "Headphones", href: "#", imageSrc: "/headphones.jpg" },
-    ],
-  },
+
 ];
