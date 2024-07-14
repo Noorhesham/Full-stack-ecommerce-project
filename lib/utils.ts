@@ -131,7 +131,7 @@ export function constructMetadata({
       creator: "@NoorHesham",
     },
     icons,
-    metadataBase: new URL("https://nine-tails-shinobi-shop.vercel.app/"),
+    metadataBase: new URL("https://nine-tails-shinobi-shop.vercel.app"),
     ...(noIndex && {
       robots: {
         index: false,
