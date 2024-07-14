@@ -8,6 +8,7 @@ import PieChartProducts from "@/app/components/PieChartRevenue";
 import { ShowCategories } from "@/app/components/ShowCategories";
 import ShowVariants from "@/app/components/ShowVariants";
 import StatsInfo from "@/app/components/StatsInfo";
+import connect from "@/lib/database/connect";
 import User from "@/lib/database/models/UserModel";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
@@ -17,6 +18,7 @@ import { FaBoxOpen, FaUsers } from "react-icons/fa6";
 import { FcMoneyTransfer } from "react-icons/fc";
 const Order = require("@/lib/database/models/OrderModel");
 const page = async () => {
+  await connect();
   const session = await getServerSession(authOptions);
   const user = await User.findById(session?.user.id);
   if (!user.isAdmin) redirect("/signin");

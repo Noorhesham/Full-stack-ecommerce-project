@@ -92,7 +92,7 @@ const UserUpdateForm = ({ userData }: { userData: UserProps }) => {
 
   const handleImageChange = async () => {
     startTransition(async () => {
-      if (userData.photo.publicId) {
+      if (userData.photo?.publicId) {
         await imgDeletion(userData.photo.publicId);
       }
       //@ts-ignore
