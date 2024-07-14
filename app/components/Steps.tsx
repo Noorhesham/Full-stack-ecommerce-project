@@ -28,7 +28,7 @@ const Steps = ({ id, product }: { id?: string; product?: ProductProps }) => {
       name: "Step 3: Summary",
       description: "Add variations and more",
       url:
-        id && product && product?.images.length > 1
+        id && product && product?.images.length > 0
           ? `/${user?.isAdmin ? "admin" : "seller"}/create-product/${id}/last`
           : "",
     },
