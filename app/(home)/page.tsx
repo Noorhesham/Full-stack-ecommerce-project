@@ -20,6 +20,10 @@ const perks = [
     icon: CheckCircle,
   },
 ];
+export const metadata = constructMetadata({
+  icons: "/favicon.ico",
+  title: "Shinobi Store - Your market place to sell any product or buy products for best prices ! ",
+});
 
 export default function Home({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
   const category = searchParams.category;

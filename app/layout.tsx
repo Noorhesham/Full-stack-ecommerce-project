@@ -24,10 +24,6 @@ product name ,price description stock ,brand subcategory categories and info  2i
 9.
 10.
 */
-export const metadata = constructMetadata({
-  icons: "/favicon.ico",
-  title: "Shinobi Store - Your market place to sell any product or buy products for best prices ! ",
-});
 
 export default async function RootLayout({
   children,
