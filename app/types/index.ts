@@ -10,7 +10,7 @@ export interface CategoryProps {
 export interface ProductProps {
   _id: string;
   name: string;
-  description: string;
+  description: string;ribbon:string
   status: string;
   isFeatured?: boolean;
   variants?:string[]

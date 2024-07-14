@@ -153,5 +153,41 @@ select:focus::-ms-value {
   filter: blur(7px); /* Adjust blur intensity as needed */
   z-index: -1; /* Ensure the blur effect is behind the content */
 }
+.ribbon {
+  background: linear-gradient(90deg, #FFBF00, #FF8000, #FFD700); /* Amber, Orange, Yellow */
+  display: inline-block;
+  color: #f4f4f4;
+  padding: 0.5em 0.7em;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  width: 100%;
+  text-transform: uppercase;
+  transform-style: preserve-3d;
+  transform: rotate(-20deg) skew(-20deg, 10deg);
+}
 
+.ribbon:before, .ribbon:after {
+  content: "";
+  width: 0;
+  height: 2em;
+  display: block;
+  background: #FF8000; /* Orange */
+  position: absolute;
+  border-style: solid;
+  border-width: 0.5em;
+  z-index: -1;
+  transform: translateZ(-1em);
+}
+
+.ribbon:before {
+  left: -0.5em;
+  top: 0.5em;
+  border-color: #FFBF00 #FF8000 #FFBF00 #FFBF00; /* Amber and Orange */
+}
+
+.ribbon:after {
+  right: -0.5em;
+  top: -0.5em;
+  border-color: #FFBF00 #FFBF00 #FFBF00 #FF8000; /* Amber and Orange */
+}
 

@@ -134,12 +134,7 @@ const AddImagesForm = ({ product }: { product: ProductProps | any }) => {
     );
   };
   return (
-    <motion.div
-      initial={{ x: 1000 }}
-      animate={{ x: 0 }}
-      transition={{ duration: 0.2, ease: "easeInOut" }}
-      className="container py-5 flex flex-col items-center justify-center lg:px-0"
-    >
+    <div className="container py-5 flex flex-col items-center justify-center lg:px-0">
       <div className="flex flex-col px-20 py-8 xl:pb-[1.6rem] rounded-2xl bg-white items-center text-center">
         <div className="flex flex-col mb-4 mx-auto">
           <h1 className="text-2xl text-gray-900 font-bold mb-2 tracking-tight">Upload Your Images</h1>
@@ -209,7 +204,7 @@ const AddImagesForm = ({ product }: { product: ProductProps | any }) => {
           </Reorder.Group>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
