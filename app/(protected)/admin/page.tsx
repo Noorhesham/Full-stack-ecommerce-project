@@ -21,7 +21,6 @@ const page = async () => {
   await connect();
   const session = await getServerSession(authOptions);
   const user = await User.findById(session?.user.id);
-  if (!user.isAdmin) redirect("/signin");
   const stats: any = await getStats();
   if (!user.stripeAccountId) await CreateStripeAccount(user.email);
   const orders = await Order.aggregate([
