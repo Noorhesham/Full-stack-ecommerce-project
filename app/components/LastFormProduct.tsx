@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { useForm, useFieldArray } from "react-hook-form";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import VariationForm from "./VariationForm";
@@ -48,10 +47,8 @@ const LastFormProduct = ({ variations, isNotified }: { variations: VariationProp
   };
 
   return (
-    <motion.div
-      initial={{ x: 1000 }}
-      animate={{ x: 0 }}
-      transition={{ duration: 0.2, ease: "easeInOut" }}
+    <div
+    
       className="container py-5 flex flex-col lg:px-0"
     >
       <div className="flex flex-col px-10 py-3 xl:pb-[1.6rem] items-center text-center">
@@ -104,7 +101,7 @@ const LastFormProduct = ({ variations, isNotified }: { variations: VariationProp
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
