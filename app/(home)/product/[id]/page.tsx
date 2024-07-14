@@ -171,7 +171,7 @@ const page = async ({
               </div>
               <div className="flex  gap-2 justify-between flex-col">
                 <h2 className="text-sm font-medium text-muted-foreground text-gray-900">Published By</h2>
-                <div className="flex items-center gap-1">
+                <Link href={`/profile/${product.creator.id}`} className="flex items-center gap-1">
                   <Avatar>
                     <AvatarImage src={`${product.creator.photo.imgUrl}` || "/avatar.jpg"} />
                     <AvatarFallback className=" bg-orange-300">{product.creator.firstName}</AvatarFallback>
@@ -179,7 +179,7 @@ const page = async ({
                   <div className="flex flex-col text-sm items-start gap-1">
                     <h1 className="font-medium ml-1">{product.creator.firstName}</h1>
                   </div>
-                </div>
+                </Link>
               </div>
               <div className="flex flex-col gap-2">
                 {product.variations.length > 0 &&
