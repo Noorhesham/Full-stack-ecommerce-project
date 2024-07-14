@@ -22,7 +22,7 @@ const UserOptions = ({ user, show = false }: { user: UserProps; show?: boolean }
     <>
       <div className="flex flex-col gap-4 items-center justify-between space-x-4">
         <Avatar className="w-24 h-24">
-          <AvatarImage src={user.image || `${user.photo.imgUrl}` || "/avatar.jpg"} />
+          <AvatarImage src={user.image || `${user.photo?.imgUrl}` || "/avatar.jpg"} />
           <AvatarFallback>{user.firstName}</AvatarFallback>
         </Avatar>
         <div className="space-y-1 text-center">
