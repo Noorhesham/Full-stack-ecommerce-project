@@ -9,13 +9,13 @@ import Activation from "@/lib/database/models/ActivationModel";
 export const SignUp = async (data: z.infer<typeof signupSchema>) => {
   const validateFields = signupSchema.safeParse(data);
   if (!validateFields.success) return { error: "Invalid fields!" };
-  const { password, confirmPassword, firstName, lastName, email, phone } = validateFields.data;
+  const { password, confirmPassword, firstName, lastName, email, phoneNumber } = validateFields.data;
   await connect();
   const existingUser = await User.findOne({ email });
   if (existingUser) throw new Error("A user with this email already exists");
   const hashedPassword = await bcrypt.hash(password, 10);
   try {
-    const user = await User.create({ confirmPassword, firstName, lastName, password: hashedPassword, email, phone });
+    const user = await User.create({ confirmPassword, firstName, lastName, password: hashedPassword, email, phoneNumber });
     return { success: "Your account has been created successfully!", status: 200, data: { user } };
   } catch (error: any) {
     if (error.code === 11000) {
