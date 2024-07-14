@@ -11,7 +11,7 @@ const UserCard = ({ user,noemail=false }: { user: UserProps | any,noemail?:boole
       btn={
         <div className="flex gap-4">
           <Avatar>
-            <AvatarImage src={`${user.photo}` || "/avatar.jpg"} />
+            <AvatarImage src={`${user.photo?.imgUrl}` || "/avatar.jpg"} />
             <AvatarFallback>{user.firstName}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col text-sm items-start gap-1">
