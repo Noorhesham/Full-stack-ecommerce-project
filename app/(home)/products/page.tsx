@@ -4,6 +4,7 @@ import ProductReel from "../../components/ProductReel";
 import Category from "@/lib/database/models/CategoryModel";
 import { notFound } from "next/navigation";
 import Filters from "@/app/components/Filters";
+import connect from "@/lib/database/connect";
 
 const page = async ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
   const categoryParam = searchParams.category;
