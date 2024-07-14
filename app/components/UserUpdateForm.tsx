@@ -113,6 +113,7 @@ const UserUpdateForm = ({ userData }: { userData: UserProps }) => {
             },
           });
           reloadSession();
+          router.refresh()
         } else {
           toast.error(res.error);
         }
