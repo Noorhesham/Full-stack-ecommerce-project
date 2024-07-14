@@ -246,8 +246,11 @@ export async function getProducts(pageNum = 1, pageSize = 20, filters: any = {},
     if (filters.user) {
       query.creator = filters.user;
     }
-    if(filters.status){
-      query.status = filters.status
+    if (filters.status) {
+      query.status = filters.status;
+    }
+    if (filters.creator) {
+      query.creator = filters.creator;
     }
     const sortCriteria: any = {};
     if (sort) {
