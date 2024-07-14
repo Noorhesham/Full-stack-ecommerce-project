@@ -152,7 +152,7 @@ const page = async ({
                         price={getPriceForVariant()}
                         stock={product.stock}
                         btn
-                        productId={product.id}
+                        productId={product._id}
                       />
                     </div>
                     <div className=" mt-6 text-center">

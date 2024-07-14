@@ -10,7 +10,7 @@ import Variation from "@/lib/database/models/VariationModel";
 export async function addToCart(productId: string, variants?: string[]) {
   try {
     const session = await getServerSession(authOptions);
-
+    console.log(productId)
     const user = await User.findById(session?.user.id);
     if (!user) throw new Error("User not found");
     user.cart.push({
