@@ -25,7 +25,7 @@ const VerifyEmail = ({ token }: { token: string }) => {
     return (
       <div className="flex h-full flex-col items-center justify-center">
         <div className="relative -translate-x-10 mb-4 h-60 w-60 mx-auto text-muted-foreground">
-          <Image src="/verfied.png" fill alt="the email was sent" />
+          <Image src="/loader2.gif" fill alt="the email was sent" />
         </div>
 
         <h3 className="font-semibold text-2xl">You&apos;re all set!</h3>
