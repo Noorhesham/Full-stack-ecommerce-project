@@ -23,11 +23,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     },
   };
 }
-export const metadata = constructMetadata({
-  image: "/logo.jpg",
-  icons: "/favicon.ico",
-  title: "Shinobi Store - Your market place to sell any product or buy products for best prices ! ",
-});
+
 const page = async ({
   params,
   searchParams,
