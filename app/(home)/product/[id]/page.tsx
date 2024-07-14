@@ -28,7 +28,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   return {
     title: `Shinobi Store - ${product.name}`,
     openGraph: {
-      images: [{url:product.images.map((img: any) => img.imgUrl)[0]}],
+      images: [{ url: product.images.map((img: any) => img.imgUrl)[0] }],
     },
   };
 }
@@ -206,7 +206,7 @@ const page = async ({
       </div>
       <ProductReel
         href={`/products?category=${product.category.name}`}
-        filters={{ category: product.category._id, _id: { $ne: product._id } }}
+        filters={{ category: product.category._id, _id: { $ne: product._id }, status: "published" }}
         pageSize={5}
         subTitle={"Browse more like this"}
         title={`Similar ${product.category.name} Products `}
