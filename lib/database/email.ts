@@ -3,6 +3,7 @@ import { randomUUID } from "crypto";
 import nodemailer from "nodemailer";
 import Activation from "./models/ActivationModel";
 import { ReceiptEmailHtml } from "@/app/components/Email";
+import { ConfirmEmail } from "@/app/components/EmailConfirm";
 
 const emailUser = process.env.EMAIL_USER!;
 const emailPassword = process.env.EMAIL_PASSWORD!;
@@ -24,7 +25,7 @@ export async function sendConfirmationEmail(to: string, id: string) {
       to,
       subject: "Email Confirmation",
       text: "Please confirm your email by clicking the link.",
-      html: `<a href="${process.env.NEXTAUTH_URL}/verify-email?email=${to}&token=${token}">Verify Account</a>`,
+      html: ConfirmEmail({ link: `${process.env.NEXTAUTH_URL}/verify-email?email=${to}&token=${token}` }),
     });
 
     console.log("Message sent: %s", info.messageId);
@@ -52,12 +53,7 @@ export async function sendWelcomeEmail(to: string) {
 
 export async function sendPaymentEmail(
   to: string,
-  {
-    email,
-    products,
-    total,
-    orderId,
-  }: { email: string; products: any[]; total: number; orderId: string; }
+  { email, products, total, orderId }: { email: string; products: any[]; total: number; orderId: string }
 ) {
   try {
     const info = await transporter.sendMail({

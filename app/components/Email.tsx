@@ -28,13 +28,13 @@ interface ReceiptEmailProps {
   products: ProductProps[];
   total: number;
 }
-const baseUrl = process.env.VERCEL_URL ? `https://${process.env.NEXTAUTH_URL}` : "";
+const baseUrl = process.env.NEXTAUTH_URL ? `https://${process.env.NEXTAUTH_URL}` : "";
 
 export const ReceiptEmail = ({ email, date, orderId, products, total }: ReceiptEmailProps) => {
   return (
     <Html>
       <Head />
-      <Preview>Apple Receipt</Preview>
+      <Preview>Shinobi Shop Receipt</Preview>
 
       <Body style={main}>
         <Container style={container}>
@@ -68,7 +68,7 @@ export const ReceiptEmail = ({ email, date, orderId, products, total }: ReceiptE
                           textDecoration: "underline",
                         }}
                       >
-                        alan.turing@gmail.com
+                        noordragon2004@gmail.com
                       </Link>
                     </Column>
                   </Row>
