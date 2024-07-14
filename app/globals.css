@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -133,3 +132,26 @@ select:focus::-ms-value {
   background: rgb(228, 83, 83) !important;
   color: white !important;
 }
+.village {
+  position: relative;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.village::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/village.webp");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  filter: blur(7px); /* Adjust blur intensity as needed */
+  z-index: -1; /* Ensure the blur effect is behind the content */
+}
+
+

@@ -182,7 +182,7 @@ const UserUpdateForm = ({ userData }: { userData: UserProps }) => {
               label="Phone Number"
               type="text"
             />
-            <div className="w-full h-64">
+            <div className="w-full max-w-2xl h-64">
               <MapComponent
                 defaultLocation={userData?.location}
                 setLocation={(location: any) => form.setValue("location", location)}

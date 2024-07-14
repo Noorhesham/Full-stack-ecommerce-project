@@ -5,6 +5,7 @@ import { ArrowDownToLineIcon, CheckCircle, Leaf } from "lucide-react";
 import ProductReel from "../components/ProductReel";
 import { HeroHighlightDemo } from "../components/HighLight";
 import Filters from "../components/Filters";
+import ThreeDSpace from "../components/ThreeDSpace";
 const perks = [
   { name: "Instant Delivery", description: "Get your order in as fast as one hour !", icon: ArrowDownToLineIcon },
   {
@@ -97,6 +98,22 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
             ))}
           </div>
         </MaxWidthWrapper>
+        <div className="flex px-5 md:px-10  village backdrop-blur-lg  flex-col md:mb-20 md:flex-row items-center">
+          <ThreeDSpace className="w-full md:w-1/2 lg:w-[80%] h-[400px] md:h-[500px]" />
+          <div className="text-center mt-16 text-gray-100 md:text-left md:w-1/2 p-4">
+            <h1 className="text-4xl text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-yellow-500 to-orange-400 font-bold">
+              Why Shop at Shinobi Store?
+            </h1>
+            <p className="mt-4 text-gray-50 ">
+              Ninja Store is your one-stop destination for high-quality, hand-picked products that are perfect for every
+              occasion. Our dedicated team ensures that every item meets our rigorous standards of excellence, providing
+              you with unparalleled quality and satisfaction. Whether you’re looking for the latest trends or timeless
+              classics, we have it all. Our seamless shopping experience, coupled with our commitment to customer
+              satisfaction, makes us the preferred choice for discerning shoppers. Discover the difference at Ninja
+              Store – where quality and customer service are our top priorities.
+            </p>
+          </div>
+        </div>
       </section>
     </>
   );
