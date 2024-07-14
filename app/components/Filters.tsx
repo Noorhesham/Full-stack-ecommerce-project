@@ -133,7 +133,7 @@ const Filters = ({ onlyPrice = false }: { onlyPrice?: boolean }) => {
   const minPrice = Math.min(priceFilter.range[0], priceFilter.range[1]);
   const maxPrice = Math.max(priceFilter.range[0], priceFilter.range[1]);
   return (
-    <motion.div initial={{ y: -100 }} animate={{ y: 1 }} className="   lg:block">
+    <motion.div initial={{ y: -100 }} animate={{ y: 1 }} className="  h-full flex flex-col justify-between items-stretch  lg:block">
       {!onlyPrice && <span className="font-semibold mb-4 text-gray-800">Categories</span>}
 
       {

@@ -29,7 +29,7 @@ export function PaginationDemo({ totalPages }: { totalPages: number }) {
     setCurrentPage(page);
   };
   return (
-    <Pagination className="mt-5 col-span-full">
+    <Pagination className=" mt-auto col-span-full">
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious

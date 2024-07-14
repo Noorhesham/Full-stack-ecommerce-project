@@ -7,19 +7,21 @@ interface ProductReelProps {
   title: string;
   subTitle?: string;
   href?: string;
-  className?: string;onlyPrice?:boolean
+  className?: string;
+  onlyPrice?: boolean;
 }
 export interface ProductPropsServerProps {
   filters?: any;
   page?: number;
   pageSize?: number;
   paginate?: boolean;
+  slider?: boolean;
   sort?: string | string[] | undefined;
 }
 const ProductReel = async (props: ProductReelProps & ProductPropsServerProps) => {
-  const { title, subTitle, href, className, sort } = props;
+  const { title, subTitle, href, className, sort,slider } = props;
   return (
-    <section className={className || " py-12"}>
+    <section className={className || " py-12 mt-5 "}>
       <div className="lg:flex lg:items-center lg:justify-between mb-4">
         <div className=" max-w-2xl px-4 lg:max-w-5xl  text-nowrap lg:px-0 ">
           {title ? <h1 className=" text-2xl font-bold text-gray-900 sm:text-3xl">{title}</h1> : ""}
@@ -32,13 +34,13 @@ const ProductReel = async (props: ProductReelProps & ProductPropsServerProps) =>
       </div>
       <div className="relative ">
         <div className=" mt-6  flex items-center w-full">
-          <div className="w-full grid  grid-cols-2 gap-x-4 gap-y-10  sm:gap-x-6 md:grid-cols-3 lg:grid-cols-4  md:gap-y-10 lg:gap-x-8">
+          <div className="w-full  grid  grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-3 lg:grid-cols-4 md:gap-y-10 lg:gap-x-8 flex-grow">
             <Suspense
               fallback={Array.from({ length: 4 }, (_, i) => (
                 <ProductLoader key={i} />
               ))}
             >
-              <ProductReelFetch props={props} />
+              <ProductReelFetch   props={props} />
             </Suspense>
           </div>
         </div>

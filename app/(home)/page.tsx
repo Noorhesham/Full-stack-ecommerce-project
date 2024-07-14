@@ -59,42 +59,53 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
           subTitle="Our top selling products"
           href="/products"
           sort={""}
+          page={1}
         />
         <ProductReel
-          filters={{ category: "6679b412d0b3a021c9dca130",status:'published' }}
+          filters={{ category: "6679b412d0b3a021c9dca130", status: "published" }}
           className=" py-0"
-          page={page}
+          page={1}
           href={`/products/category=Gaming`}
           title="Gaming Products"
           subTitle="Browse All products"
-          paginate={true}
+          paginate={false}
           sort={""}
         />
         <ProductReel
-          filters={{ category: "6679be4dd0b3a021c9dca3b0",status:'published' }}
+          filters={{ category: "6693a203382aa81152811f6e", status: "published" }}
           className=" py-0"
-          page={page}
+          page={1} pageSize={4}
+          href={`/products/category=clothes`}
+          title="Clothing Products"
+          subTitle="Browse All products"
+          paginate={false} 
+          sort={""}
+        />
+        <ProductReel
+          filters={{ category: "6679be4dd0b3a021c9dca3b0", status: "published" }}
+          className=" py-0"
+          page={1} 
           href={`/products/category=Computers`}
           title="Computers"
           subTitle="Browse All products"
           sort={""}
-          paginate={true}
+          paginate={false}
         />
         <section
           id="products"
-          className="  grid-cols-1 md:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 grid gap-4 py-5 mt-5"
+          className="  grid-cols-1 md:grid-cols-1 items-stretch lg:grid-cols-3 xl:grid-cols-4 grid gap-4 py-5 mt-5"
         >
-          <div className=" hidden lg:block">
+          <div className=" hidden  h-full lg:block">
             <Filters />
           </div>
-          <div className=" ml-3 col-span-full lg:col-span-2 xl:col-span-3 ">
+          <div className="ml-3  h-full col-span-full lg:col-span-2 xl:col-span-3 flex flex-col">
             <ProductReel
               filters={filters ? filters : null}
-              className=" py-0"
+              className="h-full flex flex-col"
               page={page}
               title="All Products"
               subTitle="Browse All products"
-              sort={sort}
+              sort={sort} pageSize={8}
               paginate={true}
             />
           </div>
