@@ -19,8 +19,9 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   return {
     title: `Shinobi Store - ${user.firstName} ${user.lastName}`,
     openGraph: {
-      images: [user.photo?.imgUrl || "/logo.jpg"],
+      images: [{ url: user.photo?.imgUrl || "/logo.jpg" }],
     },
+    metadataBase: new URL("https://nine-tails-shinobi-shop.vercel.app/"),
   };
 }
 
