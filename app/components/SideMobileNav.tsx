@@ -91,28 +91,28 @@ const SideMobileNav = ({ data, isAdmin }: { data: any; isAdmin?: boolean }) => {
                     </div>
                     <h4 className="text-gray-400 md:text-xl text-sm">Menu</h4>
                     <NavLink
-                      href={`${data && isAdmin ? "/admin" : "/seller"}`}
+                      href={`${data && isAdmin ? "admin" : "seller"}`}
                       title="Seller Home"
                       icon={<IoHomeOutline />}
                     />
                     <NavLink
-                      href={`${data && isAdmin ? "/admin" : "/seller"}/products`}
+                      href={`${data && isAdmin ? "admin" : "seller"}/products`}
                       title="My Products"
                       icon={<MdOutlineProductionQuantityLimits />}
                     />
                     <NavLink
-                      href={`${data && isAdmin ? "/admin" : "/seller"}/customers`}
+                      href={`${data && isAdmin ? "admin" : "seller"}/customers`}
                       title="My Customers"
                       icon={<BsPeople />}
                     />
                     <NavLink
-                      href={`${data && isAdmin ? "/admin" : "/seller"}/orders`}
+                      href={`${data && isAdmin ? "admin" : "seller"}/orders`}
                       title="My Orders"
                       icon={<MdOutlineSell />}
                     />
                     <h4 className="text-gray-400 p-2 md:text-xl text-sm ml-4">Create</h4>
                     <NavLink
-                      href={`${data && isAdmin ? "/admin" : "/seller"}/create-product`}
+                      href={`${data && isAdmin ? "admin" : "seller"}/create-product`}
                       title="Sell New Product"
                       icon={<MdSell />}
                     />
