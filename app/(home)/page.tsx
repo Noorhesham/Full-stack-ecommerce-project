@@ -114,6 +114,18 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
             </p>
           </div>
         </div>
+        <div className="sketchfab-embed-wrapper">
+      <iframe
+        title=""
+        frameBorder="0"
+        allowFullScreen
+        mozallowfullscreen="true"
+        webkitallowfullscreen="true"
+        allow="autoplay; fullscreen; xr-spatial-tracking"
+        src="https://sketchfab.com/models/d398468dea074f429d351f32ffc526f7/embed"
+        style={{ width: '100%', height: '480px' }} // Adjust width and height as needed
+      ></iframe>
+    </div>
       </section>
     </>
   );
