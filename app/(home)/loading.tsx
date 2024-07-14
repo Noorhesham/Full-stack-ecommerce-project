@@ -1,5 +1,5 @@
 import React from "react";
-import "./naruto.css";
+import "../naruto.css";
 const loading = () => {
   return (
     <div id="naruto" className=" pt-20">
