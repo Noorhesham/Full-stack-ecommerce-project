@@ -100,7 +100,7 @@ export const calculateFinalPrice = (price: any, variants: any, variations: any) 
 export function constructMetadata({
   title = "Shinobi Store - Your market place to sell any product or buy products for best prices ! ",
   description = "Shinobi Store is an open-source marketplace for high-quality digital goods.",
-  image = "/logo.jpg",
+  image = "/logo1.jpg",
   icons = "/favicon.ico",
   noIndex = false,
 }: {

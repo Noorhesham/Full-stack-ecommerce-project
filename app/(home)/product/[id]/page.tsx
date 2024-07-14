@@ -28,7 +28,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   return {
     title: `Shinobi Store - ${product.name}`,
     openGraph: {
-      images: [product.images.map((img: any) => img.imgUrl)],
+      images: [product.images.map((img: any) => img.imgUrl)[0]],
     },
   };
 }
