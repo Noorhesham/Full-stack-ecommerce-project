@@ -9,7 +9,7 @@ const Cart = () => {
   const { cartItems, isLoading } = useGetCart();
 
   const calculateFinalPrice = (price: any, variants: any, variations: any) => {
-    let basePrice = typeof price === "number" ? price : +price.replace("$", "");
+    let basePrice = typeof price === "number" ? price : Number(price?.replace("$", ""));
     if (!variants || !variations) return basePrice;
 
     variants.forEach((variantId: string) => {

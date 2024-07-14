@@ -144,7 +144,7 @@ const page = async ({
                 </div>
                 <div className=" mt-10  lg:self-start col-start-1 lg:col-start-2 lg:max-w-lg">
                   <div>
-                    <div className="">
+                    <div className=" mt-auto">
                       <AddToCart
                         variantId={selectedVariantOptions}
                         price={getPriceForVariant()}

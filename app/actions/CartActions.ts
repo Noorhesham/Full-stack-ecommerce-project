@@ -33,7 +33,7 @@ export async function removeFromCart(productId: string) {
     const user = await User.findById(session?.user.id);
     if (!user) throw new Error("User not found");
 
-    const productIndex = user.cart.findIndex((item: any) => item.productId.toString() === productId);
+    const productIndex = user.cart.findIndex((item: any) => item.productId=== productId);
     if (productIndex !== -1) {
       user.cart.splice(productIndex, 1);
       await user.save();

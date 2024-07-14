@@ -38,11 +38,13 @@ const AddToCart = ({
 
   const addToCartLocalStorage = () => {
     const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    console.log(cart,productId)
     localStorage.setItem("cart", JSON.stringify([...cart, { productId, variantId }]));
     window.dispatchEvent(new Event("storage"));
   };
   const handleDecrement = () => {
     const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    console.log(cart)
     const productIndex = cart.findIndex((p: any) => p.productId == productId);
     if (productIndex !== -1) {
       cart.splice(productIndex, 1);
