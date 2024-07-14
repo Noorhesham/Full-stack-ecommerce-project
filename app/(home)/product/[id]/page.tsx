@@ -171,7 +171,7 @@ const page = async ({
               </div>
               <div className="flex  gap-2 justify-between flex-col">
                 <h2 className="text-sm font-medium text-muted-foreground text-gray-900">Published By</h2>
-                <Link href={`/profile/${product.creator.id}`} className="flex items-center gap-1">
+                <Link href={`/profile/${product.creator._id}`} className="flex items-center gap-1">
                   <Avatar>
                     <AvatarImage src={`${product.creator.photo.imgUrl}` || "/avatar.jpg"} />
                     <AvatarFallback className=" bg-orange-300">{product.creator.firstName}</AvatarFallback>
