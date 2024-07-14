@@ -171,8 +171,8 @@ const AddImagesForm = ({ product }: { product: ProductProps | any }) => {
               Add Image
             </Button>
             <NextStep
-              isReady={product.images?.length > 1}
-              error="Please upload at least 2 images"
+              isReady={product.images?.length > 0}
+              error="Please upload at least 1 image"
               disabled={isLoading.some((load) => load.loading)}
               text="Submit"
               url="/last"
