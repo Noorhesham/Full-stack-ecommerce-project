@@ -25,7 +25,7 @@ export default function ThreeDSpace({ className,path,sizes }: { className?: stri
   return (
     <div className={className}>
       <Canvas className="w-full mb-20 h-full">
-        <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
+        <OrbitControls enablePan={true} enableZoom={false} enableRotate={true} />
         <Suspense fallback={<Loader />}>
           <directionalLight intensity={0.8} />
           <ambientLight intensity={0.3} />
