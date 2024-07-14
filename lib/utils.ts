@@ -122,6 +122,7 @@ export function constructMetadata({
         },
       ],
     },
+    
     twitter: {
       card: "summary_large_image",
       title,

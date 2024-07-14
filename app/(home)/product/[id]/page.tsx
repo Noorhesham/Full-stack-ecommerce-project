@@ -11,10 +11,27 @@ import ReviewsSection from "@/app/components/ReviewsSection";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { convertToHTML } from "@/lib/utils";
 import { Check, Shield, X } from "lucide-react";
+import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
 //by whom creator addtional infio ribbon  cvaruations
+type Props = {
+  params: { id: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+  const id = params.id;
+  const productData = await getProduct(id);
+  if (!productData) return notFound();
+  const { product } = productData;
+  return {
+    title: `Shinobi Store - ${product.name}`,
+    openGraph: {
+      images: [product.images.map((img: any) => img.imgUrl)],
+    },
+  };
+}
 const page = async ({
   params,
   searchParams,

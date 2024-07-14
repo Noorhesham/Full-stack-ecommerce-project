@@ -3,10 +3,31 @@ import MaxWidthWrapper from "@/app/components/MaxWidthWrapper";
 import ProductReel from "@/app/components/ProductReel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import User from "@/lib/database/models/UserModel";
-import { formattedDate } from "@/lib/utils";
+import { constructMetadata, formattedDate } from "@/lib/utils";
 import { Calendar } from "lucide-react";
+import { Metadata } from "next";
 import React from "react";
+type Props = {
+  params: { id: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+  const id = params.id;
 
+  const user = await User.findById(id);
+
+  return {
+    title: `Shinobi Store - ${user.firstName} ${user.lastName}`,
+    openGraph: {
+      images: [user.photo?.imgUrl || "/logo.jpg"],
+    },
+  };
+}
+export const metadata = constructMetadata({
+  image: "/logo.jpg",
+  icons: "/favicon.ico",
+  title: "Shinobi Store - Your market place to sell any product or buy products for best prices ! ",
+});
 const page = async ({
   params,
   searchParams,
@@ -37,7 +58,7 @@ const page = async ({
       <ProductReel
         filters={{ creator: user._id }}
         className=" py-0"
-        page={page||1}
+        page={page || 1}
         title={`Products for ${user.firstName}`}
         sort={""}
         paginate={true}

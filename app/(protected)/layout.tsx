@@ -2,7 +2,13 @@ import SiderBar from "../components/SideBar";
 import "../globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import React from "react";
+import { constructMetadata } from "@/lib/utils";
 
+export const metadata = constructMetadata({
+  image: "/logo.jpg",
+  icons: "/favicon.ico",
+  title: "Shinobi Store - Sell and manage your products",
+});
 export default function RootLayout({
   children,
 }: Readonly<{
