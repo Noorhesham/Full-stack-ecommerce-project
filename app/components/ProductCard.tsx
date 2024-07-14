@@ -23,7 +23,9 @@ const ProductCard = ({ product, index }: { product: ProductProps; index: number 
       {product.ribbon && <div className="ribbon text-xs z-30 absolute top-5">{product.ribbon}</div>}
       <ImageSlider stock={product.stock} productId={product._id} urls={product.images.map((image) => image.imgUrl)} />
       <div className=" flex flex-col self-stretch justify-between py-1 px-2 w-full">
-        <h3 className=" mt-4 font-medium text-sm text-gray-700 ">{product.name}</h3>
+        <h3 className=" mt-4 font-medium text-sm text-gray-700 ">
+          {product.name.length > 20 ? product.name.substring(0, 20) + "..." : product.name}
+        </h3>
         <div className=" mt-auto">
           <p className=" mt-1 text-sm text-gray-500">{product.category.name}</p>
           <p className=" mt-1 font-medium text-sm text-gray-900">{formatPrice(product.price)}</p>
