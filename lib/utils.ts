@@ -117,7 +117,7 @@ export function constructMetadata({
       title,
       description,
       type: "website",
-      url: "https://nine-tails-shinobi-shop.vercel.app",
+      url: process.env.NEXTAUTH_URL,
       images: [
         {
           url: image,
@@ -135,7 +135,7 @@ export function constructMetadata({
       creator: "@NoorHesham",
     },
     icons,
-    metadataBase: new URL("https://nine-tails-shinobi-shop.vercel.app"),
+    metadataBase: new URL(process.env.NEXTAUTH_URL!),
     ...(noIndex && {
       robots: {
         index: false,
