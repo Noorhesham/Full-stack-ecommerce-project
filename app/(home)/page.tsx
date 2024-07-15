@@ -21,7 +21,6 @@ const perks = [
   },
 ];
 
-export const metadata = constructMetadata();
 
 export default function Home({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
   const category = searchParams.category;
@@ -103,7 +102,7 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
             <Filters />
           </div>
           <div className="ml-3  h-full col-span-full lg:col-span-2 xl:col-span-3 flex flex-col">
-            <ProductReel
+            <ProductReel onlyPrice={false}
               filters={filters ? filters : null}
               className="h-full flex flex-col"
               page={page}

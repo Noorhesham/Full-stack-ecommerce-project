@@ -19,7 +19,7 @@ export interface ProductPropsServerProps {
   sort?: string | string[] | undefined;
 }
 const ProductReel = async (props: ProductReelProps & ProductPropsServerProps) => {
-  const { title, subTitle, href, className, sort,slider } = props;
+  const { title, subTitle, href, className, sort,slider,onlyPrice } = props;
   return (
     <section className={className || " py-12 mt-5 "}>
       <div className="lg:flex lg:items-center lg:justify-between mb-4">
@@ -28,7 +28,7 @@ const ProductReel = async (props: ProductReelProps & ProductPropsServerProps) =>
           {subTitle ? <p className=" mt-2 text-sm text-muted-foreground">{subTitle}</p> : ""}
         </div>
         <div className="flex items-start w-full self-end justify-end ml-auto my-2 gap-3">
-          {sort !== "" && <FilterMobile onlyPrice />}
+          {sort !== "" && <FilterMobile onlyPrice={onlyPrice} />}
         </div>
         {href ? <NextLink text="Shop the collection" href={href} /> : null}
       </div>
