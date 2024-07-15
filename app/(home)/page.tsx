@@ -21,6 +21,7 @@ const perks = [
   },
 ];
 
+export const metadata = constructMetadata();
 
 export default function Home({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
   const category = searchParams.category;

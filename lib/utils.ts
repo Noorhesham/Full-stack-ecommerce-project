@@ -98,7 +98,7 @@ export const calculateFinalPrice = (price: any, variants: any, variations: any) 
   return basePrice;
 };
 export function constructMetadata({
-  title = "Shinobi Store - Your market place to sell any product or buy products for best prices!",
+  title = "Shinobi Store - Your market place to sell any product or buy products for best prices ! ",
   description = "Shinobi Store is an open-source marketplace for high-quality digital goods.",
   image = "/logo1.jpg",
   icons = "/favicon.ico",
@@ -116,17 +116,13 @@ export function constructMetadata({
     openGraph: {
       title,
       description,
-      type: "website",
-      url: process.env.NEXTAUTH_URL,
       images: [
         {
           url: image,
-          width: 1200,
-          height: 630,
-          alt: title,
         },
       ],
     },
+    
     twitter: {
       card: "summary_large_image",
       title,
@@ -135,7 +131,7 @@ export function constructMetadata({
       creator: "@NoorHesham",
     },
     icons,
-    metadataBase: new URL(process.env.NEXTAUTH_URL!),
+    metadataBase: new URL(process.env.NEXTAUTH_URL || "http://localhost:3000"),
     ...(noIndex && {
       robots: {
         index: false,
@@ -144,3 +140,4 @@ export function constructMetadata({
     }),
   };
 }
+

@@ -25,23 +25,10 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const productData = await getProduct(id);
   if (!productData) return notFound();
   const { product } = productData;
-
-  const imageUrl = product.images.length > 0 ? product.images[0].imgUrl : "/logo1.jpg"; // Ensure a default image is used if none exists
-  const absoluteImageUrl = new URL(imageUrl, process.env.NEXTAUTH_URL).toString(); // Assuming you have NEXT_PUBLIC_SITE_URL set
-
   return {
     title: `Shinobi Store - ${product.name}`,
     openGraph: {
-      title: `Shinobi Store - ${product.name}`,
-      description: product.description,
-      images: [
-        {
-          url: absoluteImageUrl,
-          width: 1200,
-          height: 630,
-          alt: product.name,
-        },
-      ],
+      images: [{ url: product.images.map((img: any) => img.imgUrl)[0] }],
     },
   };
 }
