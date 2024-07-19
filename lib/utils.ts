@@ -132,7 +132,6 @@ export function constructMetadata({
       images: [image],
       creator: "@NoorHesham",
     },
-    icons,
     metadataBase: new URL(process.env.NEXTAUTH_URL || "http://localhost:3000"),
     ...(noIndex && {
       robots: {
