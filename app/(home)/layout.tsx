@@ -1,8 +1,6 @@
-import { Inter } from "next/font/google";
 import "../globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import NavBar from "../components/NavBar";
-import connect from "@/lib/database/connect";
 import React from "react";
 import Footer from "../components/Footer";
 import { constructMetadata } from "@/lib/utils";
@@ -35,7 +33,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await connect();
   return (
     <main className="relative  flex flex-col min-h-screen">
       <NavBar />
