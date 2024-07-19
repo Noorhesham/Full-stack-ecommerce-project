@@ -29,7 +29,7 @@ Manage reviews (admin can delete inappropriate reviews)
 
 
 */
-
+export const metadata = constructMetadata();
 export default async function RootLayout({
   children,
 }: Readonly<{

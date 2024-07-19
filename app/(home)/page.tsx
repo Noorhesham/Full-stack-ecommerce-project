@@ -36,7 +36,7 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
   return (
     <>
       <MaxWidthWrapper>
-        
+        <HeroHighlightDemo>
           <div className=" py-20 mx-auto  text-center flex flex-col items-center max-w-3xl">
             <h1 className="text-4xl font-bold capitalize tracking-tight text-gray-900 sm:text-6xl">
               Your market place for high quality{" "}
@@ -55,7 +55,7 @@ export default function Home({ searchParams }: { searchParams: { [key: string]: 
               <Button variant={"ghost"}>Our Quality Promise &rarr;</Button>
             </div>
           </div>
-       
+        </HeroHighlightDemo>
         <ProductReel
           filters={{ isFeatured: true, status: "published" }}
           title="Featured Products"

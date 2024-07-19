@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { cn, constructMetadata } from "@/lib/utils";
+import { cn,  } from "@/lib/utils";
 import AuthProvider from "./utils/SessionProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,7 +23,7 @@ product name ,price description stock ,brand subcategory categories and info  2i
 9.
 10.
 */
-export const metadata = constructMetadata();
+
 export default async function RootLayout({
   children,
 }: Readonly<{
