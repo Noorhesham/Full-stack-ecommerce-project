@@ -123,7 +123,7 @@ export function constructMetadata({
       ],
     },
     icons: {
-      icon: image || "/logo1.jpg",
+      icon: image || "/favicon.ico",
     },
     twitter: {
       card: "summary_large_image",

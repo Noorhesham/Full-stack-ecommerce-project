@@ -6,6 +6,7 @@ import ProductReel from "../components/ProductReel";
 import { HeroHighlightDemo } from "../components/HighLight";
 import Filters from "../components/Filters";
 import ThreeDSpace from "../components/ThreeDSpace";
+import { constructMetadata } from "@/lib/utils";
 const perks = [
   { name: "Instant Delivery", description: "Get your order in as fast as one hour !", icon: ArrowDownToLineIcon },
   {
@@ -19,7 +20,7 @@ const perks = [
     icon: CheckCircle,
   },
 ];
-
+export const metadata = constructMetadata();
 
 export default function Home({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
   const category = searchParams.category;

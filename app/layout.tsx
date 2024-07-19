@@ -1,12 +1,14 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { cn,  } from "@/lib/utils";
+import { cn, constructMetadata,  } from "@/lib/utils";
 import AuthProvider from "./utils/SessionProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import QueryProvider from "./utils/QueryProvider";
 import connect from "@/lib/database/connect";
+import Head from "next/head";
 const inter = Inter({ subsets: ["latin"] });
+export const metadata = constructMetadata();
 
 //todos
 /* 
@@ -32,6 +34,9 @@ export default async function RootLayout({
   await connect();
   return (
     <html className="h-full " lang="en">
+      <Head>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
       <AuthProvider>
         <QueryProvider>
           <body className={cn("relative h-full font-sans antialiased", inter.className)}>
