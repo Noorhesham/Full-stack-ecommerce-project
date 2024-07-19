@@ -1,3 +1,4 @@
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -12,6 +13,11 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-};
+  swcMinify: true,
 
-export default nextConfig;
+};
+import withBundleAnalyzer from '@next/bundle-analyzer';
+
+export default withBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})(nextConfig);

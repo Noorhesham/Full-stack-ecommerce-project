@@ -6,7 +6,6 @@ import ProductReel from "../components/ProductReel";
 import { HeroHighlightDemo } from "../components/HighLight";
 import Filters from "../components/Filters";
 import ThreeDSpace from "../components/ThreeDSpace";
-import { constructMetadata } from "@/lib/utils";
 const perks = [
   { name: "Instant Delivery", description: "Get your order in as fast as one hour !", icon: ArrowDownToLineIcon },
   {
