@@ -33,7 +33,7 @@ const page = async ({
   params: { id: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
-  const user = await User.findById(params.id);
+  const user = await unstable_cache(async () => await User.findById(id), [`user ${id}`])();
   const page = parseInt(searchParams.page as string, 10) || 1;
   return (
     <MaxWidthWrapper>

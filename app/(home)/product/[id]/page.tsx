@@ -1,4 +1,3 @@
-import { getProduct } from "@/app/actions/products";
 import AddToCart from "@/app/components/AddToCart";
 import { BreadcrumbWithCustomSeparator } from "@/app/components/BreadCumber";
 import ChooseVariants from "@/app/components/ChooseVariants";
@@ -8,6 +7,7 @@ import ParaGraph from "@/app/components/ParaGraph";
 import Price from "@/app/components/Price";
 import ProductReel from "@/app/components/ProductReel";
 import ReviewsSection from "@/app/components/ReviewsSection";
+import { getProduct } from "@/app/utils/gettingData";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { convertToHTML } from "@/lib/utils";
 import { Check, Shield, X } from "lucide-react";
@@ -23,7 +23,7 @@ type Props = {
 };
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const id = params.id;
-  const productData = await unstable_cache(async () => await getProduct(id), [`product ${id}`])();
+  const productData = await getProduct(id);
   if (!productData) return notFound();
   const { product } = productData;
   return {
