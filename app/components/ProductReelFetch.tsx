@@ -23,7 +23,7 @@ const ProductReelFetch = async ({ props }: { props: ProductPropsServerProps }) =
   const { filters, page, pageSize, sort, paginate, slider } = props;
   const data = await unstable_cache(
     async () => await getProducts(page || 1, pageSize || 10, filters, sort),
-    [page, pageSize, filters, sort]
+    [`products`, page + "", pageSize + "", JSON.stringify(filters), sort]
   )();
   console.log(data);
   if (!data) return null;
