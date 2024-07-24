@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { convertToHTML } from "@/lib/utils";
 import { Check, Shield, X } from "lucide-react";
 import { Metadata } from "next";
+import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -22,7 +23,7 @@ type Props = {
 };
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const id = params.id;
-  const productData = await getProduct(id);
+  const productData = await unstable_cache(async () => await getProduct(id), [`product ${id}`])();
   if (!productData) return notFound();
   const { product } = productData;
   return {

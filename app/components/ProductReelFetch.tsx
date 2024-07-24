@@ -20,9 +20,12 @@ user managment form
 10.emails style
 */
 const ProductReelFetch = async ({ props }: { props: ProductPropsServerProps }) => {
-  const { filters, page, pageSize, sort, paginate,slider } = props;
-  const data =await unstable_cache(async () => await getProducts(page || 1, pageSize || 10, filters, sort),[page,pageSize,filters,sort])();
-  console.log(data)
+  const { filters, page, pageSize, sort, paginate, slider } = props;
+  const data = await unstable_cache(
+    async () => await getProducts(page || 1, pageSize || 10, filters, sort),
+    [page, pageSize, filters, sort]
+  )();
+  console.log(data);
   if (!data) return null;
   const { products, totalPages } = data;
   return (
@@ -30,7 +33,7 @@ const ProductReelFetch = async ({ props }: { props: ProductPropsServerProps }) =
       {products.length > 0 && (
         <>
           {products.map((product: ProductProps, i: number) => (
-            <ProductCard index={i} key={product.id} product={product} />  
+            <ProductCard index={i} key={product.id} product={product} />
           ))}
           {paginate &&
             products.length < 12 &&

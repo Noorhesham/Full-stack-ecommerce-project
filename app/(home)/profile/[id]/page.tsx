@@ -6,6 +6,7 @@ import User from "@/lib/database/models/UserModel";
 import { constructMetadata, formattedDate } from "@/lib/utils";
 import { Calendar } from "lucide-react";
 import { Metadata } from "next";
+import { unstable_cache } from "next/cache";
 import React from "react";
 type Props = {
   params: { id: string };
@@ -14,7 +15,7 @@ type Props = {
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const id = params.id;
 
-  const user = await User.findById(id);
+  const user = await unstable_cache(async () => await User.findById(id), [`user ${id}`])();
 
   return {
     title: `Shinobi Store - ${user.firstName} ${user.lastName}`,
