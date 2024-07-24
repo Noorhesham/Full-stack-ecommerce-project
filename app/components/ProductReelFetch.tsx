@@ -6,6 +6,7 @@ import { ProductProps } from "../types";
 import NotFound from "./NotFound";
 import { PaginationDemo } from "./Pagination";
 import ProductSlider from "./ProductSlider";
+import { unstable_cache } from "next/cache";
 
 /*
 3.update ui for login and signup and add country dropdown
@@ -20,7 +21,8 @@ user managment form
 */
 const ProductReelFetch = async ({ props }: { props: ProductPropsServerProps }) => {
   const { filters, page, pageSize, sort, paginate,slider } = props;
-  const data = await getProducts(page || 1, pageSize || 10, filters, sort);
+  const data =await unstable_cache(async () => await getProducts(page || 1, pageSize || 10, filters, sort),[page,pageSize,filters,sort])();
+  console.log(data)
   if (!data) return null;
   const { products, totalPages } = data;
   return (
